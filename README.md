@@ -1,10 +1,7 @@
-# 
-Estimate Fish Abundance from Acoustic Echoes and Net Catch
-
 EchoNet2Fish
 ============
 
-**EchoNet2Fish** is a package of functions for the [R programming language](http://www.r-project.org/).  **EchoNet2Fish** estimates fish abundance from acoustic surveys combined with catch in nets (typically midwater trawls or gill nets)
+**EchoNet2Fish** is a package of functions for the [R programming language](http://www.r-project.org/).  **EchoNet2Fish** estimates fish abundance from acoustic surveys combined with catch in nets (typically midwater trawls or gill nets).
 
 - - -
 
