@@ -47,8 +47,8 @@ Each interval of sliceDef is closed on the left and open on the right.
 In other words, if you assign an interval of fdp=c(10, 20), observations
 >= 10 and < 20 will be considered for inclusion in that slice.
 
-All observation variables (\code{fdp}, \code{bdp}, \code{lat}) must be the
-  same length.
+All observation variables (\code{fdp}, \code{bdp}, \code{lat}), if not NULL,
+ must be the same length.
 }
 \examples{
 myslicedef <- list(
