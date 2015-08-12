@@ -5,7 +5,7 @@
 \title{Add a Table to an RTF Document}
 \usage{
 tabl(..., TAB = tab, rtf = doc, fontt = 8, row.names = TRUE,
-  tabc = GLFCenv$tabcount, boldt = TRUE, newpage = "none", omi = c(1, 1,
+  tabc = EchoEnv$tabcount, boldt = TRUE, newpage = "none", omi = c(1, 1,
   1, 1))
 }
 \arguments{
@@ -23,7 +23,7 @@ default \code{tab}.}
 default TRUE.}
 
 \item{tabc}{Numeric scalar table number to use in caption, default
-\code{GLFCenv$tabcount}.}
+\code{EchoEnv$tabcount}.}
 
 \item{boldt}{Logical scalar indicating if table number should use bold font,
 default TRUE.}
@@ -36,7 +36,7 @@ the document "port" for a new portrait page,
 (bottom, left, top, right), default c(1, 1, 1, 1).}
 }
 \value{
-A 1 is added to the numeric vector of length 1, \code{GLFCenv$tabcount},
+A 1 is added to the numeric vector of length 1, \code{EchoEnv$tabcount},
   stored in the working directory to keep track of the number of tables
   written to the rtf document, and label the captions accordingly.
 }

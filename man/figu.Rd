@@ -5,7 +5,7 @@
 \title{Add a Figure to an RTF Document}
 \usage{
 figu(..., FIG = fig, rtf = doc, figid = "Figure ",
-  fign = GLFCenv$figcount, boldt = TRUE, capunder = TRUE, w = NULL,
+  fign = EchoEnv$figcount, boldt = TRUE, capunder = TRUE, w = NULL,
   h = NULL, rf = 300, newpage = "none", omi = c(1, 1, 1, 1))
 }
 \arguments{
@@ -20,7 +20,7 @@ default \code{fig}.}
 \item{figid}{Character scalar of caption identifier, default "Figure ".}
 
 \item{fign}{Numeric scalar of figure number to use in caption,
-default \code{GLFCenv$figcount}.}
+default \code{EchoEnv$figcount}.}
 
 \item{boldt}{Logical scalar indicating if figure number should use bold font,
 default TRUE.}
@@ -42,7 +42,7 @@ a new landscape page, and "none" for no new page (the default).}
 (bottom, left, top, right), default c(1, 1, 1, 1).}
 }
 \value{
-A 1 is added to the numeric vector of length 1, \code{GLFCenv$figcount},
+A 1 is added to the numeric vector of length 1, \code{EchoEnv$figcount},
   stored in the working directory to keep track of the number of figures
   written to the rtf document, and label the captions accordingly.
 }

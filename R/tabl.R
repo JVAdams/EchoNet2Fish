@@ -16,7 +16,7 @@
 #'   default TRUE.
 #' @param tabc
 #'   Numeric scalar table number to use in caption, default
-#'   \code{GLFCenv$tabcount}.
+#'   \code{EchoEnv$tabcount}.
 #' @param boldt
 #'   Logical scalar indicating if table number should use bold font,
 #'   default TRUE.
@@ -28,7 +28,7 @@
 #'   Numeric vector, length 4, width of document page margins in inches
 #'   (bottom, left, top, right), default c(1, 1, 1, 1).
 #' @return
-#'   A 1 is added to the numeric vector of length 1, \code{GLFCenv$tabcount},
+#'   A 1 is added to the numeric vector of length 1, \code{EchoEnv$tabcount},
 #'   stored in the working directory to keep track of the number of tables
 #'   written to the rtf document, and label the captions accordingly.
 #' @details
@@ -47,7 +47,7 @@
 #' @export
 
 tabl <- function(..., TAB=tab, rtf=doc, fontt=8, row.names=TRUE,
-    tabc=GLFCenv$tabcount, boldt=TRUE, newpage="none", omi=c(1, 1, 1, 1)) {
+    tabc=EchoEnv$tabcount, boldt=TRUE, newpage="none", omi=c(1, 1, 1, 1)) {
 	if (newpage=="port") {
     addPageBreak(this=rtf, width=8.5, height=11, omi=omi)
 	}
@@ -61,5 +61,5 @@ tabl <- function(..., TAB=tab, rtf=doc, fontt=8, row.names=TRUE,
 	endParagraph(this=rtf)
 	addTable(this=rtf, TAB, font.size=fontt, row.names=row.names)
 	addNewLine(this=rtf)
-	GLFCenv$tabcount <- tabc + 1
+	EchoEnv$tabcount <- tabc + 1
 	}

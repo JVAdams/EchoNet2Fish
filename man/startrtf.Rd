@@ -27,7 +27,7 @@ command line, default FALSE.}
 \value{
 An rtf file is created in the specified directory.
   An object of class rtf is created.  This object is referred to in
-  other function to write to the file.
+  other functions to write to the file.
   In addition, two numeric vectors of length 1, \code{tabcount} and
   \code{figcount}, are written to the working directory to keep track
   of the number of tables and figures written to the rtf document, and
@@ -54,14 +54,14 @@ heading(paste("Author", today, sep=" - "), 2)
 # add a paragraph
 para("This is how write a paragraph.")
 # reference a table
-para("This is how you reference a table (Table ", GLFCenv$tabcount, ").")
+para("This is how you reference a table (Table ", EchoEnv$tabcount, ").")
 # add the table
 tab <- matrix(sample(20), ncol=5,
  dimnames=list(paste("Row", 1:4), paste("Column", 1:5)))
 tabl("A silly table.")
 # reference a figure
 para("And this is how you reference a figure (Figure ",
- GLFCenv$figcount, ").")
+ EchoEnv$figcount, ").")
 # add the figure
 fig <- function() {
 	par(mar=c(4, 4, 1, 1))
