@@ -22,9 +22,9 @@ An alternative approach for Windows users is to download this [zip file](https:/
 	
 - - -
 
-_U.S. Geological Survey_ (USGS) Computer Program **EchoNet2Fish** version 0.0.0.900. 
+_U.S. Geological Survey_ (USGS) Computer Program **EchoNet2Fish** version 0.0.0.9001. 
 Written by Jean V. Adams, [USGS - Great Lakes Science Center](http://www.glsc.usgs.gov/), Ann Arbor, Michigan, USA. 
-Written in programming language R (R Core Team, 2014, www.R-project.org), version 0.0.0.900 (2015-03-16). 
+Written in programming language R (R Core Team, 2014, www.R-project.org), version 3.2.1 (2015-06-18). 
 Run on a PC with Intel(R) Core(TM) I7-4600m CPU, 2.90 GHz processor, 16.0 GB RAM, and Microsoft Windows 7 Enterprise operating system 2009 Service Pack 1. 
 Source code is available from Jean V. Adams on [GitHub](https://github.com/JVAdams/EchoNet2Fish), _jvadams (at) usgs (dot) gov_.
 
