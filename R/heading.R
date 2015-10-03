@@ -23,13 +23,13 @@
 #' @export
 
 heading <- function(words, htype=1, rtf=doc) {
-	if (htype==1) {
-		addHeader(this=rtf, title=words, font.size=12)
-	} else {
-		startParagraph(this=rtf)
-		addText(this=rtf, words, bold=c(TRUE, FALSE)[htype-1],
+  if (htype==1) {
+    addHeader(this=rtf, title=words, font.size=12)
+  } else {
+    startParagraph(this=rtf)
+    addText(this=rtf, words, bold=c(TRUE, FALSE)[htype-1],
       italic=c(FALSE, TRUE)[htype-1])
-		endParagraph(this=rtf)
-		addNewLine(this=rtf)
-	}
+    endParagraph(this=rtf)
+    addNewLine(this=rtf)
+  }
 }

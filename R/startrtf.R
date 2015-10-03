@@ -62,8 +62,8 @@
 #'  EchoEnv$figcount, ").")
 #' # add the figure
 #' fig <- function() {
-#' 	par(mar=c(4, 4, 1, 1))
-#' 	plot(1:10, 1:10, xlab="X", ylab="Y")
+#'   par(mar=c(4, 4, 1, 1))
+#'   plot(1:10, 1:10, xlab="X", ylab="Y")
 #' }
 #' figu("A silly plot.", h=4, w=4)
 #' # save the rtf file
@@ -72,20 +72,20 @@
 
 startrtf <- function(file=NULL, dir=getwd(), width=8.5, height=11,
     omi=c(1, 1, 1, 1), quiet=FALSE) {
-	# create a new RTF file readable by Word
-	# create two new variables to keep count of tables and figures
-	EchoEnv$tabcount <- 1
-	EchoEnv$figcount <- 1
-	if (is.null(file)) {
+  # create a new RTF file readable by Word
+  # create two new variables to keep count of tables and figures
+  EchoEnv$tabcount <- 1
+  EchoEnv$figcount <- 1
+  if (is.null(file)) {
     file <- paste0("RGeneratedDocument", Sys.Date())
-	}
-	dirfiledoc <- if (length(grep(".doc", file))>0) {
+  }
+  dirfiledoc <- if (length(grep(".doc", file))>0) {
     paste(dir, file, sep="/")
   } else {
     paste(dir, paste0(file, ".doc"), sep="/")
   }
-	if (!quiet) {
+  if (!quiet) {
     cat(paste0("New RTF document created, ", dirfiledoc, "\n"))
-	}
-	RTF(dirfiledoc, width=width, height=height, omi=omi)
+  }
+  RTF(dirfiledoc, width=width, height=height, omi=omi)
 }

@@ -55,43 +55,43 @@
 figu <- function(..., FIG=fig, rtf=doc, figid="Figure ",
     fign=EchoEnv$figcount, boldt=TRUE, capunder=TRUE, w=NULL, h=NULL,
     rf=300, newpage="none", omi=c(1, 1, 1, 1)) {
-	wf <- if (is.null(w)) {
+  wf <- if (is.null(w)) {
     6.5
   } else {
     w
   }
-	hf <- if (is.null(h)) {
+  hf <- if (is.null(h)) {
     8
   } else {
     h
   }
-	if (newpage=="port") {
+  if (newpage=="port") {
     addPageBreak(this=rtf, width=8.5, height=11, omi=omi)
-	}
-	if (newpage=="land") {
-		wf <- if (is.null(w)) {
+  }
+  if (newpage=="land") {
+    wf <- if (is.null(w)) {
       9
     } else {
       w
     }
-		hf <- if (is.null(h)) {
+    hf <- if (is.null(h)) {
       5.5
     } else {
       h
     }
-		addPageBreak(this=rtf, width=11, height=8.5, omi=omi)
-	}
-	if (capunder) {
-		addPlot(this=rtf, plot.fun=FIG, width=wf, height=hf, res=rf)
-		addNewLine(this=rtf)
-	}
-	startParagraph(this=rtf)
-	addText(this=rtf, paste0(figid, fign, ".  "), bold=boldt)
-	addText(this=rtf, ...)
-	endParagraph(this=rtf)
-	if (!capunder) {
-		addPlot(this=rtf, plot.fun=FIG, width=wf, height=hf, res=rf)
-	}
-	addNewLine(this=rtf)
-	EchoEnv$figcount <- fign + 1
+    addPageBreak(this=rtf, width=11, height=8.5, omi=omi)
+  }
+  if (capunder) {
+    addPlot(this=rtf, plot.fun=FIG, width=wf, height=hf, res=rf)
+    addNewLine(this=rtf)
+  }
+  startParagraph(this=rtf)
+  addText(this=rtf, paste0(figid, fign, ".  "), bold=boldt)
+  addText(this=rtf, ...)
+  endParagraph(this=rtf)
+  if (!capunder) {
+    addPlot(this=rtf, plot.fun=FIG, width=wf, height=hf, res=rf)
+  }
+  addNewLine(this=rtf)
+  EchoEnv$figcount <- fign + 1
 }

@@ -9,12 +9,12 @@
 #' @export
 
 getpackages <- function(want) {
-	# install (if necessary) and attach wanted packages
-	have <- row.names(installed.packages())
-	need <- want[!(want %in% have)]
-	if (length(need)>0) {
+  # install (if necessary) and attach wanted packages
+  have <- row.names(installed.packages())
+  need <- want[!(want %in% have)]
+  if (length(need)>0) {
     install.packages(need, repos="http://cran.r-project.org")
-	}
-	lapply(want, library, character.only=TRUE)
-	invisible()
+  }
+  lapply(want, library, character.only=TRUE)
+  invisible()
 }

@@ -48,18 +48,18 @@
 
 tabl <- function(..., TAB=tab, rtf=doc, fontt=8, row.names=TRUE,
     tabc=EchoEnv$tabcount, boldt=TRUE, newpage="none", omi=c(1, 1, 1, 1)) {
-	if (newpage=="port") {
+  if (newpage=="port") {
     addPageBreak(this=rtf, width=8.5, height=11, omi=omi)
-	}
-	if (newpage=="land") {
+  }
+  if (newpage=="land") {
     addPageBreak(this=rtf, width=11, height=8.5, omi=omi)
-	}
-	startParagraph(this=rtf)
-	addText(this=rtf, paste0("Table ", tabc, ".  "), bold=boldt)
-	addText(this=rtf, ...)
-	addNewLine(this=rtf)
-	endParagraph(this=rtf)
-	addTable(this=rtf, TAB, font.size=fontt, row.names=row.names)
-	addNewLine(this=rtf)
-	EchoEnv$tabcount <- tabc + 1
-	}
+  }
+  startParagraph(this=rtf)
+  addText(this=rtf, paste0("Table ", tabc, ".  "), bold=boldt)
+  addText(this=rtf, ...)
+  addNewLine(this=rtf)
+  endParagraph(this=rtf)
+  addTable(this=rtf, TAB, font.size=fontt, row.names=row.names)
+  addNewLine(this=rtf)
+  EchoEnv$tabcount <- tabc + 1
+  }

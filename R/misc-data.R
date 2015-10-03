@@ -18,5 +18,5 @@ NULL
 #'   An environment.
 #' @source
 #'   Post from Hadley Wickham to r-help on 2 Dec 2014
-#'	\href{https://stat.ethz.ch/pipermail/r-help/2014-December/423847.html}{[link]}.
+#'  \href{https://stat.ethz.ch/pipermail/r-help/2014-December/423847.html}{[link]}.
 NULL
