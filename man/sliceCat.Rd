@@ -5,7 +5,7 @@
 \title{Categorize Observations as Slices for Matching Acoustic Densities and Trawl
 Catches}
 \usage{
-sliceCat(sliceDef, fdp = NULL, bdp = NULL, lat = NULL)
+sliceCat(sliceDef, fdp = NULL, bdp = NULL, lat = NULL, reg = NULL)
 }
 \arguments{
 \item{sliceDef}{A list of at least two named sub-lists defining the slices into which
@@ -31,11 +31,15 @@ required by \code{sliceDef}, default NULL.}
 \item{lat}{A numeric vector of latitudes corresponding to the
 observations which are to be categorized into slices.  Only necessary if
 required by \code{sliceDef}, default NULL.}
+
+\item{reg}{A character vector of regions corresponding to the
+observations which are to be categorized into slices.  Only necessary if
+required by \code{sliceDef}, default NULL.}
 }
 \value{
 A character vector the same length as the observations variables
-  (\code{fdp}, \code{bdp}, \code{lat}), identifying the slice to which
-  each observation belongs.
+  (\code{fdp}, \code{bdp}, \code{lat}, \code{reg}), identifying the slice to
+  which each observation belongs.
 }
 \description{
 Categorize observations as spatial slices for matching fish densities
@@ -47,8 +51,8 @@ Each interval of sliceDef is closed on the left and open on the right.
 In other words, if you assign an interval of fdp=c(10, 20), observations
 >= 10 and < 20 will be considered for inclusion in that slice.
 
-All observation variables (\code{fdp}, \code{bdp}, \code{lat}), if not NULL,
- must be the same length.
+All observation variables (\code{fdp}, \code{bdp}, \code{lat}, \code{lat}),
+if not NULL, must be the same length.
 }
 \examples{
 myslicedef <- list(

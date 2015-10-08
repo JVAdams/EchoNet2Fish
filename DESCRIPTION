@@ -1,10 +1,10 @@
 Package: EchoNet2Fish
 Title: Estimate Fish Abundance from Acoustic Echoes and Net Catch
-Version: 0.0.0.9001
+Version: 0.0.0.9002
 Authors@R: person(given="Jean V.", family="Adams", email="jvadams@usgs.gov", 
   role=c("aut", "cre"))
 Description: EchoNet2Fish estimates fish abundance from acoustic echoes and net catch.
-Depends: R (>= 3.2.1)
+Depends: R (>= 3.2.2)
 Imports:
   rtf
 Suggests: 

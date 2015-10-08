@@ -64,8 +64,8 @@ para("And this is how you reference a figure (Figure ",
  EchoEnv$figcount, ").")
 # add the figure
 fig <- function() {
-	par(mar=c(4, 4, 1, 1))
-	plot(1:10, 1:10, xlab="X", ylab="Y")
+  par(mar=c(4, 4, 1, 1))
+  plot(1:10, 1:10, xlab="X", ylab="Y")
 }
 figu("A silly plot.", h=4, w=4)
 # save the rtf file
