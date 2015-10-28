@@ -60,7 +60,8 @@ sliceCat <- function(sliceDef, fdp=NULL, bdp=NULL, lat=NULL, reg=NULL) {
   parmat <- as.data.frame(cbind(fdp=fdp, bdp=bdp, lat=lat, reg=reg))
   pr <- match("reg", names(parmat))
   if(!is.na(pr)) {
-    parmat <- cbind(as.numeric(parmat[, -pr]), parmat[, pr])
+    parmat <- data.frame(apply(parmat[, -pr, drop=FALSE], 2, as.numeric),
+      reg=parmat[, pr])
   }
   if(any(dim(parmat)<1)) stop("No observations to categorize")
   L <- length(sliceDef)
