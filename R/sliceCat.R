@@ -56,8 +56,12 @@
 #' data.frame(fishingD, bottomD, slice)
 
 sliceCat <- function(sliceDef, fdp=NULL, bdp=NULL, lat=NULL, reg=NULL) {
-  # matrix of variables with names for easy reference
-  parmat <- cbind(fdp=fdp, bdp=bdp, lat=lat, reg=reg)
+  # data frame of variables with names for easy reference
+  parmat <- as.data.frame(cbind(fdp=fdp, bdp=bdp, lat=lat, reg=reg))
+  pr <- match("reg", names(parmat))
+  if(!is.na(pr)) {
+    parmat <- cbind(as.numeric(parmat[, -pr]), parmat[, pr])
+  }
   if(any(dim(parmat)<1)) stop("No observations to categorize")
   L <- length(sliceDef)
   # matrix of logicals indicating slice membership of observations
