@@ -16,7 +16,7 @@ If you don't already have `Rtools` and `devtools`, you will need to download and
 	find_rtools()
 	install.packages("devtools")
 
-An alternative approach for Windows users is to download this [zip file](https://github.com/JVAdams/EchoNet2Fish/raw/master/a and install the package from the R menu:
+An alternative approach for Windows users is to download this [zip file](https://github.com/JVAdams/EchoNet2Fish/raw/master/) and install the package from the R menu:
 - Packages
 - Install package(s) from local zip files...
 	
