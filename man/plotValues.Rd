@@ -4,7 +4,7 @@
 \alias{plotValues}
 \title{Test for and Plot Errors in Acoustic Survey Values}
 \usage{
-plotValues(low, high, between, lowhighKnown = TRUE, varname = "Varname",
+plotValues(low, high, between, lowhighKnown = FALSE, varname = "Varname",
   test = FALSE, ...)
 }
 \arguments{
@@ -15,7 +15,7 @@ plotValues(low, high, between, lowhighKnown = TRUE, varname = "Varname",
 \item{between}{A numeric vector of in between values, the same length as \code{low}.}
 
 \item{lowhighKnown}{A logical scalar indicating whether the vector representing the lows
-and the vector representing the highs are known, default TRUE.
+and the vector representing the highs are known, default FALSE.
 If FALSE, the low (and high) value is calculated as the elementwise
 mininum (and maximumu) of the three vectors, \code{low}, \code{high},
 and \code{between}.}

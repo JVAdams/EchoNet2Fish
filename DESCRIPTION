@@ -1,20 +1,23 @@
 Package: EchoNet2Fish
 Title: Estimate Fish Abundance from Acoustic Echoes and Net Catch
-Version: 0.0.0.9004
+Version: 0.0.0.9005
 Authors@R: person(given="Jean V.", family="Adams", email="jvadams@usgs.gov", 
   role=c("aut", "cre"))
 Description: EchoNet2Fish estimates fish abundance from acoustic echoes and net
-  catch.
+    catch.
 Depends:
-  R (>= 3.2.2)
+    R (>= 3.2.2)
 Imports:
-  rtf,
-  maps,
-  mapdata
+    lubridate,
+    mapdata,
+    maps,
+    plotrix,
+    rtf,
+    simsalapar
 Suggests:
-  magrittr,
-  testthat
+    magrittr,
+    testthat
 License: GPL
 LazyData: TRUE
 URL: https://github.com/JVAdams/EchoNet2Fish
-RoxygenNote: 5.0.0
+RoxygenNote: 5.0.1

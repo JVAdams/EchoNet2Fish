@@ -10,7 +10,7 @@
 #'   A numeric vector of in between values, the same length as \code{low}.
 #' @param lowhighKnown
 #'   A logical scalar indicating whether the vector representing the lows
-#'   and the vector representing the highs are known, default TRUE.
+#'   and the vector representing the highs are known, default FALSE.
 #'   If FALSE, the low (and high) value is calculated as the elementwise
 #'   mininum (and maximumu) of the three vectors, \code{low}, \code{high},
 #'   and \code{between}.
@@ -28,7 +28,7 @@
 #'   If \code{test} = FALSE, a figure is drawn, but no value is returned.
 #' @export
 
-plotValues <- function(low, high, between, lowhighKnown=TRUE,
+plotValues <- function(low, high, between, lowhighKnown=FALSE,
   varname="Varname", test=FALSE, ...) {
 	# plot lows, highs, and betweens for a given metric
 	x <- seq(high)
@@ -45,7 +45,6 @@ plotValues <- function(low, high, between, lowhighKnown=TRUE,
 	sel.lo <- (!is.na(lo.) & !is.na(be.) & lo. > be.) |
 	  (!is.na(lo.) & !is.na(hi.) & lo. > hi.)
 	sel.be <- !is.na(be.) & !is.na(hi.) & be. > hi.
-	problems <- sum(sum(sel.be, na.rm=TRUE), sum(sel.lo, na.rm=TRUE))
 	if(!test) {
 		yr <- range(lo., hi., be., na.rm=TRUE)
 		par(mar=c(4, 4, 1, 1), cex=1.5)
@@ -63,6 +62,8 @@ plotValues <- function(low, high, between, lowhighKnown=TRUE,
 		  "Mid < Max", "Min < Mid and Max"),
 			col=c("green", "red", "cyan", "black", "blue"), pch=c(3, 2, 6, 1, 6),
 		  cex=1.5)
-	}
-	if(is.na(problems) | problems < 1) return(FALSE)
+	} else {
+  	problems <- sum(sum(sel.be, na.rm=TRUE), sum(sel.lo, na.rm=TRUE))
+    if(is.na(problems) | problems < 1) return(FALSE) else return(TRUE)
+  }
 }
