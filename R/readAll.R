@@ -54,25 +54,27 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
     stop("Need one row in reference file for the specified LAKE and YEAR.")
   }
 
-  with(ref[selrow, ], {
-    maindir <<-   paste0(refdir, "/", subdir, "/")
-    svdir <<-     paste0(maindir, svsubdir, "/")
-    tsdir <<-     paste0(maindir, tssubdir, "/")
-    optrop.f <<-  paste0(maindir, optropf, ".csv")
-    trcatch.f <<- paste0(maindir, trcatchf, ".csv")
-    trlf.f <<-    paste0(maindir, trlff, ".csv")
-    if(!is.na(keysp1)) {
-      keysp1.f <<- list(sp=keysp1, file=paste0(maindir, keyfile1, ".csv"))
-    } else {
-      keysp1.f <<- NULL
-    }
-    if(!is.na(keysp2)) {
-      keysp2.f <<- list(sp=keysp2, file=paste0(maindir, keyfile2, ".csv"))
-    } else {
-      keysp2.f <<- NULL
-    }
-  })
-  rm(ref, i, sel, selrow)
+  df <- ref[selrow, ]
+
+  maindir <-   paste0(refdir, "/", df$subdir, "/")
+  svdir <-     paste0(maindir, df$svsubdir, "/")
+  tsdir <-     paste0(maindir, df$tssubdir, "/")
+  optrop.f <-  paste0(maindir, df$optropf, ".csv")
+  trcatch.f <- paste0(maindir, df$trcatchf, ".csv")
+  trlf.f <-    paste0(maindir, df$trlff, ".csv")
+  if(!is.na(df$keysp1)) {
+    keysp1.f <- list(sp=df$keysp1, file=paste0(maindir, df$keyfile1, ".csv"))
+  } else {
+    keysp1.f <- NULL
+  }
+  if(!is.na(df$keysp2)) {
+    keysp2.f <- list(sp=df$keysp2, file=paste0(maindir, df$keyfile2, ".csv"))
+  } else {
+    keysp2.f <- NULL
+  }
+
+  inputs <- df
+  rm(ref, i, sel, selrow, df)
 
   # read in AC data
   sv <- readSVTS(svdir, oldname="Good_samples", newname="Samples",
@@ -87,11 +89,16 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   if(!is.null(keysp1.f)) {
     key1 <- read.csv(keysp1.f$file, as.is=TRUE)
     key1$sp <- keysp1.f$sp
+  } else {
+    rm(keysp1.f)
   }
   if(!is.null(keysp2.f)) {
     key2 <- read.csv(keysp2.f$file, as.is=TRUE)
     key2$sp <- keysp2.f$sp
+  } else {
+    rm(keysp2.f)
   }
+  rm(svdir, tsdir, optrop.f, trcatch.f, trlf.f)
   save(list=ls(all.names=TRUE), file=paste0(maindir, rdat, ".RData"))
   return(maindir)
 }

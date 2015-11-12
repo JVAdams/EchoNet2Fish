@@ -26,8 +26,6 @@
 #' 	 in strange characters being added to the name of the first column.
 #' 	 See, for example, this
 #' 	 \href{http://stackoverflow.com/questions/15259139/when-i-import-text-file-into-r-i-get-a-special-character-appended-to-the-first}{link}.
-#' @import
-#'   maps mapdata
 #' @export
 
 plotIntLay <- function(interval, layer, group, grouporder=sort(unique(group)),

@@ -7,6 +7,15 @@
 #' @param inc
 #'   A numeric scalar giving the radius (in inches) of the bubble representing
 #'   the largest value in \code{m}, default 0.3.
+#' @param zeroes
+#'   A scalar giving the symbol to be used for plotting zeroes, default 4.
+#'   See the argument \code{pch} of the \code{\link{points}} function
+#'   for possible values and their interpretation.
+#' @param fg
+#'   A scalar giving the color the circles are to be drawn in.
+#' @param bg
+#'   A scalar giving the color the circles are to be fiilled with.  The default,
+#'   NA, leaves the symbols unfilled.
 #' @param ...
 #'   Additional arguments to \code{\link{plot}}.
 #' @details
@@ -14,7 +23,7 @@
 #'   columns or vice versa.  In either case, unique row values are plotted
 #'   along the x-axis, unique column values are plotted along the y-axis.
 #'
-#'   Values in the matrix \code{m} are represented as red circles, with zero
+#'   Values in the matrix \code{m} are represented as circles, with zero
 #'   values represented by black dots.
 #' @export
 #' @examples
@@ -23,7 +32,7 @@
 #' plotAgeLen(mymat, inc=1)
 #' plotAgeLen(t(mymat), xlab="Length", ylab="Age")
 #'
-plotAgeLen <- function(m, inc=0.3, ...) {
+plotAgeLen <- function(m, inc=0.3, zeroes=4, fg="red", bg=NA, ...) {
 	# plots values of matrix as different sized circles
 	# dimension 1 is plotted on x-axis, dimension 2 on y-axis
 	uxy <- dimnames(m)
@@ -39,14 +48,16 @@ plotAgeLen <- function(m, inc=0.3, ...) {
 		uy <- seq(along=uy)
 		uylab <- uxy[[2]]
 	}
-	colorz <- c("cyan", "black", "red")[as.numeric(cut(as.vector(m),
-	  breaks=c(-Inf, -1e-7, 1e-7, Inf)))]
 	cush.x <- mean(abs(diff(ux)))
 	cush.y <- mean(abs(diff(uy)))
-	plot(ux[row(m)], uy[col(m)], type="n", xlim=range(ux) + cush.x*c(-1, 1),
+	x <- ux[row(m)]
+	y <- uy[col(m)]
+	z <- sqrt(abs(as.vector(m)))
+	plot(x, y, type="n", xlim=range(ux) + cush.x*c(-1, 1),
 	  ylim=range(uy) + cush.y*c(-1, 1), axes=FALSE, ...)
-	symbols(ux[row(m)], uy[col(m)], circles=abs(as.vector(m)), inches=inc,
-	  fg=colorz, add=TRUE)
+	symbols(x, y, circles=z, inches=inc, fg=fg, bg=bg, add=TRUE)
+	sel <- !is.na(z) & abs(z)<1e-7
+	points(x[sel], y[sel], pch=zeroes)
 	if(is.null(uxlab)) axis(1) else axis(1, at=ux, labels=uxlab)
 	if(is.null(uylab)) axis(2, las=1) else axis(2, at=uy, labels=uylab, las=1)
 	box()

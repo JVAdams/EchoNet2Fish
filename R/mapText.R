@@ -18,8 +18,6 @@
 #' 	 Group identifiers are added to a map, typically created with
 #' 	 \code{\link{mapSymbols}}, at the midpoint of the range of each groups'
 #' 	 latitudes and longitudes
-#' @import
-#'   maps mapdata
 #' @export
 #' @examples
 #' \dontrun{

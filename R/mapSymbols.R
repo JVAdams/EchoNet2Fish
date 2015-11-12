@@ -31,8 +31,7 @@
 #' 	 in strange characters being added to the name of the first column.
 #' 	 See, for example, this
 #' 	 \href{http://stackoverflow.com/questions/15259139/when-i-import-text-file-into-r-i-get-a-special-character-appended-to-the-first}{link}.
-#' @import
-#'   maps mapdata
+#' @import maps
 #' @export
 #' @examples
 #' \dontrun{
@@ -42,10 +41,10 @@
 #'  mapSymbols(lat=latitude, long=longitude, colorz=basincode+3,
 #'   pch=16, xla=0.4)
 #' }
-
+#'
 mapSymbols <- function(lat, long, colorz, main="", pch=1, cex=1.5,
     xla=0, yla=xla) {
-	map("worldHires", xlim=range(long, na.rm=TRUE) + c(-1, 1)*xla,
+	map("world", xlim=range(long, na.rm=TRUE) + c(-1, 1)*xla,
 	  ylim=range(lat, na.rm=TRUE) + c(-1, 1)*yla, mar=c(0, 0, 2, 0))
 	points(long, lat, pch=pch, cex=cex, col=colorz)
 	box()

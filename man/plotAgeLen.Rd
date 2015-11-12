@@ -4,7 +4,7 @@
 \alias{plotAgeLen}
 \title{Plot Age-Length Key}
 \usage{
-plotAgeLen(m, inc = 0.3, ...)
+plotAgeLen(m, inc = 0.3, zeroes = 4, fg = "red", bg = NA, ...)
 }
 \arguments{
 \item{m}{A numeric matrix of counts or relative frequencies with the two dimensions
@@ -12,6 +12,15 @@ representing ages and lengths.}
 
 \item{inc}{A numeric scalar giving the radius (in inches) of the bubble representing
 the largest value in \code{m}, default 0.3.}
+
+\item{zeroes}{A scalar giving the symbol to be used for plotting zeroes, default 4.
+See the argument \code{pch} of the \code{\link{points}} function
+for possible values and their interpretation.}
+
+\item{fg}{A scalar giving the color the circles are to be drawn in.}
+
+\item{bg}{A scalar giving the color the circles are to be fiilled with.  The default,
+NA, leaves the symbols unfilled.}
 
 \item{...}{Additional arguments to \code{\link{plot}}.}
 }
@@ -23,7 +32,7 @@ The matrix \code{m} can have ages in rows and lengths in
   columns or vice versa.  In either case, unique row values are plotted
   along the x-axis, unique column values are plotted along the y-axis.
 
-  Values in the matrix \code{m} are represented as red circles, with zero
+  Values in the matrix \code{m} are represented as circles, with zero
   values represented by black dots.
 }
 \examples{

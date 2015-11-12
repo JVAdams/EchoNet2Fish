@@ -50,5 +50,6 @@ The \code{column1name} argument is needed to handle occasional problems
  mapSymbols(lat=latitude, long=longitude, colorz=basincode+3,
   pch=16, xla=0.4)
 }
+
 }
 
