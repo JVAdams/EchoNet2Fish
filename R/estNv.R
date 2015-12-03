@@ -23,7 +23,7 @@
 #' @references
 #' Sawada, K., Furusawa, M., and Williamson, N.J. 1993.
 #'   Conditions for the precise measurement of fish target strength in situ.
-#'   Fisheries Science (Tokyo) 20:15–21.
+#'   Fisheries Science (Tokyo) 20:15-21.
 #' @seealso
 #'   \code{\link{estN1}}
 #' @examples
