@@ -19,7 +19,7 @@
 #' 	 with byte order marks at the beginning of the csv files, which can result
 #' 	 in strange characters being added to the name of the first column.
 #' 	 See, for example, this
-#' 	 \href{http://stackoverflow.com/questions/15259139/when-i-import-text-file-into-r-i-get-a-special-character-appended-to-the-first}{link}.
+#' 	 \href{http://stackoverflow.com/a/15399003/2140956}{link}.
 #' @export
 
 combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
@@ -33,7 +33,7 @@ combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
 		# read the data into a temporary file
 		temp <- read.csv(paste(myDir, filenames[i], sep=""), as.is=TRUE)
 		# combat potential problems with byte order marks
-		# http://stackoverflow.com/questions/15259139/when-i-import-text-file-into-r-i-get-a-special-character-appended-to-the-first
+		# http://stackoverflow.com/a/15399003/2140956
 		names(temp)[1] <- column1name
 		# add a new column identifying the source file
 		if(addSource) temp$source <- filenames[i]
