@@ -1,0 +1,44 @@
+#' Convert Lat/Long to UTM
+#'
+#' Convert longitude and latitude coordinates to Universal Transverse
+#' Mercator coordinates.
+#' @param lon
+#'   Numeric vector of longitudes.
+#' @param lat
+#'   Numeric vector of latitudes, same length as \code{lon}.
+#' @param zone
+#'   Numeric scalar of the UTM zone, default NULL.  See details.
+#' @details
+#'   If \code{zone} is NULL, then the zone is determined from the medians
+#'   of \code{lon} and \code{lat}.
+#' @return
+#'   A data frame with two columns (easting and northing) and as many rows as
+#'   the length of \code{lon} containing the converted UTM coordinates in
+#'   meters.
+#' @export
+#' @seealso
+#'   \code{\link{long2utmZone}}
+#' @references
+#'   Based on a function posted by Stanislav on 13 May 2015 on stackoverflow
+#'   \href{http://stackoverflow.com/a/30225804/2140956}{[link]}.
+#' @import
+#'   sp
+#' @examples
+#' long <- c(-92.11, -76.47, -82.27, -83.42)
+#' lati <- c(46.76, 44.34, 44.76, 45.41)
+#' latlon2utm(long, lati, quiet=FALSE)
+#' sapply(1:length(long), function(i)
+#'   latlon2utm(long[i], lati[i], quiet=FALSE))
+#' latlon2utm(long, lati, 18)
+#'
+latlon2utm <- function(lon, lat, zone=NULL, quiet=TRUE) {
+  if(is.null(zone)) {
+    zone <- lon2utmZone(median(lon, na.rm=TRUE), median(lat, na.rm=TRUE))
+    if(!quiet) print(zone)
+  }
+  xy <- data.frame(easting=lon, northing=lat)
+  coordinates(xy) <- c("easting", "northing")
+  proj4string(xy) <- CRS("+proj=longlat +datum=WGS84")
+  res <- spTransform(xy, CRS(paste0("+proj=utm +zone=", zone, " ellps=WGS84")))
+  return(as.data.frame(res))
+}
