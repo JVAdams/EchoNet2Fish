@@ -80,7 +80,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
         " in the Sv files.", newpage="port", FIG=fig)
     }
 
-    # lat/long plots
+    # lat/lon plots
     fig <- function() {
     	mapSymbols(Lat_M, Lon_M, as.numeric(as.factor(Region_name)),
     	  "Colors indicate Region")
@@ -89,7 +89,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
     figu("Location of transects in Sv files.  Colors indicate Region.",
       newpage="port", FIG=fig)
 
-    # close up look at each transect - lat/long
+    # close up look at each transect - lat/lon
     sur <- sort(unique(Region_name))
     lon.r <- tapply(Lon_M, Region_name, mean, na.rm=TRUE)
     lat.r <- tapply(Lat_M, Region_name, mean, na.rm=TRUE)
@@ -313,7 +313,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
     }
     figu("Plot of variables in the OP/TROP files.", newpage="port", FIG=fig)
 
-    # lat/long plots
+    # lat/lon plots
     fig <- function(x) {
       var <- eval(parse(text=x))
     	mapSymbols(Latitude, Longitude, colorVal(as.numeric(as.factor(var))),

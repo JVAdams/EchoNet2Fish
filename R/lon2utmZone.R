@@ -17,10 +17,10 @@
 #'   and code for exceptions posted by wittrup on 13 Sep 2013 on stackoverflow
 #'   \href{http://stackoverflow.com/a/18785421/2140956}{[link]}.
 #' @examples
-#' long <- c(-82.27, NA, -122.44, 21.97, 21.97)
-#' lati <- c(44.76, 37.77, 37.77, NA, 78.64)
-#' lon2utmZone(long)
-#' lon2utmZone(long, lati)
+#' mylon <- c(-82.27, NA, -122.44, 21.97, 21.97)
+#' mylat <- c(44.76, 37.77, 37.77, NA, 78.64)
+#' lon2utmZone(mylon)
+#' lon2utmZone(mylon, mylat)
 #'
 
 lon2utmZone <- function(lon, lat=NULL) {

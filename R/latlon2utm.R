@@ -1,4 +1,4 @@
-#' Convert Lat/Long to UTM
+#' Convert Lat/Lon to UTM
 #'
 #' Convert longitude and latitude coordinates to Universal Transverse
 #' Mercator coordinates.
@@ -24,12 +24,12 @@
 #' @import
 #'   sp
 #' @examples
-#' long <- c(-92.11, -76.47, -82.27, -83.42)
-#' lati <- c(46.76, 44.34, 44.76, 45.41)
-#' latlon2utm(long, lati, quiet=FALSE)
-#' sapply(1:length(long), function(i)
-#'   latlon2utm(long[i], lati[i], quiet=FALSE))
-#' latlon2utm(long, lati, 18)
+#' mylon <- c(-92.11, -76.47, -82.27, -83.42)
+#' mylat <- c(46.76, 44.34, 44.76, 45.41)
+#' latlon2utm(mylon, mylat, quiet=FALSE)
+#' sapply(1:length(mylon), function(i)
+#'   latlon2utm(mylon[i], mylat[i], quiet=FALSE))
+#' latlon2utm(mylon, mylat, 18)
 #'
 latlon2utm <- function(lon, lat, zone=NULL, quiet=TRUE) {
   if(is.null(zone)) {

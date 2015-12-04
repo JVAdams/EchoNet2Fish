@@ -1,21 +1,21 @@
 #' Estimate the Number of Targets in the Acoustic Beam
 #'
-#' Estimate the number of targets in the acoustic beam.
+#' Estimate the number of targets in the acoustic sampling volume.
 #' @param c
-#'   Numeric scalar, speed of sound in m/s, default 1450.
+#'   Numeric scalar, sound speed in m/sec, default 1450.
 #' @param tau
-#'   Numeric scalar, pulse length in s, default 0.0004.
+#'   Numeric scalar, pulse duration in sec, default 0.0004.
 #' @param psi
 #'   Numeric scalar, two-way equivalent beam angle in steradians.
 #' @param R
 #'   Numeric vector, range to target in m.
-#' @param n1
-#'   Numeric vector, volumetric fish density in 1/m^2, same length as \code{R},
-#'   typically the result of a call to \code{\link{estN1}}.
+#' @param rhov
+#'   Numeric vector, volumetric fish density in number per m^3, same length as \code{R},
+#'   typically the result of a call to \code{\link{estrhov}}.
 #' @details
-#'   The number of scatterers per unit volume
+#'   The number of targets in the acoustic sampling volume
 #'   is estimated according to Sawada et al. (1993) as
-#'   Nv = c * tau * psi * R^2 * n1 / 2.
+#'   Nv = \code{c} * \code{tau} * \code{psi} * \code{R}^2 * \code{rhov} / 2.
 #' @return
 #'   A numeric vector the same length as \code{R} containing the estimated
 #'   number of targets in the acoustic beam.
@@ -25,14 +25,14 @@
 #'   Conditions for the precise measurement of fish target strength in situ.
 #'   Fisheries Science (Tokyo) 20:15-21.
 #' @seealso
-#'   \code{\link{estN1}}
+#'   \code{\link{estrhov}}
 #' @examples
 #' mypsi <- 0.008
 #' myrange <- c(10, 20, 30)
-#' myn1 <- c(0.0001, 0.01, 0.0006)
-#' estNv(psi=mypsi, R=myrange, n1=myn1)
+#' myrhov <- c(0.0001, 0.01, 0.0006)
+#' estNv(psi=mypsi, R=myrange, rhov=myrhov)
 #'
-estNv <- function(c=1450, tau=0.0004, psi, R, n1) {
-  Nv <- c * tau * psi * R^2 * n1 / 2
+estNv <- function(c=1450, tau=0.0004, psi, R, rhov) {
+  Nv <- c * tau * psi * R^2 * rhov / 2
   return(Nv)
 }

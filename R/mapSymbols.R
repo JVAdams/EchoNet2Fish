@@ -3,25 +3,25 @@
 #' Draw a map using different colored symbols for data exploration purposes.
 #' @param lat
 #'   A numeric vector of latitudes in decimal degrees.
-#' @param long
+#' @param lon
 #'   A numeric vector of longitudes in decimal degrees.
 #'   Same length as\code{lat}.
 #' @param colorz
 #'   A vector of character or numeric colors to use, either of length
-#'   1 or the same length as \code{lat} and \code{long}.
+#'   1 or the same length as \code{lat} and \code{lon}.
 #' @param main
 #'   A character scalar of the main title of the plot, default "".
 #' @param pch
 #'   A vector of plotting characters or symbols, either of length
-#'   1 or the same length as \code{lat} and \code{long}, default 1.
+#'   1 or the same length as \code{lat} and \code{lon}, default 1.
 #'   See \code{\link[graphics]{points}}.
 #' @param cex
 #'   A numeric vector giving the amount by which plotting characters and
 #'   symbols should be scaled relative to the default, either of length
-#'   1 or the same length as \code{lat} and \code{long}, default 1.5.
+#'   1 or the same length as \code{lat} and \code{lon}, default 1.5.
 #' @param xla
 #'   A numeric scalar giving an added margin of decimal degrees to be mapped
-#'   beyond the range of longitudes in \code{long}, default 0.
+#'   beyond the range of longitudes in \code{lon}, default 0.
 #' @param yla
 #'   A numeric scalar giving an added margin of decimal degrees to be mapped
 #'   beyond the range of latitudes in \code{lat}, default \code{xla}.
@@ -38,15 +38,15 @@
 #'  latitude <- c(43.25, 45.73, 45.71, 44.84)
 #'  longitude <- c(-82.30, -80.85, -84.03, -80.39)
 #'  basincode <- c(1, 2, 1, 2)
-#'  mapSymbols(lat=latitude, long=longitude, colorz=basincode+3,
+#'  mapSymbols(lat=latitude, lon=longitude, colorz=basincode+3,
 #'   pch=16, xla=0.4)
 #' }
 #'
-mapSymbols <- function(lat, long, colorz, main="", pch=1, cex=1.5,
+mapSymbols <- function(lat, lon, colorz, main="", pch=1, cex=1.5,
     xla=0, yla=xla) {
-	map("world", xlim=range(long, na.rm=TRUE) + c(-1, 1)*xla,
+	map("world", xlim=range(lon, na.rm=TRUE) + c(-1, 1)*xla,
 	  ylim=range(lat, na.rm=TRUE) + c(-1, 1)*yla, mar=c(0, 0, 2, 0))
-	points(long, lat, pch=pch, cex=cex, col=colorz)
+	points(lon, lat, pch=pch, cex=cex, col=colorz)
 	box()
 	mtext(main, side=3, cex=1.2)
 }
