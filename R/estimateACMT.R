@@ -39,6 +39,10 @@
 #'       relations, Wg = \code{lwa} * Lmm ^ \code{lwb}, where Wg is the weight
 #'       (in g) and Lmm is the total length (in mm)
 #'   }
+#' @param short
+#'   Logical scalar, indicating aspect of map area.  If TRUE, the default,
+#'   the mapped area is assumed to be wider (longitudinally) than tall.
+#'   Used to better arrange multiple maps on a single page.
 #' @inheritParams sliceCat
 #'
 #' @details
@@ -60,7 +64,7 @@
 #'
 estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
-  spInfo, sliceDef) {
+  spInfo, sliceDef, short=TRUE) {
 
   maindir=mydir
   rdat="ACMT"
@@ -94,7 +98,13 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   )
   getpkgs(c("class", "rgdal", "RColorBrewer", "survey", "maps", "mapdata",
     "lubridate"))
-
+  source('C:/JVA/GitHub/EchoNet2Fish/R/estrhov.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/estNv.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/sliceCat.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/latlon2utm.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/lon2utmZone.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/mapMulti.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/mapAppor.R', echo=TRUE)
 
 
   # 1.  Initial stuff ####
@@ -198,8 +208,8 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # 4.  Estimate Nv ####
 
-  svts$n1 <- with(svts, estN1(Sv=Sv_mean, sigma=sigma))
-  svts$nv <- with(svts, estNv(psi=psi, R=Depth_mean, n1=n1)
+  svts$n1 <- with(svts, estrhov(Sv=Sv_mean, sigma=sigma))
+  svts$nv <- with(svts, estNv(psi=psi, R=Depth_mean, rhov=n1))
 
 
   # 5.  Replace "biased" sigmas where Nv>0.1 with mean "unbiased" sigma ####
@@ -243,8 +253,8 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # 6.  Recalculate Nv and estimate density ####
 
-  svts3$n1 <- with(svts3, estN1(Sv=Sv_mean, sigma=sigma))
-  svts3$nv <- with(svts3, estNv(psi=psi, R=Depth_mean, n1=n1)
+  svts3$n1 <- with(svts3, estrhov(Sv=Sv_mean, sigma=sigma))
+  svts3$nv <- with(svts3, estNv(psi=psi, R=Depth_mean, rhov=n1))
   svts3$fish_ha <- ((svts3$PRC_ABC / svts3$sigma) * 10000)
 
 
@@ -446,7 +456,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # subset only the MT data with selected species captured
   opsub <- optrop[match(allops, optrop$Op.Id), ]
-  # convert from lat/long to UTM
+  # convert from lat/lon to UTM
   MTutm <- with(opsub, latlon2utm(Longitude, Latitude))
   ACutm <- with(svts5, latlon2utm(Lon_M, Lat_M))
   # unique slice in AC and MT data
@@ -456,7 +466,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   svts5$nearmt <- NA
   for(i in seq(sus)) {
   	# select records from the selected slice
-  	# exclude any records with missing slice or missing lat/long info
+  	# exclude any records with missing slice or missing lat/lon info
   	selm <- opsub$slice==sus[i] & !is.na(opsub$slice) &
   	  !apply(is.na(MTutm), 1, any)
   	sela <- svts5$slice==sus[i] & !is.na(svts5$slice)&
@@ -472,93 +482,46 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	}
   }
 
+  # plot of apportionment ####
+
+  fig <- function()
+    with(opsub, mapMulti(bygroup=slice, sug=names(sliceDef), ID=Op.Id,
+      short=short, lon=Longitude, lat=Latitude,
+      rlon=range(Longitude, svts5$Lon_M, na.rm=TRUE),
+      rlat=range(Latitude, svts5$Lat_M, na.rm=TRUE), misstext=" - No tows"))
+  }
+  figu("Location of midwater trawl hauls in slices.",
+  	"  Numbers identify the OP_ID of each tow.  Colors are the same as",
+    " in the next figure.",
+  	"  Tows with > 10% of their catch (by number or weight) in 'other' species",
+    " are shown in large, bold font.", h=8, newpage="port")
+
+  fig <- function()
+    mapAppor(MTgroup=opsub$slice, ACgroup=svts5$slice, sug=names(sliceDef),
+      MTID=opsub$Op.Id, ACID=svts5$nearmt, short=short,
+      MTlon=opsub$Longitude, MTlat=opsub$Latitude,
+      AClon=svts5$Lon_M, AClat=svts5$Lat_M, misstext=" - No tows")
+  }
+  figu("Apportionment using slices.",
+  	"  Each MT tow is shown as a white circle (o).",
+  	"  Each AC interval is shown as a colored plus sign (+).",
+  	"  Dotted lines encircle all the AC intervals (given the same color) that",
+    " used each MT tow for apportionment.", h=8, newpage="port")
 
 
 
 
-
+mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
+  MTID, ACID, short=TRUE, MTlon, MTlat, AClon, AClat,
+  rlon=range(MTlon, AClon, na.rm=TRUE),
+  rlat=range(MTlat, AClat, na.rm=TRUE), MTIDcol=NULL, mapcol="gray",
+  boxcol="gray", misscol="brown", misstext=" - No tows",
+  mar=c(0, 0, 2.5, 0)) {
 
 
 
 #### TODO #### this is where I left off ####
 
-# plot of apportionment ####
-
-# assign colors so that like colors are geographically separated
-loc <- cmdscale(dist(opsub[, c("Latitude", "Longitude")]), k=1)
-separate <- rep(1:3, length.out=length(loc))
-
-colz1 <- rain.n(1:(dim(opsub)[1]),
-  n=dim(opsub)[1], start=2/6, end=6/6)[order(loc)[order(separate)]]
-colz2 <- recode(svts5$nearmt, opsub$Op.Id, colz1)
-
-mf <- rev(n2mfrow(length(sliceDef)))
-if(LAKE==3 & length(sliceDef)==3) mf <- c(2, 2)
-iord <- 1:length(sliceDef)
-
-fig <- function() {
-	par(mfrow=mf)
-	for(i in iord) {
-		selm <- opsub$slice==sus[i] & !is.na(opsub$slice)
-		map("worldHires", xlim=range(opsub$Longitude, svts5$Lon_M, na.rm=TRUE),
-		  ylim=range(opsub$Latitude, svts5$Lat_M, na.rm=TRUE),
-			mar=c(0, 0, 2.5, 0), col="gray")
-		box(col="gray")
-		if(sum(selm)>0) {
-			lowhigh <- if(!exists("mtops")) 1 else ((opsub$Op.Id[selm] %in% mtops)
-			  + 1)
-			par(xpd=NA)
-			text(opsub$Longitude[selm], opsub$Latitude[selm], opsub$Op.Id[selm],
-			  col=colz1[selm], cex=lowhigh, font=lowhigh)
-			par(xpd=FALSE)
-			mtext(sus[i], side=3)
-		} else {
-			mtext(paste(sus[i], "- No Tows"), side=3, col="brown")
-		}
-	}
-}
-figu("Location of midwater trawl hauls in slices.",
-	"  Numbers identify the OP_ID of each tow.  Colors are the same as",
-  " in the next figure.",
-	"  Tows with > 10% of their catch (by number or weight) in 'other' species",
-  " are shown in large, bold font.", h=8, newpage="port")
-
-fig <- function() {
-	par(mfrow=mf)
-	for(i in iord) {
-		selm <- opsub$slice==sus[i] & !is.na(opsub$slice)
-		sela <- svts5$slice==sus[i] & !is.na(svts5$slice)
-		map("worldHires", xlim=range(opsub$Longitude, svts5$Lon_M, na.rm=TRUE),
-		  ylim=range(opsub$Latitude, svts5$Lat_M, na.rm=TRUE),
-			mar=c(0, 0, 2.5, 0), col="gray")
-		box(col="gray")
-		if(sum(selm)>0) {
-			points(svts5$Lon_M[sela], svts5$Lat_M[sela], col=colz2[sela], pch=3)
-			# add convex hull for each trawl haul
-			sut <- sort(unique(svts5$nearmt[sela]))
-			for(j in seq(along=sut)) {
-				selz <- sela & svts5$nearmt==sut[j]
-				hpts <- chull(svts5$Lon_M[selz], svts5$Lat_M[selz])
-				hpts <- c(hpts, hpts[1])
-				lines(svts5$Lon_M[selz][hpts], svts5$Lat_M[selz][hpts], lty=3)
-			}
-			mtext(sus[i], side=3)
-			points(opsub$Longitude[selm], opsub$Latitude[selm], pch=16,
-			  col=colz1[selm], cex=2)
-			points(opsub$Longitude[selm], opsub$Latitude[selm], pch=16, cex=1.5)
-			points(opsub$Longitude[selm], opsub$Latitude[selm], pch=16,
-			  col="white", cex=1)
-		} else {
-			points(svts5$Lon_M[sela], svts5$Lat_M[sela], col="brown", pch=4)
-			mtext(paste(sus[i], "- No Trawls"), side=3, col="brown")
-		}
-	}
-}
-figu("Apportionment using slices.",
-	"  Each MT tow is shown as a white circle (o).",
-	"  Each AC interval is shown as a colored plus sign (+).",
-	"  Dotted lines encircle all the AC intervals (given the same color) that",
-  " used each MT tow for apportionment.", h=8, newpage="port")
 
 # plot of AC and MT data by slice ####
 if(LAKE==2) {
@@ -569,6 +532,9 @@ if(LAKE==2) {
 
 svts5$slicecol <- match(svts5$slice, sus)
 opsub$slicecol <- match(opsub$slice, sus)
+
+
+
 
 fig <- function() {
 	par(mfrow=c(length(sus), 2), mar=c(0, 0, 3, 3), oma=c(1.5, 2, 1.5, 2))
