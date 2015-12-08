@@ -3,11 +3,11 @@
 #' Multipanel map of locations, one map for each group.
 #' @param MTgroup
 #'   Vector, identifying the group membership of the midwater trawl tow
-#'   locations to be mapped.
+#'   locations to be mapped.  The unique values of \code{MTgroup} should be
+#'   a subset of \code{ACgroup}.
 #' @param ACgroup
 #'   Vector, identifying the group membership of the acoustic transect
-#'   locations to be mapped.  The unique values of \code{ACgroup} should be
-#'   a subset of \code{MTgroup}.
+#'   locations to be mapped.
 #' @param sug
 #'   Vector, identifying the unique groups to which locations may belong,
 #'   default sort(unique(c(\code{MTgroup}, \code{ACgroup}))).
@@ -66,9 +66,9 @@ mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
   boxcol="gray", misscol="brown", misstext=" - No tows",
   mar=c(0, 0, 2.5, 0)) {
 
-  oddgroups <- setdiff(unique(ACgroup), MTgroup)
+  oddgroups <- setdiff(unique(MTgroup), ACgroup)
   if(length(oddgroups)>0) stop(
-    "The unique values of ACgroup should be a subset of MTgroup.")
+    "The unique values of MTgroup should be a subset of ACgroup.")
 
   mf <- n2mfrow(length(sug))
   if(!short) {

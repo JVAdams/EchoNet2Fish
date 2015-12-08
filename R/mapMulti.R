@@ -23,7 +23,7 @@
 #'   A numeric vector of length 2, range of latitudes to map,
 #'   in decimal degrees, default range(\code{lat}, na.rm=TRUE).
 #' @param IDcol
-#'   A scalar, the color used to map locations, same length as \code{bygroup}.
+#'   A vector, the color used to map locations, same length as \code{bygroup}.
 #'   If NULL, the default, a range of colors will be assigned automatically.
 #' @param mapcol
 #'   A scalar, the color used to draw the map lines (e.g., lake boundary),
@@ -38,7 +38,7 @@
 #'   given bygroup, default " - No sites".
 #' @param mar
 #'   A numeric vector of length 4, the number of lines of margin
-#'   c(bottom, left, top, right) around each olotted map plot, default
+#'   c(bottom, left, top, right) around each plotted map plot, default
 #'   c(0, 0, 2.5, 0).
 #' @inheritParams
 #'   mapText

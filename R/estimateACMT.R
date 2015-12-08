@@ -96,6 +96,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     wn.epi  = list( fdp=c(-Inf,  40), reg="wn" ),
     wn.hypo = list( fdp=c(  40, Inf), reg="wn" )
   )
+  short=FALSE
   getpkgs(c("class", "rgdal", "RColorBrewer", "survey", "maps", "mapdata",
     "lubridate"))
   source('C:/JVA/GitHub/EchoNet2Fish/R/estrhov.R', echo=TRUE)
@@ -105,6 +106,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   source('C:/JVA/GitHub/EchoNet2Fish/R/lon2utmZone.R', echo=TRUE)
   source('C:/JVA/GitHub/EchoNet2Fish/R/mapMulti.R', echo=TRUE)
   source('C:/JVA/GitHub/EchoNet2Fish/R/mapAppor.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/plotACMTslice.R', echo=TRUE)
 
 
   # 1.  Initial stuff ####
@@ -484,7 +486,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # plot of apportionment ####
 
-  fig <- function()
+  fig <- function() {
     with(opsub, mapMulti(bygroup=slice, sug=names(sliceDef), ID=Op.Id,
       short=short, lon=Longitude, lat=Latitude,
       rlon=range(Longitude, svts5$Lon_M, na.rm=TRUE),
@@ -496,7 +498,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	"  Tows with > 10% of their catch (by number or weight) in 'other' species",
     " are shown in large, bold font.", h=8, newpage="port")
 
-  fig <- function()
+  fig <- function() {
     mapAppor(MTgroup=opsub$slice, ACgroup=svts5$slice, sug=names(sliceDef),
       MTID=opsub$Op.Id, ACID=svts5$nearmt, short=short,
       MTlon=opsub$Longitude, MTlat=opsub$Latitude,
@@ -508,81 +510,23 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	"  Dotted lines encircle all the AC intervals (given the same color) that",
     " used each MT tow for apportionment.", h=8, newpage="port")
 
+  # plot of AC and MT data by slice ####
+  if(length(unique(c(opsub$slice, ACgroup=svts5$slice))) > 4) {
+  	orient <- "port"
+  } else {
+  	orient <- "land"
+  }
 
-
-
-mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
-  MTID, ACID, short=TRUE, MTlon, MTlat, AClon, AClat,
-  rlon=range(MTlon, AClon, na.rm=TRUE),
-  rlat=range(MTlat, AClat, na.rm=TRUE), MTIDcol=NULL, mapcol="gray",
-  boxcol="gray", misscol="brown", misstext=" - No tows",
-  mar=c(0, 0, 2.5, 0)) {
-
+  fig <- function() {
+    plotACMTslice(MTgroup=opsub$slice, ACgroup=svts5$slice,
+      MTbd=opsub$depth_botmid, ACbd=svts5$depth_botmid,
+      MTwd=opsub$Fishing_Depth, ACwd=svts5$Depth_mean)
+  }
+  figu("Acoustic (left) and midwater trawl (right) data by slice.",
+    newpage=orient)
 
 
 #### TODO #### this is where I left off ####
-
-
-# plot of AC and MT data by slice ####
-if(LAKE==2) {
-	orient <- "port"
-} else {
-	orient <- "land"
-}
-
-svts5$slicecol <- match(svts5$slice, sus)
-opsub$slicecol <- match(opsub$slice, sus)
-
-
-
-
-fig <- function() {
-	par(mfrow=c(length(sus), 2), mar=c(0, 0, 3, 3), oma=c(1.5, 2, 1.5, 2))
-	for(i in iord) {
-		# plot AC data
-		sel <- svts5$slice==sus[i]
-		plot(1, 1, xlim=range(svts5$depth_botmid, opsub$depth_botmid, na.rm=TRUE),
-		  ylim=range(-svts5$Depth_mean, -opsub$Fishing_Depth, na.rm=TRUE), type="n",
-		  xlab="", ylab="", axes=FALSE)
-		abline(0, -1, col="gray")
-		points(jitter(svts5$depth_botmid)[sel], -jitter(svts5$Depth_mean)[sel],
-		  col=svts5$slicecol[sel])
-		axis(3, col="gray", col.axis="gray", cex.axis=1.5)
-		axis(4, las=1, at=axTicks(4), labels=-axTicks(4), col="gray",
-		  col.axis="gray", cex.axis=1.5)
-		box(bty="7", col="gray")
-		mtext(sus[i], side=2, cex=1.2)
-		if(i==1) mtext("AC", side=3, line=2.5, cex=1.2)
-		# plot MT data
-		sel2 <- opsub$slice==sus[i]
-		plot(1, 1, xlim=range(svts5$depth_botmid, opsub$depth_botmid, na.rm=TRUE),
-		  ylim=range(-svts5$Depth_mean, -opsub$Fishing_Depth, na.rm=TRUE), type="n",
-		  xlab="", ylab="", axes=FALSE)
-		abline(0, -1, col="gray")
-		points(opsub$depth_botmid[sel2], -opsub$Fishing_Depth[sel2],
-		  col=opsub$slicecol[sel2], lwd=2, cex=2)
-		axis(3, col="gray", col.axis="gray", cex.axis=1.5)
-		axis(4, las=1, at=axTicks(4), labels=-axTicks(4), col="gray",
-		  col.axis="gray", cex.axis=1.5)
-		box(bty="7", col="gray")
-		if(i==1) mtext("MT", side=3, line=2.5, cex=1.2)
-		if(i==2) mtext("Bottom depth  (m)", side=3, line=2.5, col="darkgray",
-		  cex=1.2)
-	}
-	mtext("Water depth  (m)", side=4, outer=TRUE, line=0.5, col="darkgray",
-	  cex=1.2)
-	# levels in AC that are NOT in MT
-	misslev <- sus[!(sus %in% sus)]
-	if(length(misslev)>0) {
-		mtext(paste("Slices not sampled by midwater trawls:",
-		  paste(misslev, collapse=", ")), side=1, outer=TRUE)
-		warning(paste("\nSlices not sampled by midwater trawls:",
-		  paste(misslev, collapse=", "), "\n\n"))
-	}
-}
-figu("Acoustic (left) and midwater trawl (right) data by slice.",
-  newpage=orient)
-
 
 
 
