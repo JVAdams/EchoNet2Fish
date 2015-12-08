@@ -526,21 +526,40 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     newpage=orient)
 
 
+  # 11. Assign transects to regions (design strata) using transect names ####
+  svts5$region <- substring(svts5$Region_name, 1, 2)
+  svts5$regarea <- regArea[match(svts5$region, region)]
+
+  # make sure that design strata match up with sampled strata
+  sur <- sort(unique(svts5$region))
+  if(!identical(sort(region), sur)) warning(
+    paste0("\nStrata used in laying out the sampling design (",
+      paste(sort(region), collapse=", "),
+  	") do not match up with the strata actually sampled (",
+      paste(sur, collapse=", "), ").\n\n"))
+
+  if(short) {
+  	orient <- "land"
+  } else {
+  	orient <- "port"
+  }
+
+  fig <- function() {
+    mapACstrata(bygroup=svts5$region, lon=svts5$Lon_M, lat=svts5$Lat_M)
+  }
+
+  figu("Acoustic transect data, color coded by design-based strata.",
+    newpage=orient)
+
+  look <- tapply(svts5$Region_name, svts5$region, function(x) sort(unique(x)))
+  if(sum(sapply(look, length) < 2)) {
+  	tab <- cbind(names(look), sapply(look, paste, collapse=", "))
+  	tabl("Only one transect in at least one region.",
+      "  Variance will be estimated with this region(s) removed.")
+  }
+
+
 #### TODO #### this is where I left off ####
-
-
-
-# 11. Assign transects to regions (design strata) using transect names ####
-svts5$region <- substring(svts5$Region_name, 1, 2)
-svts5$regarea <- regArea[match(svts5$region, region)]
-
-# make sure that design strata match up with sampled strata
-sur <- sort(unique(svts5$region))
-if(!identical(sort(region), sur)) warning(
-  paste0("\nStrata used in laying out the sampling design (",
-    paste(sort(region), collapse=", "),
-	") do not match up with the strata actually sampled (",
-    paste(sur, collapse=", "), ").\n\n"))
 
 rcol <- as.numeric(as.factor(svts5$region))
 fig <- function() {
@@ -552,14 +571,10 @@ fig <- function() {
 	  svts5$region, mean), names(tapply(svts5$Lon_M, svts5$region, mean)), cex=2,
 		col=tapply(rcol, svts5$region, mean))
 }
-figu("Acoustic transect data, color coded by design-based strata.",
-  newpage="port")
-look <- tapply(svts5$Region_name, svts5$region, function(x) sort(unique(x)))
-if(sum(sapply(look, length) < 2)) {
-	tab <- cbind(names(look), sapply(look, paste, collapse=", "))
-	tabl("Only one transect in at least one region.  Variance will be estimated",
-    " with this region(s) removed.")
-}
+
+
+
+
 
 
 
