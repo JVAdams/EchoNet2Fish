@@ -66,6 +66,8 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
   spInfo, sliceDef, short=TRUE) {
 
+  if(FALSE) {
+
   maindir=mydir
   rdat="ACMT"
   ageSp=NULL
@@ -107,6 +109,9 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   source('C:/JVA/GitHub/EchoNet2Fish/R/mapMulti.R', echo=TRUE)
   source('C:/JVA/GitHub/EchoNet2Fish/R/mapAppor.R', echo=TRUE)
   source('C:/JVA/GitHub/EchoNet2Fish/R/plotACMTslice.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/replaceBiasedSigma.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/TS2sigma.R', echo=TRUE)
+  source('C:/JVA/GitHub/EchoNet2Fish/R/sigma2TS.R', echo=TRUE)
 
 
   # 1.  Initial stuff ####
@@ -155,15 +160,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
 
   # 2.  Estimate sigma for each cell using TS frequency dist file ####
-
-  # Sigma is estimated as the mean of the linearized TS (sigma)
-  # weighted by the number of targets in each dB bin
-  tsbin.colz <- grep("X[[:punct:]]", names(ts))
-  db <- -as.numeric(substring(names(ts)[tsbin.colz], 3, 20))
-  lin.TS <- 10^(db/10)
-  in.range <- db >= TSrange[1] & db <= TSrange[2]
-  ts$sigma <- apply(ts[, tsbin.colz[in.range]], 1, function(w)
-    weighted.mean(lin.TS[in.range], w))
+  ts$sigma <- sigmaAvg(dBdf=ts, TSrange=TSrange)
 
 
   # 3.  Merge Sv and sigma data ####
@@ -217,60 +214,40 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # 5.  Replace "biased" sigmas where Nv>0.1 with mean "unbiased" sigma ####
   # from cells in the same layer and (if possible) transect
 
-  # calculate mean of "unbiased" sigmas by year-transect-layer
-  svts.unbiased <- svts[svts$nv <= 0.1 & !is.na(svts$nv), ]
-  tranlay <- aggregate(sigma ~ year + Region_name + Layer, mean,
-    data=svts.unbiased)
-  names(tranlay)[names(tranlay)=="sigma"] <- "sigunb.tranlay"
-  lay <- aggregate(sigma ~ year + Layer, mean, data=svts.unbiased)
-  names(lay)[names(lay)=="sigma"] <- "sigunb.lay"
+  svts$sigma <- replaceBiasedSigma(df=svts, varNv="nv", varsigmabs="sigma",
+    varTranLay=c("Region_name", "Layer", "year"))
 
-  svts2 <- merge(svts, tranlay, by=c("year", "Region_name", "Layer"), all=TRUE)
-  svts3 <- merge(svts2, lay, by=c("year", "Layer"), all=TRUE)
-
-  # if Nv > 0.1 (or Nv is missing), replace sigma with transect-layer mean of
-  # unbiased sigma
-  svts3$sigma[svts3$nv > 0.1 | is.na(svts3$nv)] <-
-    svts3$sigunb.tranlay[svts3$nv > 0.1 | is.na(svts3$nv)]
-
-  # if Nv > 0.1 (or Nv is missing) and there is no transect-layer mean,
-  # replace sigma with layer mean of unbiased sigma
-  svts3$sigma[
-    (svts3$nv > 0.1 | is.na(svts3$nv)) & is.na(svts3$sigunb.tranlay)] <-
-  	svts3$sigunb.lay[(svts3$nv > 0.1 | is.na(svts3$nv)) &
-    is.na(svts3$sigunb.tranlay)]
-
-  sel <- is.na(svts3$sigma)
+  sel <- is.na(svts$sigma)
   if(sum(sel)>0) {
-  	look3 <- svts3[sel, ]
+  	look3 <- svts[sel, ]
   	tab <- table(look3$Region_name, look3$Layer)
   	tabl("Frequency of observations with missing sigmas by transect (row) and",
       " layer (column).",
   		"  These are layers that had no targets in any transect.",
   		"  They will be removed from further calculations.",
   		"  ")
-  	svts3 <- svts3[!sel, ]
+  	svts <- svts[!sel, ]
   }
 
 
   # 6.  Recalculate Nv and estimate density ####
 
-  svts3$n1 <- with(svts3, estrhov(Sv=Sv_mean, sigma=sigma))
-  svts3$nv <- with(svts3, estNv(psi=psi, R=Depth_mean, rhov=n1))
-  svts3$fish_ha <- ((svts3$PRC_ABC / svts3$sigma) * 10000)
+  svts$n1 <- with(svts, estrhov(Sv=Sv_mean, sigma=sigma))
+  svts$nv <- with(svts, estNv(psi=psi, R=Depth_mean, rhov=n1))
+  svts$fish_ha <- with(svts, paDens(sigma, PRC_ABC, hectare=TRUE))
 
 
   # 7.  Add classifiers to acoustic data ####
 
   # bottom depth range in each interval
   depth.botmin <- aggregate(Layer_depth_min ~ Interval + Region_name, max,
-    data=svts3)
+    data=svts)
   names(depth.botmin)[names(depth.botmin)=="Layer_depth_min"] <- "depth.botmin"
   depth.botmax <- aggregate(Layer_depth_max ~ Interval + Region_name, max,
-    data=svts3)
+    data=svts)
   names(depth.botmax)[names(depth.botmax)=="Layer_depth_max"] <- "depth.botmax"
   depth.bot <- merge(depth.botmin, depth.botmax, all=TRUE)
-  svts4 <- merge(svts3, depth.bot, all=TRUE)
+  svts4 <- merge(svts, depth.bot, all=TRUE)
   svts4$depth_botmid <- (svts4$depth.botmin + svts4$depth.botmax)/2
 
   # define slice
@@ -304,7 +281,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # estimate weight from length for each fish
   indx <- match(trlf$Species, spInfo$sp)
-  trlf$estfw <- spInfo$lwa[indx] * trlf$Length ^ spInfo$lwb[indx]
+  trlf$estfw <- estWeight(trlf$Length, spInfo$lwa[indx], spInfo$lwb[indx])
 
   # calculate proportion of catch and mean weight for each MT and each
   # species-age-length group
@@ -559,20 +536,8 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   }
 
 
+
 #### TODO #### this is where I left off ####
-
-rcol <- as.numeric(as.factor(svts5$region))
-fig <- function() {
-	map("worldHires", xlim=range(svts5$Lon_M, na.rm=TRUE) + 0.1*c(-1, 1),
-	  ylim=range(svts5$Lat_M, na.rm=TRUE) + 0.1*c(-1, 1), mar=c(0, 0, 0, 0),
-	  col="gray")
-	points(svts5$Lon_M, svts5$Lat_M, col=rcol)
-	text(tapply(svts5$Lon_M, svts5$region, mean), tapply(svts5$Lat_M,
-	  svts5$region, mean), names(tapply(svts5$Lon_M, svts5$region, mean)), cex=2,
-		col=tapply(rcol, svts5$region, mean))
-}
-
-
 
 
 
@@ -739,3 +704,7 @@ tabl("Lakewide biomass estimates (t) for each species group and slice.",
 
 
 endrtf()
+
+  }
+
+}
