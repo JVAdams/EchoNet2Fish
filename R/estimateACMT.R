@@ -66,7 +66,12 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
   spInfo, sliceDef, short=TRUE) {
 
-  if(FALSE) {
+  library("devtools")
+  devtools::install_github("JVAdams/EchoNet2Fish")
+  library(EchoNet2Fish)
+
+  mydir <- readAll(refdir="C:/JVA/Consult/Warner/Nearest Trawl",
+    keyvals=c(2, 2014))
 
   maindir=mydir
   rdat="ACMT"
@@ -101,17 +106,6 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   short=FALSE
   getpkgs(c("class", "rgdal", "RColorBrewer", "survey", "maps", "mapdata",
     "lubridate"))
-  source('C:/JVA/GitHub/EchoNet2Fish/R/estrhov.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/estNv.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/sliceCat.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/latlon2utm.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/lon2utmZone.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/mapMulti.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/mapAppor.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/plotACMTslice.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/replaceBiasedSigma.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/TS2sigma.R', echo=TRUE)
-  source('C:/JVA/GitHub/EchoNet2Fish/R/sigma2TS.R', echo=TRUE)
 
 
   # 1.  Initial stuff ####
@@ -160,7 +154,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
 
   # 2.  Estimate sigma for each cell using TS frequency dist file ####
-  ts$sigma <- sigmaAvg(dBdf=ts, TSrange=TSrange)
+  ts$sigma <- sigmaAvg(TSdf=ts, TSrange=TSrange)
 
 
   # 3.  Merge Sv and sigma data ####
@@ -705,6 +699,6 @@ tabl("Lakewide biomass estimates (t) for each species group and slice.",
 
 endrtf()
 
-  }
+
 
 }
