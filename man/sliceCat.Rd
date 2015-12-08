@@ -5,15 +5,19 @@
 \title{Categorize Observations as Slices for Matching Acoustic Densities and Trawl
 Catches}
 \usage{
-sliceCat(sliceDef, fdp = NULL, bdp = NULL, lat = NULL, reg = NULL)
+sliceCat(sliceDef, fdp = NULL, bdp = NULL, lat = NULL, lon = NULL,
+  reg = NULL)
 }
 \arguments{
 \item{sliceDef}{A list of at least two named sub-lists defining the slices into which
 observations will be classified.  Each sub-list contains one or more
 named numeric vectors of length two, identifying the parameter
-(the name of the vector) and the range of values that contribute
+(the name of the vector) and the range of values (see Details) that
+contribute
+to the slice definition, with one exception.  For slicing by regions,
+the named vector is character (not numeric), is of length one or more
+(not necessarily two), and specifies all of the regions that contribute
 to the slice definition.
-Each interval is closed on the left and open on the right (see Details).
 The name of each sub-list is the name of the slice to be assigned.
 See Examples.}
 
@@ -32,6 +36,10 @@ required by \code{sliceDef}, default NULL.}
 observations which are to be categorized into slices.  Only necessary if
 required by \code{sliceDef}, default NULL.}
 
+\item{lon}{A numeric vector of longitudes corresponding to the
+observations which are to be categorized into slices.  Only necessary if
+required by \code{sliceDef}, default NULL.}
+
 \item{reg}{A character vector of regions corresponding to the
 observations which are to be categorized into slices.  Only necessary if
 required by \code{sliceDef}, default NULL.}
@@ -47,22 +55,33 @@ estimated from acoustic transects and speciec compositions estimated from
 midwater trawl catches.
 }
 \details{
-Each interval of sliceDef is closed on the left and open on the right.
+For ranges of values, each interval of sliceDef is closed on the left and
+open on the right.
 In other words, if you assign an interval of fdp=c(10, 20), observations
 >= 10 and < 20 will be considered for inclusion in that slice.
 
-All observation variables (\code{fdp}, \code{bdp}, \code{lat}, \code{lat}),
-if not NULL, must be the same length.
+All observation variables (\code{fdp}, \code{bdp}, \code{lat}, \code{lon}),
+\code{reg}), if not NULL, must be the same length.
 }
 \examples{
-myslicedef <- list(
-  epiNear = list( fdp=c(0,   4), bdp=c(0,   6) ),
-  epiOff =  list( fdp=c(0,   4), bdp=c(6, Inf) ),
-  hypo =    list( fdp=c(4, Inf) )
-)
 fishingD <- 1:7
 bottomD <- c(2, 10, 4, 12, 6, 14, 8)
-slice <- sliceCat(myslicedef, fdp=fishingD, bdp=bottomD)
-data.frame(fishingD, bottomD, slice)
+region <- c("a", "b", "c", "a", "b", "c", "a")
+
+# slice by fishing depth and bottom depth
+myslicedef <- list(
+  epiNear = list( fdp=c(0, 4), bdp=c(0, 6) ),
+  epiOff = list( fdp=c(0, 4), bdp=c(6, Inf) ),
+  hypo = list( fdp=c(4, Inf) )
+)
+sliceCat(myslicedef, fdp=fishingD, bdp=bottomD)
+
+# slice by fishing depth and region
+myslicedef2 <- list(
+  epiA = list( fdp=c(0, 4), reg="a" ),
+  epiBC = list( fdp=c(0, 4), reg=c("b", "c") ),
+  hypo = list( fdp=c(4, Inf) )
+)
+sliceCat(myslicedef2, fdp=fishingD, reg=region)
 }
 

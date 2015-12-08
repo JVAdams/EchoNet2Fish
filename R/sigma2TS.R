@@ -10,7 +10,7 @@
 #'   A numeric vector of target strengths, TS, in dB, same
 #'   length as \code{sigmabs}.
 #' @seealso
-#'   \link{\code{TS2sigma}}
+#'   \code{\link{TS2sigma}}
 #' @export
 #' @examples
 #' sigma2TS(c(1e-03, 1e-04, 1e-05, 1e-06))

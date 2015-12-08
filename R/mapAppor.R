@@ -15,13 +15,25 @@
 #'   Vector, unique identification of each midwater trawl tow,
 #'   same length as \code{MTgroup}.
 #' @param ACID
-#'   Vector, identification of midwater trawl tow used to apportion each
+#'   Vector, identification of acoustic transects used to apportion each
 #'   acoustic transect,
 #'   same length as \code{ACgroup}.
 #' @param short
 #'   Logical scalar, indicating aspect of map area.  If TRUE, the default,
 #'   the mapped area is assumed to be wider (longitudinally) than tall.
 #'   Used to better arrange multiple maps on a single page.
+#' @param MTlon
+#'   Numeric vector, longitudes of midwater trawl tow locations to map, 
+#'   in decimal degrees, same length as \code{MTgroup}.
+#' @param MTlat
+#'   Numeric vector, latitudes of midwater trawl tow locations to map, 
+#'   in decimal degrees, same length as \code{MTgroup}.
+#' @param AClon
+#'   Numeric vector, longitudes of acoustic transect locations to map, 
+#'   in decimal degrees, same length as \code{ACgroup}.
+#' @param AClat
+#'   Numeric vector, latitudes of acoustic transect locations to map, 
+#'   in decimal degrees, same length as \code{ACgroup}.
 #' @param rlon
 #'   A numeric vector of length 2, range of longitudes to map,
 #'   in decimal degrees, default range(\code{MTlon}, \code{AClon}, na.rm=TRUE).
@@ -36,28 +48,28 @@
 #'   A character scalar, the text used to label maps with no locations in the
 #'   given bygroup, default " - No tows".
 #' @inheritParams
-#'   estimateACMT mapMulti
-#' @import
-#'   maps
+#'   mapMulti
 #' @seealso
 #'   \code{\link{mapMulti}}
 #' @export
 #' @examples
-#' # acoustic transects
-#' agroup <- c("Main", "Bay")[c(1, 1, 1, 1, 2, 2, 2)]
-#' aID <- c("A", "B", "B", "B", "C", "C", "D")
-#' alon <- -c(83.5, 82.6, 82, 82, 80.6, 80.5, 81.3)
-#' alat <- c(45.6, 44.5, 44.6, 44.1, 45.3, 44.8, 45.7)
+#' \dontrun{
+#'  # acoustic transects
+#'  agroup <- c("Main", "Bay")[c(1, 1, 1, 1, 2, 2, 2)]
+#'  aID <- c("A", "B", "B", "B", "C", "C", "D")
+#'  alon <- -c(83.5, 82.6, 82, 82, 80.6, 80.5, 81.3)
+#'  alat <- c(45.6, 44.5, 44.6, 44.1, 45.3, 44.8, 45.7)
 #'
-#' # midwater trawls
-#' mgroup <- c("Main", "Bay")[c(1, 1, 2, 2)]
-#' mID <- c("A", "B", "C", "D")
-#' mlon <- -c(83, 83, 80.4, 81)
-#' mlat <- c(45.4, 44.5, 45, 45.5)
+#'  # midwater trawls
+#'  mgroup <- c("Main", "Bay")[c(1, 1, 2, 2)]
+#'  mID <- c("A", "B", "C", "D")
+#'  mlon <- -c(83, 83, 80.4, 81)
+#'  mlat <- c(45.4, 44.5, 45, 45.5)
 #'
-#' # illustrate assignment of midwater trawl tows to acoustic transects
-#' mapAppor(MTgroup=mgroup, ACgroup=agroup, MTID=mID, ACID=aID, MTlon=mlon,
-#'   MTlat=mlat, AClon=alon, AClat=alat, rlon=c(-84, -80), rlat=c(43, 46))
+#'  # illustrate assignment of midwater trawl tows to acoustic transects
+#'  mapAppor(MTgroup=mgroup, ACgroup=agroup, MTID=mID, ACID=aID, MTlon=mlon,
+#'    MTlat=mlat, AClon=alon, AClat=alat, rlon=c(-84, -80), rlat=c(43, 46))
+#'  }
 #'
 mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
   MTID, ACID, short=TRUE, MTlon, MTlat, AClon, AClat,
@@ -90,7 +102,8 @@ mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
 		selm <- MTgroup==sug[i] & !is.na(MTgroup)
 		sela <- ACgroup==sug[i] & !is.na(ACgroup)
 
-		map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+#		map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+		map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
 		box(col=boxcol)
 		if(sum(selm[!is.na(selm)])>0) {
 			points(AClon[sela], AClat[sela], col=ACIDcol[sela], pch=3)

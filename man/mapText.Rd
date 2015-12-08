@@ -4,16 +4,16 @@
 \alias{mapText}
 \title{Add Text to a Map}
 \usage{
-mapText(lat, long, group, cex = 1.5, ...)
+mapText(lat, lon, group, cex = 1.5, ...)
 }
 \arguments{
 \item{lat}{A numeric vector of latitudes in decimal degrees.}
 
-\item{long}{A numeric vector of longitudes in decimal degrees.
+\item{lon}{A numeric vector of longitudes in decimal degrees.
 Same length as\code{lat}.}
 
 \item{group}{A character or numeric vector of group identifiers,
-the same length as \code{lat} and \code{long}.}
+the same length as \code{lat} and \code{lon}.}
 
 \item{cex}{A numeric scalar giving the amount by which plotting characters
 should be scaled relative to the default, default 1.5.}
@@ -34,9 +34,9 @@ Group identifiers are added to a map, typically created with
  longitude <- c(-82.30, -80.85, -84.03, -80.39)
  basincode <- c(1, 2, 1, 2)
  basin <- c("Main", "GBay", "Main", "GBay")
- mapSymbols(lat=latitude, long=longitude, colorz=basincode+3,
+ mapSymbols(lat=latitude, lon=longitude, colorz=basincode+3,
   pch=16, xla=0.4)
- mapText(lat=latitude, long=longitude, group=basin)
+ mapText(lat=latitude, lon=longitude, group=basin)
 }
 }
 

@@ -29,6 +29,6 @@ The \code{column1name} argument is needed to handle occasional problems
 	 with byte order marks at the beginning of the csv files, which can result
 	 in strange characters being added to the name of the first column.
 	 See, for example, this
-	 \href{http://stackoverflow.com/questions/15259139/when-i-import-text-file-into-r-i-get-a-special-character-appended-to-the-first}{link}.
+	 \href{http://stackoverflow.com/a/15399003/2140956}{link}.
 }
 

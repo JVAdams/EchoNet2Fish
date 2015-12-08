@@ -13,7 +13,7 @@
 #'   on the number of targets detected.  Case is ignored.
 #'   The default, "X[[:punct:]]", identifies columns that start with an upper
 #'   or lower case X followed by any punctuation mark, e.g., "x.", "X_".
-#'   See \link{\code{regex}}
+#'   See \code{\link{regex}}
 #' @param prefixLen
 #'   An integer scalar giving the number of characters in the prefix of the
 #'   column names identified by \code{columnPattern} to be removed, such that
@@ -26,7 +26,7 @@
 #'   The numeric portion of the column names of \code{TSdf} identified by
 #'   \code{columnPattern}, represent a bin of target strengths (TS) in dB.
 #'   These TS values are converted to backscattering cross section, sigma_bs
-#'   in m^2, using \link{\code{TS2sigma}}.  The average backscattering cross
+#'   in m^2, using \code{\link{TS2sigma}}.  The average backscattering cross
 #'   section, <sigma_bs> in m^2, is then calculated as the mean of all the
 #'   sigma_bs within the range of \code{TSrange}, weighted by the number of
 #'   targets in each bin.
@@ -37,21 +37,21 @@
 #'   A numeric vector of the average backscattering cross section, <sigma_bs>,
 #'   one for each row in \code{TSdf}.
 #' @seealso
-#'   \link{\code{TS2sigma}}, \link{\code{regex}}
+#'   \code{\link{TS2sigma}}, \code{\link{regex}}
 #' @export
 #' @examples
 #' mydf <- data.frame(a=letters[1:4], x.80=0:3, x.90=1:4, x.100=c(0, 1, 0, 1))
-#' sigmaAvg(dBdf=mydf, TSrange=c(-105, -85))
+#' sigmaAvg(TSdf=mydf, TSrange=c(-105, -85))
 #'
-  sigmaAvg <- function(dBdf, TSrange, columnPattern="X[[:punct:]]",
+  sigmaAvg <- function(TSdf, TSrange, columnPattern="X[[:punct:]]",
     prefixLen=2) {
-    namesdf <- names(dBdf)
+    namesdf <- names(TSdf)
     tsbin.colz <- grep(columnPattern, namesdf, ignore.case=TRUE)
     maxlen <- max(nchar(namesdf[tsbin.colz]))
     db <- -as.numeric(substring(namesdf[tsbin.colz], prefixLen+1, maxlen))
     sigmabs <- TS2sigma(db)
     in.range <- db >= TSrange[1] & db <= TSrange[2]
-    sigma <- apply(dBdf[, tsbin.colz[in.range]], 1, function(w)
+    sigma <- apply(TSdf[, tsbin.colz[in.range]], 1, function(w)
       weighted.mean(sigmabs[in.range], w))
     return(sigma)
   }

@@ -42,17 +42,17 @@
 #'   c(0, 0, 2.5, 0).
 #' @inheritParams
 #'   mapText
-#' @import
-#'   maps
 #' @export
 #' @examples
-#' mygroup <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
-#' myID <- LETTERS[1:9]
-#' mylon <- rnorm(9, mean=-82)
-#' mylat <- rnorm(9, mean=45)
-#' mapMulti(bygroup=mygroup, ID=myID, boldID=c("G", "A"), lon=mylon, lat=mylat)
-#' mapMulti(bygroup=mygroup, sug=1:4, ID=myID, lon=mylon, lat=mylat)
-
+#' \dontrun{
+#'  mygroup <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
+#'  myID <- LETTERS[1:9]
+#'  mylon <- rnorm(9, mean=-82)
+#'  mylat <- rnorm(9, mean=45)
+#'  mapMulti(bygroup=mygroup, ID=myID, boldID=c("G", "A"), lon=mylon, lat=mylat)
+#'  mapMulti(bygroup=mygroup, sug=1:4, ID=myID, lon=mylon, lat=mylat)
+#' }
+#'
 mapMulti <- function(bygroup, sug=sort(unique(bygroup)), ID, boldID=NULL,
   short=TRUE, lon, lat, rlon=range(lon, na.rm=TRUE),
   rlat=range(lat, na.rm=TRUE), IDcol=NULL, mapcol="gray", boxcol="gray",
@@ -75,7 +75,8 @@ mapMulti <- function(bygroup, sug=sort(unique(bygroup)), ID, boldID=NULL,
   iord <- 1:length(sug)
 	for(i in iord) {
 		selm <- bygroup==sug[i] & !is.na(bygroup)
-		map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+#		map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+		map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
 		box(col=boxcol)
 		if(sum(selm[!is.na(selm)])>0) {
 			bold <- if(is.null(boldID)) 1 else ((ID[selm] %in% boldID) + 1)

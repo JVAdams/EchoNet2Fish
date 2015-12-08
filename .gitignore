@@ -1,3 +1,17 @@
 .Rproj.user
 .Rhistory
-.RData
+*.RData
+.gitignore
+*.c*
+*.d*
+*.g*
+*.j*
+*.p*
+*.Rproj
+*.t*
+*.x*
+*.z*
+# use Tools Shell to remove file from repository
+# git update-index --assume-unchanged <file>
+.Rbuildignore
+EchoNet2Fish.Rproj

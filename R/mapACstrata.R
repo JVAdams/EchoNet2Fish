@@ -26,14 +26,14 @@
 #'   c(0, 0, 0, 0).
 #' @inheritParams
 #'   mapText
-#' @import
-#'   maps
 #' @export
 #' @examples
-#' mygroup <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
-#' mylon <- -c(81.1, 81.2, 80.5, 83, 82.2, 82.7, 82.7, 82, 82.2)
-#' mylat <- c(45.7, 45.4, 45, 45.5, 45.4, 45, 44.4, 44.4, 43.9)
-#' mapACstrata(bygroup=mygroup, ID=myID, lon=mylon, lat=mylat)
+#' \dontrun{
+#'  mygroup <- c(1, 1, 1, 2, 2, 2, 3, 3, 3)
+#'  mylon <- -c(81.1, 81.2, 80.5, 83, 82.2, 82.7, 82.7, 82, 82.2)
+#'  mylat <- c(45.7, 45.4, 45, 45.5, 45.4, 45, 44.4, 44.4, 43.9)
+#'  mapACstrata(bygroup=mygroup, lon=mylon, lat=mylat)
+#' }
 #'
 mapACstrata <- function(bygroup, sug=sort(unique(bygroup)),
   lon, lat, rlon=range(lon, na.rm=TRUE) + 0.1*c(-1, 1),
@@ -45,7 +45,8 @@ mapACstrata <- function(bygroup, sug=sort(unique(bygroup)),
     IDcol <- iord
   }
 
-	map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+	map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+#	map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
 	points(lon, lat, col=IDcol[match(bygroup, sug)])
 	text(tapply(lon, bygroup, mean), tapply(lat, bygroup, mean),
 	  sug, cex=2, col=IDcol)

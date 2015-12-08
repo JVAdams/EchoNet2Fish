@@ -10,7 +10,7 @@
 #'   A numeric vector of backscattering cross sections, sigma_bs, in m^2, same
 #'   length as \code{TS}.
 #' @seealso
-#'   \link{\code{sigma2TS}}
+#'   \code{\link{sigma2TS}}
 #' @export
 #' @examples
 #' TS2sigma(c(-30, -40, -50, -60))

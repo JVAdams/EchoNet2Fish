@@ -8,6 +8,9 @@
 #'   Numeric vector of latitudes, same length as \code{lon}.
 #' @param zone
 #'   Numeric scalar of the UTM zone, default NULL.  See details.
+#' @param quiet
+#'   Logical scalar indicating whether to refrain from printing the determined
+#'   zone when \code{zone} is NULL, default TRUE.
 #' @details
 #'   If \code{zone} is NULL, then the zone is determined from the medians
 #'   of \code{lon} and \code{lat}.
@@ -17,7 +20,7 @@
 #'   meters.
 #' @export
 #' @seealso
-#'   \code{\link{long2utmZone}}
+#'   \code{\link{lon2utmZone}}
 #' @references
 #'   Based on a function posted by Stanislav on 13 May 2015 on stackoverflow
 #'   \href{http://stackoverflow.com/a/30225804/2140956}{[link]}.
