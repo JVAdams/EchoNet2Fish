@@ -4,8 +4,8 @@
 \alias{mapSymbols}
 \title{Draw a Map using Different Colored Symbols}
 \usage{
-mapSymbols(lat, lon, colorz, main = "", pch = 1, cex = 1.5, xla = 0,
-  yla = xla)
+mapSymbols(lat, lon, colorz, main = "", pch = 1, cex = 1.5,
+  cushion = 0.1)
 }
 \arguments{
 \item{lat}{A numeric vector of latitudes in decimal degrees.}
@@ -26,11 +26,8 @@ See \code{\link[graphics]{points}}.}
 symbols should be scaled relative to the default, either of length
 1 or the same length as \code{lat} and \code{lon}, default 1.5.}
 
-\item{xla}{A numeric scalar giving an added margin of decimal degrees to be mapped
-beyond the range of longitudes in \code{lon}, default 0.}
-
-\item{yla}{A numeric scalar giving an added margin of decimal degrees to be mapped
-beyond the range of latitudes in \code{lat}, default \code{xla}.}
+\item{cushion}{A numeric scalar indicating the amount of cushion to add to the \code{rlon}
+and \code{rlat} ranges in decimal degrees, default 0.1.}
 }
 \description{
 Draw a map using different colored symbols for data exploration purposes.
@@ -48,7 +45,7 @@ The \code{column1name} argument is needed to handle occasional problems
  longitude <- c(-82.30, -80.85, -84.03, -80.39)
  basincode <- c(1, 2, 1, 2)
  mapSymbols(lat=latitude, lon=longitude, colorz=basincode+3,
-  pch=16, xla=0.4)
+  pch=16, cushion=0.4)
 }
 
 }

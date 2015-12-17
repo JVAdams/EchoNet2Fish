@@ -9,11 +9,14 @@
 #' @param rlon
 #'   A numeric vector of length 2, range of longitudes to map,
 #'   in decimal degrees, default
-#'   range(\code{lon}, na.rm=TRUE) + 0.1*c(-1, 1).
+#'   range(\code{lon}, na.rm=TRUE).
 #' @param rlat
 #'   A numeric vector of length 2, range of latitudes to map,
 #'   in decimal degrees, default
-#'   range(\code{lat}, na.rm=TRUE) + 0.1*c(-1, 1).
+#'   range(\code{lat}, na.rm=TRUE).
+#' @param cushion
+#'   A numeric scalar indicating the amount of cushion to add to the \code{rlon}
+#'   and \code{rlat} ranges in decimal degrees, default 0.1.
 #' @param IDcol
 #'   A vector, the color used to map locations, same length as \code{bygroup}.
 #'   If NULL, the default, a range of colors will be assigned automatically.
@@ -36,9 +39,9 @@
 #' }
 #'
 mapACstrata <- function(bygroup, sug=sort(unique(bygroup)),
-  lon, lat, rlon=range(lon, na.rm=TRUE) + 0.1*c(-1, 1),
-  rlat=range(lat, na.rm=TRUE) + 0.1*c(-1, 1), IDcol=NULL, mapcol="gray",
-  mar=c(0, 0, 0, 0)) {
+  lon, lat, rlon=range(lon, na.rm=TRUE) + cushion*c(-1, 1),
+  rlat=range(lat, na.rm=TRUE) + cushion*c(-1, 1), cushion=0.1, IDcol=NULL, 
+  mapcol="gray", mar=c(0, 0, 0, 0)) {
 
   iord <- 1:length(sug)
   if(is.null(IDcol)) {
@@ -46,7 +49,6 @@ mapACstrata <- function(bygroup, sug=sort(unique(bygroup)),
   }
 
 	map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
-#	map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
 	points(lon, lat, col=IDcol[match(bygroup, sug)])
 	text(tapply(lon, bygroup, mean), tapply(lat, bygroup, mean),
 	  sug, cex=2, col=IDcol)

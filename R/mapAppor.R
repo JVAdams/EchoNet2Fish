@@ -102,7 +102,6 @@ mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
 		selm <- MTgroup==sug[i] & !is.na(MTgroup)
 		sela <- ACgroup==sug[i] & !is.na(ACgroup)
 
-#		map("worldHires", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
 		map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
 		box(col=boxcol)
 		if(sum(selm[!is.na(selm)])>0) {

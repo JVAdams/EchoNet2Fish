@@ -17,13 +17,18 @@
 #' @param ageSp
 #'   A numeric vector giving the species codes for species for which
 #'   age-length keys should be used, default NULL.
+#' @param short
+#'   Logical scalar, indicating aspect of map area.  If TRUE, the default,
+#'   the mapped area is assumed to be wider (longitudinally) than tall.
+#'   Used to better arrange multiple maps on a single page.
 #' @details
 #'   A rich text file (rtf) with a *.doc file extension (so that it will be
 #'   opened with Word by default) is saved to \code{maindir}.
 #' @import rtf lubridate
 #' @export
 #'
-exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
+exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
+  short=TRUE) {
 
   load(paste0(maindir, rdat, ".RData"), envir=environment())
   LAKE <- keyvals[1]
@@ -90,28 +95,16 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
       newpage="port", FIG=fig)
 
     # close up look at each transect - lat/lon
-    sur <- sort(unique(Region_name))
-    lon.r <- tapply(Lon_M, Region_name, mean, na.rm=TRUE)
-    lat.r <- tapply(Lat_M, Region_name, mean, na.rm=TRUE)
-
     fig <- function() {
-    	par(mfrow=n2mfrow(length(sur)), mar=c(1, 0, 2, 0), cex=1.2)
-    	for(i in order(lat.r, decreasing=F)) {
-    		sel <- Region_name==sur[i]
-    		map("usa", xlim=range(Lon_M[sel], na.rm=TRUE)+c(-1, 1)*0.01,
-    		  ylim=range(Lat_M[sel], na.rm=TRUE)+c(-1, 1)*0.01, mar=c(1, 0, 2, 0),
-    		  type="n")
-    		points(Lon_M[sel], Lat_M[sel],
-    		  col=as.numeric(as.factor(Region_name))[sel])
-    		mtext(sur[i], side=3, cex=1.5)
-    		box()
-    	}
+      mapMulti(Region_name, short=short, lon=Lon_M, lat=Lat_M,
+        samescale=FALSE, IDcol=as.numeric(as.factor(Region_name)))
     }
     figu("Close up look at each transect location in Sv files.", newpage="port",
       FIG=fig)
 
     # interval by layer plots
     laymid <- -(Layer_depth_min + Layer_depth_max)/2
+    lat.r <- tapply(Lat_M, Region_name, mean, na.rm=TRUE)
     Region_ord <- names(lat.r)[order(lat.r, decreasing=T)]
     fig <- function(x, xname) {
       plotIntLay(Interval, laymid, Region_name, Region_ord,
@@ -155,7 +148,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
   	  newpage="port", FIG=fig)
 
     detach(sv)
-    rm(sur, lat.r, lon.r, np)
+    rm(np)
 
     ### TS
 
@@ -317,7 +310,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
     fig <- function(x) {
       var <- eval(parse(text=x))
     	mapSymbols(Latitude, Longitude, colorVal(as.numeric(as.factor(var))),
-    	  paste("Colors indicate", x), pch=16, xla=0.15, yla=0.1)
+    	  paste("Colors indicate", x), pch=16, cushion=0.15)
     	mapText(Latitude, Longitude, var)
     }
     cap <- function(x) {
@@ -407,23 +400,9 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
     }
     figu("Plot of variables in the TRLF file.", newpage="port", FIG=fig)
 
-    sus <- sort(unique(Species))
     fig <- function() {
-    	par(mfrow=n2mfrow(length(sus)), mar=c(3, 3, 2, 1), oma=c(2, 2, 1, 1),
-    	  yaxs="i", cex=1)
-    	for(i in seq(along=sus)) {
-    		sel <- Species==sus[i]
-    		a <- hist(rep(Length[sel], N[sel]), breaks=seq(-5, max(Length)+5, 5),
-    		  plot=FALSE)
-    		xr <- range(Length[sel])
-    		hist(rep(Length[sel], N[sel]), xlim=xr+10*c(-1, 1),
-    		  ylim=c(0, max(a$counts))*1.05,
-    			breaks=seq(-5, max(Length)+5, 5), col="blue", main=sus[i], las=1)
-    		abline(v=xr, lwd=2, col="red")
-    		box()
-    	}
-    	mtext("Length  (mm)", side=1, outer=TRUE, cex=1.5)
-    	mtext("Frequency", side=2, outer=TRUE, cex=1.5)
+      histMulti(x=Length, freq=N, bygroup=Species, xlab="Length  (mm)",
+        samescale=FALSE)
     }
     figu("Length frequency histograms of species in the TRLF file.",
       "  Vertical red lines indicate the minimum and maximum lengths recorded.",
@@ -431,7 +410,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL) {
 
     detach(trlf)
 
-    rm(sus, missop, showcols) #, i, sel, sul, a, xr)
+    rm(missop, showcols) #, i, sel, sul, a, xr)
 
     if(!is.null(ageSp)) {
 

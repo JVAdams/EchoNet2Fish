@@ -4,7 +4,8 @@
 \alias{exploreACMT}
 \title{Explore Acoustic and Midwater Trawl Data}
 \usage{
-exploreACMT(maindir, rdat = "ACMT", AC = TRUE, MT = TRUE, ageSp = NULL)
+exploreACMT(maindir, rdat = "ACMT", AC = TRUE, MT = TRUE, ageSp = NULL,
+  short = TRUE)
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where output will be placed.
@@ -22,6 +23,10 @@ data, default TRUE.}
 
 \item{ageSp}{A numeric vector giving the species codes for species for which
 age-length keys should be used, default NULL.}
+
+\item{short}{Logical scalar, indicating aspect of map area.  If TRUE, the default,
+the mapped area is assumed to be wider (longitudinally) than tall.
+Used to better arrange multiple maps on a single page.}
 }
 \description{
 Explore acoustic and midwater trawl data.

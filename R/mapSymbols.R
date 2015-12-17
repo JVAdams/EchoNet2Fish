@@ -19,12 +19,9 @@
 #'   A numeric vector giving the amount by which plotting characters and
 #'   symbols should be scaled relative to the default, either of length
 #'   1 or the same length as \code{lat} and \code{lon}, default 1.5.
-#' @param xla
-#'   A numeric scalar giving an added margin of decimal degrees to be mapped
-#'   beyond the range of longitudes in \code{lon}, default 0.
-#' @param yla
-#'   A numeric scalar giving an added margin of decimal degrees to be mapped
-#'   beyond the range of latitudes in \code{lat}, default \code{xla}.
+#' @param cushion
+#'   A numeric scalar indicating the amount of cushion to add to the \code{rlon}
+#'   and \code{rlat} ranges in decimal degrees, default 0.1.
 #' @details
 #' 	 The \code{column1name} argument is needed to handle occasional problems
 #' 	 with byte order marks at the beginning of the csv files, which can result
@@ -39,13 +36,13 @@
 #'  longitude <- c(-82.30, -80.85, -84.03, -80.39)
 #'  basincode <- c(1, 2, 1, 2)
 #'  mapSymbols(lat=latitude, lon=longitude, colorz=basincode+3,
-#'   pch=16, xla=0.4)
+#'   pch=16, cushion=0.4)
 #' }
 #'
 mapSymbols <- function(lat, lon, colorz, main="", pch=1, cex=1.5,
-    xla=0, yla=xla) {
-	map("world", xlim=range(lon, na.rm=TRUE) + c(-1, 1)*xla,
-	  ylim=range(lat, na.rm=TRUE) + c(-1, 1)*yla, mar=c(0, 0, 2, 0))
+    cushion=0.1) {
+	map("world", xlim=range(lon, na.rm=TRUE) + cushion*c(-1, 1),
+	  ylim=range(lat, na.rm=TRUE) + cushion*c(-1, 1), mar=c(0, 0, 2, 0))
 	points(lon, lat, pch=pch, cex=cex, col=colorz)
 	box()
 	mtext(main, side=3, cex=1.2)

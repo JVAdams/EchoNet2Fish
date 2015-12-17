@@ -59,54 +59,12 @@
 #'   with mean "unbiased" sigmas from cells in the same layer
 #'   and (if possible) transect.  Then, Nv is recalculated.
 #'
-#' @import rtf lubridate
+#' @import class lubridate rtf RColorBrewer survey
 #' @export
 #'
 estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
   spInfo, sliceDef, short=TRUE) {
-
-  library("devtools")
-  devtools::install_github("JVAdams/EchoNet2Fish")
-  library(EchoNet2Fish)
-
-  mydir <- readAll(refdir="C:/JVA/Consult/Warner/Nearest Trawl",
-    keyvals=c(2, 2014))
-
-  maindir=mydir
-  rdat="ACMT"
-  ageSp=NULL
-  region=c("nn", "sn", "wn", "no", "so")
-  regArea=c(10933, 8716, 6010, 12630, 10487)
-  TSrange=c(-60, -30)
-  psi=0.007997566
-  soi=c(106, 109, 203, 204)
-  spInfo=data.frame(
-    sp = c(106, 109, 129, 130, 202, 203, 204, 217, 504),
-    spname = c("alewife", "bloater", "cisco", "emerald shiner",
-      "lake whitefish", "ninespine stickleback", "rainbow smelt",
-      "threespine stickleback", "unid coregonine"),
-    lcut = c(100, 90, 0, 0, 0, 0, 120, 0, 0),
-    lwa = c(1.413254e-05, 4.851203e-06, 3.954044e-05, 3.954044e-05,
-      2.214019e-06, 5.3115e-06, 3.434977e-07, 2.214019e-06, 7.916946e-06),
-    lwb = c(2.867839, 3.031524, 2.591946, 2.591946,
-      3.207, 3.0709, 3.561819, 3.207, 2.968708))
-  sliceDef=list(
-    nn.epi  = list( fdp=c(-Inf,  40), reg="nn" ),
-    nn.hypo = list( fdp=c(  40, Inf), reg="nn" ),
-    no.epi  = list( fdp=c(-Inf,  40), reg="no" ),
-    no.hypo = list( fdp=c(  40, Inf), reg="no" ),
-    sn.epi  = list( fdp=c(-Inf,  40), reg="sn" ),
-    sn.hypo = list( fdp=c(  40, Inf), reg="sn" ),
-    so.epi  = list( fdp=c(-Inf,  40), reg="so" ),
-    so.hypo = list( fdp=c(  40, Inf), reg="so" ),
-    wn.epi  = list( fdp=c(-Inf,  40), reg="wn" ),
-    wn.hypo = list( fdp=c(  40, Inf), reg="wn" )
-  )
-  short=FALSE
-  getpkgs(c("class", "rgdal", "RColorBrewer", "survey", "maps", "mapdata",
-    "lubridate"))
-
 
   # 1.  Initial stuff ####
 
@@ -129,7 +87,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # create rtf document to save printed output (tables and figures)
   docname <- paste0("L", LAKE, " Y", YEAR, " ACMT Estimate ", today(), ".doc")
-  doc <- startrtf(file=docname, dir=maindir)
+  doc <<- startrtf(file=docname, dir=maindir)
   heading(paste0(YEAR, " Lake ", Lakenames[LAKE],
     " Estimation from Acoustic and Trawl Data   ", today()))
   para("R code written by Jean Adams for Dave Warner.")
@@ -141,16 +99,29 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   para(paste0("psi = ", psi,
     " = the transducer-specific two-way equivalent beam angle in steradians."))
 
+  # make sure we have age-length keys for the species that need it
   if(is.null(ageSp)) {
     para("Ages will NOT be used.")
   } else {
-    para("Ages will be used for ", with(spInfo, spname[sp==ageSp]), ".")
+    ageSp <- sort(ageSp)
+    para("Ages will be used for ",
+      paste(with(spInfo, spname[sp %in% ageSp]), collapse=", "), ".")
+    if(exists("keysp1.f")) {
+      if(exists("keysp2.f")) {
+        ageksp <- c(keysp1.f$sp, keysp2.f$sp)
+        agekey <- list(key1, key2)
+        sdf <- setdiff(ageSp, ageksp)
+        if(length(sdf)>0) stop("No age length key available for ", sdf)
+      } else {
+        ageksp <- keysp1.f$sp
+        agekey <- list(key1)
+        sdf <- setdiff(ageSp, ageksp)
+        if(length(sdf)>0) stop("No age length key available for ", sdf)
+      }
+    } else {
+      stop("No age length key(s) available.")
+    }
   }
-
-  # TODO
-  # make sure we have age-length keys for the species that need it
-  # if(use.alewife.ages & !("key106" %in% ls()))
-  #   warning("\nNo age length key available for alewife.\n\n")
 
 
   # 2.  Estimate sigma for each cell using TS frequency dist file ####
@@ -184,7 +155,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	  "source.ts")]
   	tabl("There is at least one region-interval-layer combination that occurs",
       " in the TS data but not in the SV data.",
-  		"  These data will be removed from further calculations.")
+  		"  These data will be removed from further calculations.", TAB=tab)
   	svts <- svts[!sel, ]
   }
 
@@ -219,7 +190,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
       " layer (column).",
   		"  These are layers that had no targets in any transect.",
   		"  They will be removed from further calculations.",
-  		"  ")
+  		"  ", TAB=tab)
   	svts <- svts[!sel, ]
   }
 
@@ -281,41 +252,44 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # species-age-length group
 
   # determine ages of measured fish first, if necessary
-  # TODO
   if(!is.null(ageSp)) {
-  	allspsel <- c("106", soi)
+  	allspsel <- c(ageSp, soi)
   	# create vector of ops for all selected species
   	allops <- aggregate(N ~ Op.Id, sum,
   	  data=trcatch2[trcatch2$Species %in% allspsel, ])$Op.Id
   	# create list for results of all selected species
-  	sum.n <- vector("list", length(soi)+1)
+  	sum.n <- vector("list", length(allspsel))
   	names(sum.n) <- allspsel
   	mean.w <- sum.n
-  	add.sp <- 1
-  	# tally up lengths by mmgroup
-  	lf106 <- trlf[trlf$Species==106, ]
-  	lf106$mmgroup <- 10*round((lf106$Length+5)/10)-5
-  	# total count and mean weight
-  	g106 <- aggregate(cbind(N, estfw) ~ Op.Id + mmgroup, sum, data=lf106)
-  	gkey106 <- merge(g106, key106, all.x=TRUE)
-  	# rename ages
-  	agecolz <- grep("Age", names(gkey106))
-  	names(gkey106)[agecolz] <-
-  	  paste0("106.A", substring(names(gkey106)[agecolz], 4, 10))
-  	# apply probabilities from key to both counts and weights
-  	# total numbers and mean weight by age group
-  	tot.n <- apply(gkey106$N * gkey106[, agecolz], 2,
-  	  tapply, gkey106$Op.Id, sum)
-  	m.w <- apply(gkey106$estfw * gkey106[, agecolz], 2,
-  	  tapply, gkey106$Op.Id, sum)/tot.n
+  	add.sp <- length(ageSp)
+
   	tidyup <- function(x, uniq) {
   		y <- x[match(uniq, dimnames(x)[[1]]), , drop=FALSE]
   		dimnames(y)[[1]] <- uniq
   		y[is.na(y)] <- 0
   		y[, apply(y, 2, sum)>0]
   	}
-  	sum.n[[1]] <- tidyup(tot.n, allops)
-  	mean.w[[1]] <- tidyup(m.w, allops)
+
+  	for(i in seq_along(ageSp)) {
+    	# tally up lengths by mmgroup
+    	lfa <- trlf[trlf$Species %in% ageSp[i], ]
+    	lfa$mmgroup <- 10*round((lfa$Length+5)/10)-5
+    	# total count and mean weight
+    	ga <- aggregate(cbind(N, estfw) ~ Op.Id + mmgroup, sum, data=lfa)
+    	gkeya <- merge(ga, agekey[[i]], all.x=TRUE)
+    	# rename ages
+    	agecolz <- grep("Age", names(gkeya))
+    	names(gkeya)[agecolz] <-
+    	  paste0(ageSp[i], ".A", substring(names(gkeya)[agecolz], 4, 10))
+    	# apply probabilities from key to both counts and weights
+    	# total numbers and mean weight by age group
+    	tot.n <- apply(gkeya$N * gkeya[, agecolz], 2, tapply, gkeya$Op.Id, sum)
+    	m.w <- apply(gkeya$estfw * gkeya[, agecolz], 2,
+    	  tapply, gkeya$Op.Id, sum)/tot.n
+    	sum.n[[i]] <- tidyup(tot.n, allops)
+    	mean.w[[i]] <- tidyup(m.w, allops)
+  	}
+
   } else {
   	allspsel <- soi
   	# create vector of ops for all selected species
@@ -356,8 +330,6 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	mean.w[[add.sp+i]] <- tidyup2(m.w, allops, lclong)
   }
 
-  # TODO ---- (maybe I did this already?  I dunno ... used to say "fix" here)
-
   # Report the proportion of "other" by number and weight for each trawl ...
   # in case it's too large
   if(length(setdiff(unique(trcatch2$Species), soi))>0) {
@@ -378,7 +350,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     	tabl("Species other than those selected (", paste(soi, collapse=", "),
     		") are ignored when calculating proportions, but other species make up",
         " > 10% of the *NUMBER* in at least one trawl haul.",
-    		"  The locations of these tows are highlighted in Figure 1.")
+    		"  The locations of these tows are highlighted in Figure 1.", TAB=tab)
     	mtops <- names(propother)[sel]
     }
     sumbyspec <- tapply(trcatch2$Weight,
@@ -399,15 +371,16 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     	tabl("Species other than those selected (", paste(soi, collapse=", "),
     		") are ignored when calculating proportions, but other species make up",
         " > 10% of the *WEIGHT* in at least one trawl haul.",
-    		"  The locations of these tows are highlighted in Figure 1.")
+    		"  The locations of these tows are highlighted in Figure 1.", TAB=tab)
     	mtops <- if(exists("mtops")) c(mtops, names(propother)[sel]) else
     	  names(propother)[sel]
     }
   }
 
   # bring together total counts and mean weights
-  counts <- do.call(cbind, sum.n)
-  mnwts <- do.call(cbind, mean.w)
+  ord <- order(names(sum.n))
+  counts <- do.call(cbind, sum.n[ord])
+  mnwts <- do.call(cbind, mean.w[ord])
 
   # calculate proportions by number
   # don't double count a species if it's in by both length and age
@@ -458,8 +431,8 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # plot of apportionment ####
 
   fig <- function() {
-    with(opsub, mapMulti(bygroup=slice, sug=names(sliceDef), ID=Op.Id,
-      short=short, lon=Longitude, lat=Latitude,
+    with(opsub, mapMulti(bygroup=slice, sug=names(sliceDef), plottext=TRUE,
+      ID=Op.Id, short=short, lon=Longitude, lat=Latitude,
       rlon=range(Longitude, svts5$Lon_M, na.rm=TRUE),
       rlat=range(Latitude, svts5$Lat_M, na.rm=TRUE), misstext=" - No tows"))
   }
@@ -467,7 +440,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	"  Numbers identify the OP_ID of each tow.  Colors are the same as",
     " in the next figure.",
   	"  Tows with > 10% of their catch (by number or weight) in 'other' species",
-    " are shown in large, bold font.", h=8, newpage="port")
+    " are shown in large, bold font.", FIG=fig, h=8, newpage="port")
 
   fig <- function() {
     mapAppor(MTgroup=opsub$slice, ACgroup=svts5$slice, sug=names(sliceDef),
@@ -479,7 +452,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	"  Each MT tow is shown as a white circle (o).",
   	"  Each AC interval is shown as a colored plus sign (+).",
   	"  Dotted lines encircle all the AC intervals (given the same color) that",
-    " used each MT tow for apportionment.", h=8, newpage="port")
+    " used each MT tow for apportionment.", FIG=fig, h=8, newpage="port")
 
   # plot of AC and MT data by slice ####
   if(length(unique(c(opsub$slice, ACgroup=svts5$slice))) > 4) {
@@ -494,7 +467,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
       MTwd=opsub$Fishing_Depth, ACwd=svts5$Depth_mean)
   }
   figu("Acoustic (left) and midwater trawl (right) data by slice.",
-    newpage=orient)
+    FIG=fig, newpage=orient)
 
 
   # 11. Assign transects to regions (design strata) using transect names ####
@@ -520,185 +493,147 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   }
 
   figu("Acoustic transect data, color coded by design-based strata.",
-    newpage=orient)
+    FIG=fig, newpage=orient)
 
   look <- tapply(svts5$Region_name, svts5$region, function(x) sort(unique(x)))
   if(sum(sapply(look, length) < 2)) {
   	tab <- cbind(names(look), sapply(look, paste, collapse=", "))
   	tabl("Only one transect in at least one region.",
-      "  Variance will be estimated with this region(s) removed.")
+      "  Variance will be estimated with this region(s) removed.", TAB=tab)
   }
 
 
+  # 12. Generate estimates for the species groups. ####
 
-#### TODO #### this is where I left off ####
+  # apply species group proportions to AC densities
+  nph <- svts5$fish_ha * nprops[match(svts5$nearmt, allops), ]
+  gph <- nph * mnwts[match(svts5$nearmt, allops), ]
 
+  # summary of density by interval (summed densities over layers)
+  nph.int <- aggregate(nph ~ region + regarea + Region_name + Interval +
+      depth_botmid + Lat_M + Lon_M, sum, data=svts5)
+  names(nph.int)[is.na(names(nph.int))] <- sp.grps
+  gph.int <- aggregate(gph ~ region + regarea + Region_name + Interval +
+      depth_botmid + Lat_M + Lon_M, sum, data=svts5)
+  names(gph.int)[is.na(names(gph.int))] <- sp.grps
 
+  nph.int.domain <- aggregate(nph ~ region + regarea + Region_name + Interval +
+      depth_botmid + Lat_M + Lon_M + slice, sum, data=svts5)
+  names(nph.int.domain)[is.na(names(nph.int.domain))] <- sp.grps
+  gph.int.domain <- aggregate(gph ~ region + regarea + Region_name + Interval +
+      depth_botmid + Lat_M + Lon_M + slice, sum, data=svts5)
+  names(gph.int.domain)[is.na(names(gph.int.domain))] <- sp.grps
 
+  ncols <- grep("\\.", names(nph.int))
+  fig <- function() {
+    mapBy2Groups(df=nph.int[, ncols], lat=nph.int$Lat_M, lon=nph.int$Lon_M,
+      nrows=c(3, 4)[short+1])
+  }
+  figu("Acoustic density for each species group.  Groups are defined by",
+    " length cut offs (L) in mm or ages (A).",
+  	"  Darker and larger circles indicate higher density.",
+    FIG=fig, newpage="port")
 
-
-# 12. Generate estimates for the species groups. ####
-
-# apply species group proportions to AC densities
-nph <- svts5$fish_ha * nprops[match(svts5$nearmt, allops), ]
-gph <- nph * mnwts[match(svts5$nearmt, allops), ]
-
-# summary of density by interval (summed densities over layers)
-nph.int <- aggregate(nph ~ region + regarea + Region_name + Interval +
-    depth_botmid + Lat_M + Lon_M, sum, data=svts5)
-names(nph.int)[is.na(names(nph.int))] <- sp.grps
-gph.int <- aggregate(gph ~ region + regarea + Region_name + Interval +
-    depth_botmid + Lat_M + Lon_M, sum, data=svts5)
-names(gph.int)[is.na(names(gph.int))] <- sp.grps
-
-
-nph.int.domain <- aggregate(nph ~ region + regarea + Region_name + Interval +
-    depth_botmid + Lat_M + Lon_M + slice, sum, data=svts5)
-names(nph.int.domain)[is.na(names(nph.int.domain))] <- sp.grps
-gph.int.domain <- aggregate(gph ~ region + regarea + Region_name + Interval +
-    depth_botmid + Lat_M + Lon_M + slice, sum, data=svts5)
-names(gph.int.domain)[is.na(names(gph.int.domain))] <- sp.grps
-
-plotbygrp <- function(xph.int) {
-	# come up with break points that divide the nonzero data into
-  # 7 groups on a log scale
-	v <- unlist(xph.int[, match(sp.grps, names(xph.int))])
-	v2 <- v[v>0]
-	mybrks <- 10^quantile(log10(v2), seq(0, 1, length=8))
-	symsize <- seq(0.5, 2.5, length=7)
-	npanels <- length(grp.sp) + length(unique(paste(grp.sp, grp.type))) - 1
-	if(LAKE==2) {
-		nrows <- 3
-		ncols <- ceiling(npanels/3)
-	} else {
-		nrows <- 4
-		ncols <- ceiling(npanels/4)
-	}
-	par(mfrow=c(nrows, ncols), mar=c(0, 0, 3, 0))
-	for(i in seq(sp.grps)) {
-		if(i>1) if(grp.sp[i]!=grp.sp[i-1] | grp.type[i]!=grp.type[i-1]) frame()
-		selcol <- match(sp.grps[i], names(xph.int))
-		selrow <- xph.int[, selcol] > 0
-		quant9 <- as.numeric(cut(xph.int[selrow, selcol], breaks=mybrks,
-		  include.lowest=TRUE))
-		map("worldHires", xlim=range(xph.int$Lon_M) + 0.1*c(-1, 1),
-		  ylim=range(xph.int$Lat_M) + 0.1*c(-1, 1), mar=c(0, 0, 3, 0), col="gray")
-		mtext(sp.grps[i], side=3)
-		points(xph.int$Lon_M[selrow], xph.int$Lat_M[selrow], cex=symsize[quant9],
-		  col=mypalette[quant9])
-	}
-}
-# a palette of 7 colors for non-zero data
-mypalette <- brewer.pal(9, "GnBu")[-(1:2)]
-fig <- function() plotbygrp(xph.int=nph.int)
-figu("Acoustic density for each species group.  Groups are defined by",
-  " length cut offs (L) in mm or ages (A).",
-	"  Darker and larger circles indicate higher density.", newpage="port")
-fig <- function() plotbygrp(xph.int=gph.int)
-figu("Acoustic biomass for each species group.  Groups are defined by",
-  " length cut offs (L) in mm or ages (A).",
-	"  Darker and larger circles indicate greater biomass.", newpage="port")
+  gcols <- grep("\\.", names(gph.int))
+  fig <- function() {
+    mapBy2Groups(df=gph.int[, gcols], lat=gph.int$Lat_M, lon=gph.int$Lon_M,
+      nrows=c(3, 4)[short+1])
+  }
+  figu("Acoustic biomass for each species group.  Groups are defined by",
+    " length cut offs (L) in mm or ages (A).",
+  	"  Darker and larger circles indicate greater biomass.",
+    FIG=fig, newpage="port")
 
 
+  # 13. Calculate lakewide totals based on stratified cluster sampling design ####
+
+  # stratified cluster design ... regions are strata, transects are clusters
+  # (nested in regions)
+  SCD.n <- svydesign(id=~Region_name, strata=~region, variables=nph.int[, ncols],
+    data=nph.int, nest=TRUE, weights=~regarea)
+  SCD.n2 <- as.data.frame(svytotal(as.matrix(nph.int[, ncols]/1000000), SCD.n))
+  SCD.n2ph <- as.data.frame(svymean(as.matrix(nph.int[, ncols]), SCD.n))
+
+  SCD.g <- svydesign(id=~Region_name, strata=~region, variables=gph.int[, gcols],
+    data=gph.int, nest=TRUE, weights=~regarea)
+  SCD.g2 <- as.data.frame(svytotal(as.matrix(gph.int[, gcols]/1000000), SCD.g))
+  SCD.g2ph <- as.data.frame(svymean(as.matrix(gph.int[, gcols]), SCD.g))
+
+  # summarize by the new "slices" (domains) ... ignore old "strata",
+  domainest <- function(dat, type="total") {
+  	d <- NA
+  	if(dim(dat)[1]>0) {
+      scd <- svydesign(id=~Region_name, strata=~region, data=dat, nest=TRUE,
+        weights=~regarea)
+      varnames <- grep("\\.", names(nph.int.domain), value=TRUE)
+      form <- formula(paste("~",
+        paste("`", varnames, "`", sep="", collapse=" + ")))
+  		if(type=="total") {
+  		  d <- svyby(form, ~slice, design=scd, svytotal, keep.var=FALSE,
+  		    drop.empty.groups=FALSE)
+      	d <- t(d[, -1])/1000000
+  		}
+  		if(type=="mean") {
+  		  d <- svyby(form, ~slice, design=scd, svymean, keep.var=FALSE,
+  		    drop.empty.groups=FALSE)
+      	d <- t(d[, -1])
+  		}
+      row.names(d) <- varnames
+  	}
+  	d
+  }
+
+  SCD.n.d2 <- domainest(nph.int.domain, type="total")
+  SCD.n.d2ph <- domainest(nph.int.domain, type="mean")
+  SCD.g.d2 <- domainest(gph.int.domain, type="total")
+  SCD.g.d2ph <- domainest(gph.int.domain, type="mean")
+
+  # combine information
+  laketots.n <- cbind(SCD.n.d2, SCD.n2, rse=100*SCD.n2$SE / SCD.n2$total)
+  lakemeans.n <- cbind(SCD.n.d2ph, SCD.n2ph, rse=100*SCD.n2ph$SE / SCD.n2ph$mean)
+  laketots.g <- cbind(SCD.g.d2, SCD.g2, rse=100*SCD.g2$SE / SCD.g2$total)
+  lakemeans.g <- cbind(SCD.g.d2ph, SCD.g2ph, rse=100*SCD.g2ph$SE / SCD.g2ph$mean)
+
+  # Save estimates to csv files
+  save2csv <- c("millions", "nph", "t", "gph", "nphint", "gphint")
+  outfiles <- paste0(maindir, "L", LAKE, " Y", YEAR, " ACMT Estimates ",
+    save2csv, " ", today(), ".csv")
+  write.csv(laketots.n, outfiles[1])
+  write.csv(lakemeans.n, outfiles[2])
+  write.csv(laketots.g, outfiles[3])
+  write.csv(lakemeans.g, outfiles[4])
+  write.csv(nph.int, outfiles[5])
+  write.csv(gph.int, outfiles[6])
 
 
-# 13. Calculate lakewide totals based on stratified cluster sampling design ####
+  mypalette <- brewer.pal(6, "Set3")
+  fig <- function() {
+  	par(mar=c(4, 5, 0, 1), oma=c(0, 0, 2, 0), mfrow=c(1, 2), cex=1.2)
+  	barplot(t(as.matrix(laketots.n[, 1:(length(laketots.n)-3)])), col=mypalette,
+  	  horiz=TRUE, las=1, xlab="Number of fish  (millions)")
+  	barplot(t(as.matrix(laketots.g[, 1:(length(laketots.g)-3)])), col=mypalette,
+  	  horiz=TRUE, las=1, xlab="Biomass of fish  (t)",
+  		legend.text=TRUE, args.legend=list(x="topright"))
+  }
+  figu("Acoustic survey lakewide estimates in number (left) and biomass (right)",
+    " for each species group.",
+  	"  Groups are defined by length cut offs (L) in mm or ages (A).",
+  	"  Colors are used to identify contributions from different slices.",
+    FIG=fig, h=5.8, w=9, newpage="land")
 
-# stratified cluster design ... regions are strata, transects are clusters
-# (nested in regions)
-SCD.n <- svydesign(id=~Region_name, strata=~region,
-  variables=nph.int[, grep("\\.", names(nph.int))], data=nph.int, nest=TRUE,
-	weights=~regarea)
-SCD.n2 <- as.data.frame(svytotal(as.matrix(
-  nph.int[, grep("\\.", names(nph.int))]/1000000), SCD.n))
-SCD.n2ph <- as.data.frame(svymean(as.matrix(
-  nph.int[, grep("\\.", names(nph.int))]), SCD.n))
+  # numbers in millions
+  tab <- format(round(laketots.n), big.mark=",")
+  tabl("Lakewide estimates in number (millions) for each species group and",
+    " slice.",
+  	"  Groups are defined by length cut offs (L) in mm or ages (A).", TAB=tab)
 
-SCD.g <- svydesign(id=~Region_name, strata=~region,
-  variables=gph.int[, grep("\\.", names(gph.int))], data=gph.int, nest=TRUE,
-	weights=~regarea)
-SCD.g2 <- as.data.frame(svytotal(as.matrix(
-  gph.int[, grep("\\.", names(gph.int))]/1000000), SCD.g))
-SCD.g2ph <- as.data.frame(svymean(as.matrix(
-  gph.int[, grep("\\.", names(gph.int))]), SCD.g))
+  # biomass in metric tons (t)
+  tab <- format(round(laketots.g), big.mark=",")
+  tabl("Lakewide biomass estimates (t) for each species group and slice.",
+  	"  Groups are defined by length cut offs (L) in mm or ages (A).", TAB=tab)
 
-# summarize by the new "slices" (domains) ... ignore old "strata",
-domainest <- function(dat, type="total") {
-	d <- NA
-	if(dim(dat)[1]>0) {
-    scd <- svydesign(id=~Region_name, strata=~region, data=dat, nest=TRUE,
-      weights=~regarea)
-    varnames <- grep("\\.", names(nph.int.domain), value=TRUE)
-    form <- formula(paste("~",
-      paste("`", varnames, "`", sep="", collapse=" + ")))
-		if(type=="total") {
-		  d <- svyby(form, ~slice, design=scd, svytotal, keep.var=FALSE,
-		    drop.empty.groups=FALSE)
-    	d <- t(d[, -1])/1000000
-		}
-		if(type=="mean") {
-		  d <- svyby(form, ~slice, design=scd, svymean, keep.var=FALSE,
-		    drop.empty.groups=FALSE)
-    	d <- t(d[, -1])
-		}
-    row.names(d) <- varnames
-	}
-	d
-}
+  addSessionInfo(doc, locale=FALSE)
 
-SCD.n.d2 <- domainest(nph.int.domain, type="total")
-SCD.n.d2ph <- domainest(nph.int.domain, type="mean")
-SCD.g.d2 <- domainest(gph.int.domain, type="total")
-SCD.g.d2ph <- domainest(gph.int.domain, type="mean")
-
-# combine information
-laketots.n <- cbind(SCD.n.d2, SCD.n2, rse=100*SCD.n2$SE / SCD.n2$total)
-lakemeans.n <- cbind(SCD.n.d2ph, SCD.n2ph, rse=100*SCD.n2ph$SE / SCD.n2ph$mean)
-laketots.g <- cbind(SCD.g.d2, SCD.g2, rse=100*SCD.g2$SE / SCD.g2$total)
-lakemeans.g <- cbind(SCD.g.d2ph, SCD.g2ph, rse=100*SCD.g2ph$SE / SCD.g2ph$mean)
-
-# Save estimates to csv files
-save2csv <- c("millions", "nph", "t", "gph", "nphint", "gphint")
-outfiles <- paste0(maindir, "L", LAKE, " Y", YEAR, " ACMT Estimates ",
-  save2csv, " ", today(), ".csv")
-write.csv(laketots.n, outfiles[1])
-write.csv(lakemeans.n, outfiles[2])
-write.csv(laketots.g, outfiles[3])
-write.csv(lakemeans.g, outfiles[4])
-write.csv(nph.int, outfiles[5])
-write.csv(gph.int, outfiles[6])
-
-
-mypalette <- brewer.pal(6, "Set3")
-fig <- function() {
-	par(mar=c(4, 5, 0, 1), oma=c(0, 0, 2, 0), mfrow=c(1, 2), cex=1.2)
-	barplot(t(as.matrix(laketots.n[, 1:(length(laketots.n)-3)])), col=mypalette,
-	  horiz=TRUE, las=1, xlab="Number of fish  (millions)")
-	barplot(t(as.matrix(laketots.g[, 1:(length(laketots.g)-3)])), col=mypalette,
-	  horiz=TRUE, las=1, xlab="Biomass of fish  (t)",
-		legend.text=TRUE, args.legend=list(x="topright"))
-}
-figu("Acoustic survey lakewide estimates in number (left) and biomass (right)",
-  " for each species group.",
-	"  Groups are defined by length cut offs (L) in mm or ages (A).",
-	"  Colors are used to identify contributions from different slices.",
-  h=5.8, w=9, newpage="land")
-
-# numbers in millions
-tab <- format(round(laketots.n), big.mark=",")
-tabl("Lakewide estimates in number (millions) for each species group and",
-  " slice.",
-	"  Groups are defined by length cut offs (L) in mm or ages (A).")
-
-# biomass in metric tons (t)
-tab <- format(round(laketots.g), big.mark=",")
-tabl("Lakewide biomass estimates (t) for each species group and slice.",
-	"  Groups are defined by length cut offs (L) in mm or ages (A).")
-
-
-
-endrtf()
-
-
+  endrtf()
 
 }

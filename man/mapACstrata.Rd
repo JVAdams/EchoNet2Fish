@@ -5,9 +5,9 @@
 \title{Multipanel Map of Locations}
 \usage{
 mapACstrata(bygroup, sug = sort(unique(bygroup)), lon, lat,
-  rlon = range(lon, na.rm = TRUE) + 0.1 * c(-1, 1), rlat = range(lat, na.rm
-  = TRUE) + 0.1 * c(-1, 1), IDcol = NULL, mapcol = "gray", mar = c(0, 0,
-  0, 0))
+  rlon = range(lon, na.rm = TRUE) + cushion * c(-1, 1), rlat = range(lat,
+  na.rm = TRUE) + cushion * c(-1, 1), cushion = 0.1, IDcol = NULL,
+  mapcol = "gray", mar = c(0, 0, 0, 0))
 }
 \arguments{
 \item{bygroup}{Vector, identifying the group membership of the locations to be mapped.}
@@ -22,11 +22,14 @@ Same length as\code{lat}.}
 
 \item{rlon}{A numeric vector of length 2, range of longitudes to map,
 in decimal degrees, default
-range(\code{lon}, na.rm=TRUE) + 0.1*c(-1, 1).}
+range(\code{lon}, na.rm=TRUE).}
 
 \item{rlat}{A numeric vector of length 2, range of latitudes to map,
 in decimal degrees, default
-range(\code{lat}, na.rm=TRUE) + 0.1*c(-1, 1).}
+range(\code{lat}, na.rm=TRUE).}
+
+\item{cushion}{A numeric scalar indicating the amount of cushion to add to the \code{rlon}
+and \code{rlat} ranges in decimal degrees, default 0.1.}
 
 \item{IDcol}{A vector, the color used to map locations, same length as \code{bygroup}.
 If NULL, the default, a range of colors will be assigned automatically.}

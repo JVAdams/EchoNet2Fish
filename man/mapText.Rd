@@ -35,7 +35,7 @@ Group identifiers are added to a map, typically created with
  basincode <- c(1, 2, 1, 2)
  basin <- c("Main", "GBay", "Main", "GBay")
  mapSymbols(lat=latitude, lon=longitude, colorz=basincode+3,
-  pch=16, xla=0.4)
+  pch=16, cushion=0.4)
  mapText(lat=latitude, lon=longitude, group=basin)
 }
 }
