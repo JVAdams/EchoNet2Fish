@@ -30,8 +30,4 @@ Assign new values to a vector.
 recode(c(1,1,1,2,3,4,1,10,3), 1:3, 1001:1003)
 recode(c(1,1,1,2,3,4,1,10,3), 1:3, 1001:1003, must.match=TRUE)
 }
-\references{
-This is a copy of the \code{recode} function from the
-  \href{https://github.com/JVAdams/jvamisc}{[jvamisc]} package.
-}
 

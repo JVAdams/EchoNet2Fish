@@ -27,12 +27,12 @@
 #'   water to the substrate) corresponding to the
 #'   observations which are to be categorized into slices.  Only necessary if
 #'   required by \code{sliceDef}, default NULL.
-#' @param lat
-#'   A numeric vector of latitudes corresponding to the
-#'   observations which are to be categorized into slices.  Only necessary if
-#'   required by \code{sliceDef}, default NULL.
 #' @param lon
 #'   A numeric vector of longitudes corresponding to the
+#'   observations which are to be categorized into slices.  Only necessary if
+#'   required by \code{sliceDef}, default NULL.
+#' @param lat
+#'   A numeric vector of latitudes corresponding to the
 #'   observations which are to be categorized into slices.  Only necessary if
 #'   required by \code{sliceDef}, default NULL.
 #' @param reg
@@ -41,15 +41,15 @@
 #'   required by \code{sliceDef}, default NULL.
 #' @return
 #'   A character vector the same length as the observations variables
-#'   (\code{fdp}, \code{bdp}, \code{lat}, \code{reg}), identifying the slice to
-#'   which each observation belongs.
+#'   (\code{fdp}, \code{bdp}, \code{lon}, \code{lat}, \code{reg}), 
+#'   identifying the slice to which each observation belongs.
 #' @details
 #' For ranges of values, each interval of sliceDef is closed on the left and
 #' open on the right.
 #' In other words, if you assign an interval of fdp=c(10, 20), observations
 #' >= 10 and < 20 will be considered for inclusion in that slice.
 #'
-#' All observation variables (\code{fdp}, \code{bdp}, \code{lat}, \code{lon}),
+#' All observation variables (\code{fdp}, \code{bdp}, \code{lon}, \code{lat},
 #' \code{reg}), if not NULL, must be the same length.
 #'
 #' @export
@@ -74,9 +74,9 @@
 #' )
 #' sliceCat(myslicedef2, fdp=fishingD, reg=region)
 
-sliceCat <- function(sliceDef, fdp=NULL, bdp=NULL, lat=NULL, lon=NULL, reg=NULL) {
+sliceCat <- function(sliceDef, fdp=NULL, bdp=NULL, lon=NULL, lat=NULL, reg=NULL) {
   # data frame of variables with names for easy reference
-  parmat <- as.data.frame(cbind(fdp=fdp, bdp=bdp, lat=lat, lon=lon, reg=reg))
+  parmat <- as.data.frame(cbind(fdp=fdp, bdp=bdp, lon=lon, lat=lat, reg=reg))
   pr <- match("reg", names(parmat))
   if(!is.na(pr)) {
     parmat <- data.frame(apply(parmat[, -pr, drop=FALSE], 2, as.numeric),
@@ -89,7 +89,7 @@ sliceCat <- function(sliceDef, fdp=NULL, bdp=NULL, lat=NULL, lon=NULL, reg=NULL)
   if(is.null(slicecats)) stop("The elements of sliceDef must be named.")
   selmat <- matrix(TRUE, nrow=dim(parmat)[1], ncol=L,
     dimnames=list(NULL, slicecats))
-  possiblepars <- c("fdp", "bdp", "lat", "lon", "reg")
+  possiblepars <- c("fdp", "bdp", "lon", "lat", "reg")
   for(i in 1:L) {
     L2 <- length(sliceDef[[i]])
     pars <- names(sliceDef[[i]])

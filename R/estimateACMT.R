@@ -218,7 +218,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # define slice
   svts5 <- data.frame(svts4,
     slice=sliceCat(sliceDef, fdp=svts4$Depth_mean, bdp=svts4$depth_botmid,
-      lat=svts4$Lat_M, lon=svts4$Lon_M, reg=substring(svts4$Region_name, 1, 2)))
+      lon=svts4$Lon_M, lat=svts4$Lat_M, reg=substring(svts4$Region_name, 1, 2)))
 
 
   # 8.  Add classifiers to trawl data so they match those in acoustic data ####
@@ -235,7 +235,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # define slice
   optrop <- data.frame(optrop,
     slice=sliceCat(sliceDef, fdp=optrop$Fishing_Depth, bdp=optrop$depth_botmid,
-      lat=optrop$Latitude, lon=optrop$Longitude,
+      lon=optrop$Longitude, lat=optrop$Latitude, 
       reg=substring(optrop$Transect, 1, 2)))
 
 
@@ -489,7 +489,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   }
 
   fig <- function() {
-    mapACstrata(bygroup=svts5$region, lon=svts5$Lon_M, lat=svts5$Lat_M)
+    mapByGroup(bygroup=svts5$region, lon=svts5$Lon_M, lat=svts5$Lat_M)
   }
 
   figu("Acoustic transect data, color coded by design-based strata.",
@@ -526,7 +526,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   ncols <- grep("\\.", names(nph.int))
   fig <- function() {
-    mapBy2Groups(df=nph.int[, ncols], lat=nph.int$Lat_M, lon=nph.int$Lon_M,
+    mapBy2Groups(df=nph.int[, ncols], lon=nph.int$Lon_M, lat=nph.int$Lat_M,
       nrows=c(3, 4)[short+1])
   }
   figu("Acoustic density for each species group.  Groups are defined by",
@@ -536,7 +536,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   gcols <- grep("\\.", names(gph.int))
   fig <- function() {
-    mapBy2Groups(df=gph.int[, gcols], lat=gph.int$Lat_M, lon=gph.int$Lon_M,
+    mapBy2Groups(df=gph.int[, gcols], lon=gph.int$Lon_M, lat=gph.int$Lat_M,
       nrows=c(3, 4)[short+1])
   }
   figu("Acoustic biomass for each species group.  Groups are defined by",
@@ -549,12 +549,12 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # stratified cluster design ... regions are strata, transects are clusters
   # (nested in regions)
-  SCD.n <- svydesign(id=~Region_name, strata=~region, variables=nph.int[, ncols],
+  SCD.n <- svydesign(ids=~Region_name, strata=~region, variables=nph.int[, ncols],
     data=nph.int, nest=TRUE, weights=~regarea)
   SCD.n2 <- as.data.frame(svytotal(as.matrix(nph.int[, ncols]/1000000), SCD.n))
   SCD.n2ph <- as.data.frame(svymean(as.matrix(nph.int[, ncols]), SCD.n))
 
-  SCD.g <- svydesign(id=~Region_name, strata=~region, variables=gph.int[, gcols],
+  SCD.g <- svydesign(ids=~Region_name, strata=~region, variables=gph.int[, gcols],
     data=gph.int, nest=TRUE, weights=~regarea)
   SCD.g2 <- as.data.frame(svytotal(as.matrix(gph.int[, gcols]/1000000), SCD.g))
   SCD.g2ph <- as.data.frame(svymean(as.matrix(gph.int[, gcols]), SCD.g))
@@ -563,7 +563,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   domainest <- function(dat, type="total") {
   	d <- NA
   	if(dim(dat)[1]>0) {
-      scd <- svydesign(id=~Region_name, strata=~region, data=dat, nest=TRUE,
+      scd <- svydesign(ids=~Region_name, strata=~region, data=dat, nest=TRUE,
         weights=~regarea)
       varnames <- grep("\\.", names(nph.int.domain), value=TRUE)
       form <- formula(paste("~",

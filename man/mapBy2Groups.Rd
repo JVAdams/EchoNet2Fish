@@ -4,25 +4,25 @@
 \alias{mapBy2Groups}
 \title{Multipanel Map of Locations, with Gaps}
 \usage{
-mapBy2Groups(df, lat, lon, rlat = range(lat, na.rm = TRUE),
-  rlon = range(lon, na.rm = TRUE), nrows, nsymbols = 7, mar = c(0, 0, 3,
+mapBy2Groups(df, lon, lat, rlon = range(lon, na.rm = TRUE),
+  rlat = range(lat, na.rm = TRUE), nrows, nsymbols = 7, mar = c(0, 0, 3,
   0))
 }
 \arguments{
 \item{df}{Data frame of values to plot, column names should identify membership
 in two groups, separated by a period, "group1.group2".}
 
-\item{lat}{Numeric vector, latitudes of locations to map,
-in decimal degrees, same length as \code{MTgroup}.}
-
 \item{lon}{Numeric vector, longitudes of locations to map,
 in decimal degrees, same length as \code{MTgroup}.}
 
-\item{rlat}{A numeric vector of length 2, range of latitudes to map,
-in decimal degrees, default range(\code{lat}, na.rm=TRUE).}
+\item{lat}{Numeric vector, latitudes of locations to map,
+in decimal degrees, same length as \code{MTgroup}.}
 
 \item{rlon}{A numeric vector of length 2, range of longitudes to map,
 in decimal degrees, default range(\code{lon}, na.rm=TRUE).}
+
+\item{rlat}{A numeric vector of length 2, range of latitudes to map,
+in decimal degrees, default range(\code{lat}, na.rm=TRUE).}
 
 \item{nrows}{A numeric scalar, the number of rows of plot panels in the page.}
 
@@ -45,7 +45,7 @@ between the first groups.
    c("Dog.large", "Dog.small", "Cat.large", "Cat.small", "Fish.all"))))
  mylon <- -c(83, 83, 80.4, 81)
  mylat <- c(45.4, 44.5, 45, 45.5)
- mapBy2Groups(df=mydf, lat=mylat, lon=mylon, nrows=3)
+ mapBy2Groups(df=mydf, lon=mylon, lat=mylat, nrows=3)
  }
 
 }

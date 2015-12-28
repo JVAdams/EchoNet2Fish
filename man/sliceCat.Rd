@@ -5,7 +5,7 @@
 \title{Categorize Observations as Slices for Matching Acoustic Densities and Trawl
 Catches}
 \usage{
-sliceCat(sliceDef, fdp = NULL, bdp = NULL, lat = NULL, lon = NULL,
+sliceCat(sliceDef, fdp = NULL, bdp = NULL, lon = NULL, lat = NULL,
   reg = NULL)
 }
 \arguments{
@@ -32,11 +32,11 @@ water to the substrate) corresponding to the
 observations which are to be categorized into slices.  Only necessary if
 required by \code{sliceDef}, default NULL.}
 
-\item{lat}{A numeric vector of latitudes corresponding to the
+\item{lon}{A numeric vector of longitudes corresponding to the
 observations which are to be categorized into slices.  Only necessary if
 required by \code{sliceDef}, default NULL.}
 
-\item{lon}{A numeric vector of longitudes corresponding to the
+\item{lat}{A numeric vector of latitudes corresponding to the
 observations which are to be categorized into slices.  Only necessary if
 required by \code{sliceDef}, default NULL.}
 
@@ -46,8 +46,8 @@ required by \code{sliceDef}, default NULL.}
 }
 \value{
 A character vector the same length as the observations variables
-  (\code{fdp}, \code{bdp}, \code{lat}, \code{reg}), identifying the slice to
-  which each observation belongs.
+  (\code{fdp}, \code{bdp}, \code{lon}, \code{lat}, \code{reg}), 
+  identifying the slice to which each observation belongs.
 }
 \description{
 Categorize observations as spatial slices for matching fish densities
@@ -60,7 +60,7 @@ open on the right.
 In other words, if you assign an interval of fdp=c(10, 20), observations
 >= 10 and < 20 will be considered for inclusion in that slice.
 
-All observation variables (\code{fdp}, \code{bdp}, \code{lat}, \code{lon}),
+All observation variables (\code{fdp}, \code{bdp}, \code{lon}, \code{lat},
 \code{reg}), if not NULL, must be the same length.
 }
 \examples{

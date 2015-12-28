@@ -16,9 +16,6 @@
 #' @return
 #'   A vector the same length as \code{x} (unless \code{must.match=TRUE}),
 #'   with \code{old} values replaced by \code{new} values.
-#' @references
-#'   This is a copy of the \code{recode} function from the
-#'   \href{https://github.com/JVAdams/jvamisc}{[jvamisc]} package.
 #' @export
 #' @examples
 #' recode(c(1,1,1,2,3,4,1,10,3), 1:3, 1001:1003)

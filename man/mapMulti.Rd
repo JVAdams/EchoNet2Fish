@@ -31,10 +31,10 @@ map, same length as \code{bygroup}, default NULL.}
 the mapped area is assumed to be wider (longitudinally) than tall.
 Used to better arrange multiple maps on a single page.}
 
-\item{lon}{A numeric vector of longitudes in decimal degrees.
-Same length as\code{lat}.}
+\item{lon}{A numeric vector of longitudes in decimal degrees.}
 
-\item{lat}{A numeric vector of latitudes in decimal degrees.}
+\item{lat}{A numeric vector of latitudes in decimal degrees.
+Same length as\code{lon}.}
 
 \item{samescale}{Logical scalar, indicating if the same (TRUE, default) or different
 (FALSE) lat/lon scales should be used for all panels.}

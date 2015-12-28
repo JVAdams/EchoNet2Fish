@@ -56,7 +56,7 @@
 #'   c(bottom, left, top, right) around each plotted map plot, default
 #'   c(0, 0, 2.5, 0).
 #' @inheritParams
-#'   mapText
+#'   mapByGroup
 #' @export
 #' @examples
 #' \dontrun{
@@ -86,10 +86,10 @@ mapMulti <- function(bygroup, sug=sort(unique(bygroup)), plottext=FALSE, ID=1,
   }
 
   if(is.null(rlon) & samescale) {
-    rlon <- range(lon, na.rm=TRUE) + cushion*c(-1, 1)
+    rlon <- range(lon, na.rm=TRUE)
   }
   if(is.null(rlat) & samescale) {
-    rlat <- range(lat, na.rm=TRUE) + cushion*c(-1, 1)
+    rlat <- range(lat, na.rm=TRUE)
   }
 
   if(length(ID)==1) ID <- rep(ID, length(bygroup))
@@ -107,16 +107,17 @@ mapMulti <- function(bygroup, sug=sort(unique(bygroup)), plottext=FALSE, ID=1,
 		selm <- bygroup==sug[i] & !is.na(bygroup)
 		if(sum(selm[!is.na(selm)])>0) {
   		if(is.null(rlon)) {
-        rlon. <- range(lon[selm], na.rm=TRUE) + cushion*c(-1, 1)
+        rlon. <- range(lon[selm], na.rm=TRUE)
   		} else {
   		  rlon. <- rlon
   		}
   		if(is.null(rlat)) {
-        rlat. <- range(lat[selm], na.rm=TRUE) + cushion*c(-1, 1)
+        rlat. <- range(lat[selm], na.rm=TRUE)
   		} else {
   		  rlat. <- rlat
   		}
-  		map("world", xlim=rlon., ylim=rlat., mar=mar, col=mapcol)
+  		map("world", xlim=rlon. + cushion*c(-1, 1), ylim=rlat. + cushion*c(-1, 1), 
+        mar=mar, col=mapcol)
 
 			bold <- emphasis + 1
 			par(xpd=NA)

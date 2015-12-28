@@ -36,11 +36,11 @@
 #'    c("Dog.large", "Dog.small", "Cat.large", "Cat.small", "Fish.all"))))
 #'  mylon <- -c(83, 83, 80.4, 81)
 #'  mylat <- c(45.4, 44.5, 45, 45.5)
-#'  mapBy2Groups(df=mydf, lat=mylat, lon=mylon, nrows=3)
+#'  mapBy2Groups(df=mydf, lon=mylon, lat=mylat, nrows=3)
 #'  }
 #'
-mapBy2Groups <- function(df, lat, lon, rlat=range(lat, na.rm=TRUE),
-  rlon=range(lon, na.rm=TRUE), nrows, nsymbols=7, mar=c(0, 0, 3, 0)) {
+mapBy2Groups <- function(df, lon, lat, rlon=range(lon, na.rm=TRUE), 
+  rlat=range(lat, na.rm=TRUE), nrows, nsymbols=7, mar=c(0, 0, 3, 0)) {
 
   if(nsymbols < 1 | nsymbols > 7)
     stop("nsymbols must be between 1 and 7, inclusive")
