@@ -23,7 +23,7 @@ age-length keys should be used, default NULL.}
 
 \item{regArea}{A numeric vector, corresponding areas (in ha) of \code{region}.}
 
-\item{TSrange}{A numeric vector of length 2, the targest strength range of interest,
+\item{TSrange}{A numeric vector of length 2, the target strength range of interest,
 minimum and maximum in dB, default c(-60, -30).}
 
 \item{psi}{A numeric scalar, the transducer-specific two-way equivalent beam angle

@@ -51,7 +51,7 @@ A character vector the same length as the observations variables
 }
 \description{
 Categorize observations as spatial slices for matching fish densities
-estimated from acoustic transects and speciec compositions estimated from
+estimated from acoustic transects and species compositions estimated from
 midwater trawl catches.
 }
 \details{

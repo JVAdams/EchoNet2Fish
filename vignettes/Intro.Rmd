@@ -1,0 +1,348 @@
+---
+title: "Introduction to EchoNet2Fish"
+author: "Jean V. Adams"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to EchoNet2Fish}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+The R package **EchoNet2Fish** estimates fish abundance from acoustic echoes and midwater trawl catch.  At its core are two functions that explore the data, `exploreACMT`, and generate the estimates, `estimateACMT`.  The code is tailored to the format and procedures used by the Great Lakes Acoustic Users Group (Parker-Stetter et al. 2009).
+
+## Install
+
+Install the **EchoNet2Fish** package following the instructions at [Readme](https://github.com/JVAdams/EchoNet2Fish/blob/master/README.md).
+
+```{r install_package, eval=FALSE}
+library(devtools)
+install_github("JVAdams/EchoNet2Fish")
+```
+
+Then load the **EchoNet2Fish** package.
+
+```{r load_package1, message=FALSE}
+library(EchoNet2Fish)
+```
+
+## Prepare the data
+
+Before any estimates are made, the acoustic and midwater trawl data must be prepared in the following way.   
+
+#### File organization
+
+For each set of data for which you would like to generate estimates (e.g., for one year of data from one lake), you should have a single sub directory (`subdir`) containing all of the relevant files.  For example, you might have a subdirectories called *H13*, *H14*, and *M14*, containing all of the data for Lake Huron in 2013 and 2014 and Lake Michigan in 2014.  Within this subdirectory, you will have two more subdirectories for the acoustic data (one for all the Sv files and one for all the TS files), and you will have all of your midwater trawl files (operations, catches, lengths, and age-length keys).  Above this subdirectory should be an overarching directory (`refdir`) that contains a reference csv file (`refcsv`).
+
+* `refdir`  
+    * `refcsv`.csv
+    * `subdir` (e.g., H13)
+        * `svsubdir`
+            * x.csv
+            * y.csv
+            * z.csv
+        * `tssubdir`
+            * x.csv
+            * y.csv
+            * z.csv
+        * `optropf`.csv
+        * `trcatchf`.csv
+        * `trlff`.csv
+        * `keyfile1`.csv
+        * `keyfile2`.csv
+    * `subdir` (e.g., H14)
+        * `svsubdir`
+            * x.csv
+            * y.csv
+            * z.csv
+        * `tssubdir`
+            * x.csv
+            * y.csv
+            * z.csv
+        * `optropf`.csv
+        * `trcatchf`.csv
+        * `trlff`.csv
+        * `keyfile1`.csv
+        * `keyfile2`.csv
+    * `subdir` ...
+
+#### Reference file
+
+The reference csv file contains information, primarily the directory and file names for the acoustic and midwater trawl data, for all of the subdirectories (one row for each subdirectory).  The file must contain these 10 columns:  
+
+* `subdir` = a subdirectory of `refdir` containing all the other subdirectories and files,  
+* `svsubdir` = the Sv subdirectory,  
+* `tssubdir` = the TS subdirectory,  
+* `optropf` = the midwater trawl operations file,  
+* `trcatchf` = the midwater trawl catch file,  
+* `trlff` = the midwater trawl lengths file,  
+* `keysp1` = the species code for keyfile1,  
+* `keyfile1` = the age-length csv file for specieskeysp1,  
+* `keysp2` = the species code for keyfile2, and  
+* `keyfile2` = the age-length csv file for specieskeysp2.  
+
+There should also be one or more additional columns for `keyvars`, the key variable(s) used to define each unique run of the exploration and estimation process.  In the example below, `LAKE` and `YEAR` are used as the key variables.
+
+```{r refcsv, echo=FALSE}
+refdir <- "C:/Temp"
+refdat <- data.frame(
+  LAKE = c(3, 3, 2), 
+  YEAR = c(2013, 2014, 2014), 
+  subdir = c("H13", "H14", "M14"), 
+  svsubdir = c("SV", "SV", "SV"), 
+  tssubdir = c("TS", "TS", "TS"), 
+  optropf = c("H.mtr.op13", "H.mtr.op14", "MtrawlOp"), 
+  trcatchf = c("H.catch13", "H.catch14", "M.catch"), 
+  trlff = c("Htr_lf13", "H.tr_lf14", "M.tr_lf"), 
+  keysp1 = c(NA, NA, 106), 
+  keyfile1 = c(NA, NA, "aleagelenkey"), 
+  keysp2 = c(NA, NA, NA), 
+  keyfile2 = c(NA, NA, NA))
+write.csv(refdat, paste(refdir, "myref.csv", sep="/"))
+knitr::kable(refdat)
+```
+
+#### Acoustic files
+
+Except where noted, the order of the rows and columns in any of the acoustic or midwater trawl files is not important.  Additional columns, i.e., other than those that are required, may be included in the files, but are not necessary.
+
+In both the **SV and TS** csv files, the first column is automatically assigned the name *Region_ID*. This name write-over is needed to handle occasional problems with byte order marks at the beginning of the csv files. The variable *Region_ID* is not actually used in the exploration or estimation procedures.
+
+The following 3 columns must be included in both the **SV and TS** csv files:
+
+* Region_name = transect name, composed of region and transect ID number
+* Interval = interval ID numbers, identifying acoustic transect segments 
+* Layer = layer ID numbers, identifying 10-m acoustic layers in the water column, numbered from the surface to the bottom
+
+These columns serve to uniquely identify each row in the files, and are used to combine the information from both types of files.
+
+The following 12 columns must be included in the **SV** csv files:
+
+* Date_M = date, YYYYMMDD
+* Sv_mean = mean volume backscattering strength in dB
+* Depth_mean = range to target in m
+* Layer_depth_min = minimum of corresponding depth layer in m
+* Layer_depth_max = maximum of corresponding depth layer in m
+* Lat_M = latitude in decimal degrees
+* Lon_M = longitude in decimal degrees
+* PRC_ABC = area backscattering coefficient (unitless)
+
+```{r svexample, echo=FALSE}
+mydir <- readAll(refdir="C:/Temp", keyvals=c(2, 2014), 
+  keyvars=c("LAKE", "YEAR"), rdat="myACMT", refcsv="myref")
+load(paste(mydir, "myACMT.RData", sep="/"))
+sv.vars <- c("Region_name", "Interval", "Layer", "Date_M", "Sv_mean",   "Depth_mean", "Layer_depth_min", "Layer_depth_max", "Lat_M", "Lon_M", 
+  "PRC_ABC")
+set.seed(395)
+look <- sv[sample(dim(sv)[1], 5), sv.vars]
+look$Date_M <- format(look$Date_M, "%Y%m%d")
+look$Sv_mean <- round(look$Sv_mean, 1)
+look$Depth_mean <- round(look$Depth_mean, 1)
+look$Lat_M <- round(look$Lat_M, 2)
+look$Lon_M <- round(look$Lon_M, 2)
+look$PRC_ABC <- format(look$PRC_ABC, digits=3)
+knitr::kable(look, row.names=FALSE)
+```
+
+Several columns must be included in the **TS** csv files indicating the number of targets in each target strength bin.  Each target count columns is named according to the integer target strength, with an *X.* prefix, e.g.: 
+
+* X.16
+* X.17
+* ...
+* X.75
+* X.76 
+
+```{r, echo=FALSE}
+ts.vars <- c("Region_name", "Interval", "Layer", "X.36", "X.37", "X.38", 
+  "X.64", "X.65", "X.66")
+look <- ts[sample(dim(ts)[1], 5), ts.vars]
+knitr::kable(look, row.names=FALSE)
+```
+
+#### Midwater trawl files
+
+The following 1 column must be included in the midwater trawl **operation**, **catch**, and **length** csv files:
+
+* Op.Id = operation ID number
+
+This column serves to uniquely identify each trawl haul in the files.
+
+The following 9 columns must be included in the midwater trawl **operation** csv files:
+
+* Year = year
+* Lake = lake ID code
+* Beg.Depth = bottom depth at beginning of trawl haul in m
+* End.Depth = bottom depth at end of trawl haul in m
+* Fishing_Depth = fishing depth of trawl haul in m
+* Transect = transect name, composed of region and transect ID number (corresponds to Region_name in SV and TS files)
+* Latitude = latitude in decimal degrees
+* Longitude = longitude in decimal degrees
+
+```{r, echo=FALSE}
+op.vars <- c("Op.Id", "Year", "Lake", "Beg.Depth", "End.Depth", 
+  "Fishing_Depth", "Transect", "Latitude", "Longitude")
+look <- optrop[sample(dim(optrop)[1], 5), op.vars]
+look$Latitude <- round(look$Latitude, 2)
+look$Longitude <- round(look$Longitude, 2)
+knitr::kable(look, row.names=FALSE)
+```
+
+The following 3 columns must be included in the midwater trawl **catch** csv files:
+
+* Species = species code
+* Weight = aggregate weight in g
+* N = number of fish weighed
+
+```{r, echo=FALSE}
+ct.vars <- c("Op.Id", "Species", "Weight", "N")
+look <- trcatch[sample(dim(trcatch)[1], 5), ct.vars]
+knitr::kable(look, row.names=FALSE)
+```
+
+The following 3 columns must be included in the midwater trawl **length** csv files:
+
+* Species = species code
+* Length = length of individual fish in mm
+* N = number of fish measured
+
+```{r, echo=FALSE}
+lf.vars <- c("Op.Id", "Species", "Length", "N")
+look <- trlf[sample(dim(trlf)[1], 5), lf.vars]
+knitr::kable(look, row.names=FALSE)
+```
+
+#### Age-length key files
+
+No age-length key is required, but you may include age-length keys in separate csv files for up to 2 different species.  Each file should be arranged such that rows represent 10-mm length categories and columns represent 1-yr ages.  The file must contain one variable called *mmgroup* giving the midpoint of the length category, e.g., *mmgroup* 15 represents fish $\geq$ 10 mm and < 20 mm.  For each length category, the proportion of fish in each age is represented by a series of columns which sum to 1 (or 0, if no fish used to derive the key were found that length category).  Each proportional column is named according to the integer age, with an *Age* prefix, e.g.: 
+
+* mmgroup = midpoint of 10-mm length category
+* Age0 = proportion of all fish in corresponding length category that are age 0
+* Age1 = proportion ... that are age 1
+* ...
+* Age8 = proportion ... that are age 8
+* Age9  = proportion ... that are age 9
+
+```{r, echo=FALSE}
+look <- key1[9:13, 2:9]
+look <- apply(look, 2, round, 3)
+knitr::kable(look, row.names=FALSE)
+```
+
+## Read in the data
+
+With the data organized as described and the reference file as a guide to the directory and file names, you can now read in the acoustic and midwater trawl data using the `readAll` function.  
+
+In the example below, the overarching directory is *C:/Temp* (use forward slashes for paths), and the reference file is *myref.csv*.  Only data from the 3rd row of the reference file will be read, specified by `keyvals` for the `keyvars`, i.e., `LAKE==2` and `YEAR==2014`.  The data are saved to an RData file named *myACMT*, and the subdirectory path is returned.
+
+```{r, eval=FALSE}
+mydir <- readAll(refdir="C:/Temp", keyvals=c(2, 2014), 
+  keyvars=c("LAKE", "YEAR"), rdat="myACMT", refcsv="myref")
+```
+
+```{r}
+mydir
+```
+
+## Explore the data
+
+```{r}
+# exploreACMT(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL, short=TRUE)
+```
+
+To make processing run more smoothly, especially if you have multiple years or lakes that you want to process, you should prepare several pieces of information prior to running any code.
+
+#### Size information
+
+You will need a data frame of species-specific size information for each species group for which you wish to generate abundance estimates.  The data frame has five variables: `sp` species code, `spname` species name, `lcut` length cut off (in mm), `lwa` and `lwb` parameters of the length-weight relation, $Wg = lwa*Lmm^{lwb}$, where *Wg* is the weight (in g) and *Lmm* is the total length (in mm).  The length cut off is used to divide the data for a given species into two groups for abundance estimation, those with fish lengths $\leq$ `lcut` and > `lcut`) for estimation.  If you don't wish to divide a species into two length groups, set `lcut` to 0 for that species.  This will be used as input to the `estimateACMT` function.
+
+```{r spinfo}
+myspInfo <- data.frame(
+  sp = c(106, 109, 129),
+  spname = c("alewife", "rainbow smelt", "threespine stickleback"),
+  lcut = c(100, 90, 0),
+  lwa = c(1.41e-05, 4.85e-06, 3.95e-05),
+  lwb = c(2.87, 3.03, 2.59)
+)
+```
+
+#### Slices
+
+You will need a definition of the *"slices"* by which you wish to summarize the abundance estimates.  The slices can be defined by combinations of fishing depths (`fdp`), bottom depths (`bdp`), longitudes (`lon`), latitudes (`lat`), and regions (`reg`).  The slice definition is described by a list of slices; each slice is a list of defining characteristics; and each characteristic is a named vector giving the range of values.  This will be used as input to the `sliceCat` function.
+
+This is easier to explain with some examples.  Let's say you want to define two slices, based on a dividing line at a fishing depth of 20 m.  You would write your slice definition as
+
+```{r slice1}
+myslice1 <- list(
+  epi  = list(fdp=c(-Inf,  20)),
+  hypo = list(fdp=c(  20, Inf))
+  )
+```
+
+This names the upper slice *"epi"* and the lower slice *"hypo"* (you can name the slices whatever you want, but they must be named).  And it defines these slices by the corresponding range of fishing depths (`fdp`), from $\geq$ negative infinity to < 20 for *epi* and from $\geq$ 20 to < positive infinity for *hypo*.
+
+Or, perhaps you want to define four slices, using the same premise as before, but now dividing the epilimnion into three parts according to latitude.  You might write your slice definition as
+
+```{r slice2}
+myslice2 <- list(
+  epi.south   = list(fdp=c(-Inf,  20), lat=c(-Inf,  43)),
+  epi.central = list(fdp=c(-Inf,  20), lat=c(  43,  45)),
+  epi.north   = list(fdp=c(-Inf,  20), lat=c(  45, Inf)),
+  hypo        = list(fdp=c(  20, Inf))
+  )
+```
+
+Similarly, slices may also be defined by ranges of bottom depths and longitudes.  If you wish to define slices by regions that are not simply described by longitudinal or latitudinal breakpoints, for example separating the bays from the main basin, you might write your slice definition as
+
+```{r slice3}
+myslice3 <- list(
+  epi.bays = list(fdp=c(-Inf,  20), reg=c("Bay A", "Bay B")),
+  epi.main = list(fdp=c(-Inf,  20), reg="Main"),
+  hypo     = list(fdp=c(  20, Inf))
+  )
+```
+
+I'll provide some fake data to demonstrate how these slice definitions compare.
+
+```{r slices}
+fishingD <- c(13, 10, 17, 15, 18, 22, 21, 25, 24, 26)
+latitude <- c(42, 44, 44, 46, 47, 46, 46.1, 66, 43.2, 41)
+region <- c("Bay A", "Bay B", "Main")[c(3, 1, 3, 2, 3, 1, 2, 3, 3, 3)]
+s1 <- sliceCat(myslice1, fdp=fishingD)
+s2 <- sliceCat(myslice2, fdp=fishingD, lat=latitude)
+s3 <- sliceCat(myslice3, fdp=fishingD, reg=region)
+data.frame(fishingD, latitude, region, s1, s2, s3)
+```
+
+```{r read}
+# specify reference directory, where Reference.csv file is
+# and key values, lake (2=Michigan, 3=Huron) and year of interest
+# mydir <- readAll(refdir="C:/JVA/Consult/Warner/Nearest Trawl",
+#  keyvals=c(2, 2014))
+```
+
+http://r-pkgs.had.co.nz/vignettes.html
+
+## Explore the data
+
+The `exploreACMT` function is used to explore the acoustic and midwater trawl data.  It requires that an RData file be prepared with all the necessary input data.  This can be done with the `readAll` function.  The `readAll` function requires some data preparation as well, and assumes that your files are organized in a certain way.  
+
+## Package development
+
+To do list:
+
+1.  update package
+1.  remove unneeded columns from files, and test that everything runs okay
+
+There are a number of ways that more flexibility could be introduced to the package in its current form.  The more flexible the package is, the more useful it will be for general use.
+
+1.  allow users to organize their file structures differently
+1.  allow for more than 2 species with age-length keys
+1.  allow user to name the first column of the TS and SV files
+1.  allow layers to be defined in different ways (not fixed to 10-m depths)
+1.  allow user to specify the names of the date variables
+1.  allow user to use different key variables (not stuck with year and lake)
+
+
+## References
+
+Parker-Stetter, S. L., Rudstam, L. G., Sullivan, P. J., and Warner, D. M.  2009.  Standard operating procedures for fisheries acoustic surveys in the  Great Lakes. Great Lakes Fish. Comm. Spec. Pub. 09-01.  [www.glfc.org/pubs/SpecialPubs/Sp09_1.pdf](http://www.glfc.org/pubs/SpecialPubs/Sp09_1.pdf).

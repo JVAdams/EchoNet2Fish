@@ -2,7 +2,7 @@
 % Please edit documentation in R/latlon2utm.R
 \name{latlon2utm}
 \alias{latlon2utm}
-\title{Convert Lat/Lon to UTM}
+\title{Convert Lon/Lat to UTM}
 \usage{
 latlon2utm(lon, lat, zone = NULL, quiet = TRUE)
 }

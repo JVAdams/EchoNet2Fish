@@ -14,7 +14,7 @@
 #' @param fg
 #'   A scalar giving the color the circles are to be drawn in.
 #' @param bg
-#'   A scalar giving the color the circles are to be fiilled with.  The default,
+#'   A scalar giving the color with which the circles are to be filled.  The default,
 #'   NA, leaves the symbols unfilled.
 #' @param ...
 #'   Additional arguments to \code{\link{plot}}.

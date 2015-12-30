@@ -23,7 +23,7 @@
 #'   Used to better arrange multiple maps on a single page.
 #' @param samescale
 #'   Logical scalar, indicating if the same (TRUE, default) or different
-#'   (FALSE) lat/lon scales should be used for all panels.
+#'   (FALSE) lon/lat scales should be used for all panels.
 #' @param rlon
 #'   A numeric vector of length 2, range of longitudes to map,
 #'   in decimal degrees.  The default, NULL, means that the range of \code{lon}

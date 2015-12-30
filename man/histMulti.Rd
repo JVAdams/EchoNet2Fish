@@ -10,7 +10,7 @@ histMulti(x, freq = rep(1, length(x)), bygroup, sug = sort(unique(bygroup)),
   1, 1))
 }
 \arguments{
-\item{x}{Numeric vector of values to be be plotted.}
+\item{x}{Numeric vector of values to be plotted.}
 
 \item{freq}{Numeric vector of frequencies corresponding to \code{x}, default
 a vector of 1s the  same length as \code{x}.}
@@ -27,7 +27,7 @@ default sort(unique(\code{bygroup})).}
 \item{barw}{Numeric scalar, the width of the bars in units of \code{x}, default 5.}
 
 \item{samescale}{Logical scalar, indicating if the same (TRUE, default) or different
-(FALSE) lat/lon scales should be used for all panels.}
+(FALSE) lon/lat scales should be used for all panels.}
 
 \item{fillcol}{A scalar, the color used to fill the histograms, default "gray".}
 

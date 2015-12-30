@@ -18,14 +18,14 @@ a numeric vector of the backscattering cross section, sigma_bs in m^2.}
 
 \item{varTranLay}{A character vector, the names of the variable in \code{df} used to identify
 unique transect-layers.  Include names of other needed by variables
-if \code{df} contains information from mulitple waterbodies or time
+if \code{df} contains information from multiple waterbodies or time
 periods.}
 
 \item{varLay}{A character vector, the names of the variable in \code{df} used to identify
 unique layers.  The default, \code{varTranLay}[-1], assumes that the first
 variable names in \code{varTranLay} identifies the transect.
 This must be a subset of \code{varTranLay}.  Include names of other needed
-by variables if \code{df} contains information from mulitple waterbodies
+by variables if \code{df} contains information from multiple waterbodies
 or time periods.}
 
 \item{Nvcut}{A numeric scalar, the cutoff for Nv (specified by \code{VarNv}), above

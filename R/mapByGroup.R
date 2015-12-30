@@ -13,7 +13,7 @@
 #'   A numeric vector of longitudes in decimal degrees.
 #' @param lat
 #'   A numeric vector of latitudes in decimal degrees.
-#'   Same length as\code{lon}.
+#'   Same length as \code{lon}.
 #' @param rlon
 #'   A numeric vector of length 2, range of longitudes to map,
 #'   in decimal degrees, default is the range of \code{lon}.

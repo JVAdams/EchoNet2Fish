@@ -17,7 +17,7 @@ plotValues(low, high, between, lowhighKnown = FALSE, varname = "Varname",
 \item{lowhighKnown}{A logical scalar indicating whether the vector representing the lows
 and the vector representing the highs are known, default FALSE.
 If FALSE, the low (and high) value is calculated as the elementwise
-mininum (and maximumu) of the three vectors, \code{low}, \code{high},
+minimum (and maximum) of the three vectors, \code{low}, \code{high},
 and \code{between}.}
 
 \item{varname}{A character scalar identifying what the values represent, used as the

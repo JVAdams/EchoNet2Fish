@@ -1,4 +1,4 @@
-#' Convert Lat/Lon to UTM
+#' Convert Lon/Lat to UTM
 #'
 #' Convert longitude and latitude coordinates to Universal Transverse
 #' Mercator coordinates.

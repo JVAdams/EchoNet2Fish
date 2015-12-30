@@ -34,10 +34,10 @@ Used to better arrange multiple maps on a single page.}
 \item{lon}{A numeric vector of longitudes in decimal degrees.}
 
 \item{lat}{A numeric vector of latitudes in decimal degrees.
-Same length as\code{lon}.}
+Same length as \code{lon}.}
 
 \item{samescale}{Logical scalar, indicating if the same (TRUE, default) or different
-(FALSE) lat/lon scales should be used for all panels.}
+(FALSE) lon/lat scales should be used for all panels.}
 
 \item{rlon}{A numeric vector of length 2, range of longitudes to map,
 in decimal degrees.  The default, NULL, means that the range of \code{lon}

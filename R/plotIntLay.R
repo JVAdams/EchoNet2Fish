@@ -20,12 +20,6 @@
 #'   the same length as \code{interval}.
 #' @param main
 #'   A character scalar of the main title of the plot, default "".
-#' @details
-#' 	 The \code{column1name} argument is needed to handle occasional problems
-#' 	 with byte order marks at the beginning of the csv files, which can result
-#' 	 in strange characters being added to the name of the first column.
-#' 	 See, for example, this
-#' 	 \href{http://stackoverflow.com/a/15399003/2140956}{link}.
 #' @export
 
 plotIntLay <- function(interval, layer, group, grouporder=sort(unique(group)),

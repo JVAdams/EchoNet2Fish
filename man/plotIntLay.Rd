@@ -30,11 +30,4 @@ Plot acoustic survey data, interval vs. layer, using different colored
 symbols for data exploration purposes.  Place multiple group-specific plots
 on one page, using the same x- and y-scales.
 }
-\details{
-The \code{column1name} argument is needed to handle occasional problems
-	 with byte order marks at the beginning of the csv files, which can result
-	 in strange characters being added to the name of the first column.
-	 See, for example, this
-	 \href{http://stackoverflow.com/a/15399003/2140956}{link}.
-}
 

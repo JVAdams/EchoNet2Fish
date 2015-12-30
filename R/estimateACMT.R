@@ -13,7 +13,7 @@
 #'   A numeric vector giving the species codes for species for which
 #'   age-length keys should be used, default NULL.
 #' @param TSrange
-#'   A numeric vector of length 2, the targest strength range of interest,
+#'   A numeric vector of length 2, the target strength range of interest,
 #'   minimum and maximum in dB, default c(-60, -30).
 #' @param psi
 #'   A numeric scalar, the transducer-specific two-way equivalent beam angle
@@ -111,15 +111,15 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
         ageksp <- c(keysp1.f$sp, keysp2.f$sp)
         agekey <- list(key1, key2)
         sdf <- setdiff(ageSp, ageksp)
-        if(length(sdf)>0) stop("No age length key available for ", sdf)
+        if(length(sdf)>0) stop("No age-length key available for ", sdf)
       } else {
         ageksp <- keysp1.f$sp
         agekey <- list(key1)
         sdf <- setdiff(ageSp, ageksp)
-        if(length(sdf)>0) stop("No age length key available for ", sdf)
+        if(length(sdf)>0) stop("No age-length key available for ", sdf)
       }
     } else {
-      stop("No age length key(s) available.")
+      stop("No age-length key(s) available.")
     }
   }
 
@@ -140,7 +140,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # merge sv and ts files
   svts <- merge(sv[, c("UID", "Region_name", "Interval", "Layer",
     "Layer_depth_min", "Layer_depth_max", "Lat_M", "Lon_M", "year", "Date_M",
-    "Sv_min", "Sv_max", "Sv_mean", "Depth_mean", "PRC_ABC", "source.sv")],
+    "Sv_mean", "Depth_mean", "PRC_ABC", "source.sv")],
   	ts[, c("UID", "source.ts", "sigma")],
   	by="UID", all=TRUE)
 
@@ -402,7 +402,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # subset only the MT data with selected species captured
   opsub <- optrop[match(allops, optrop$Op.Id), ]
-  # convert from lat/lon to UTM
+  # convert from lon/lat to UTM
   MTutm <- with(opsub, latlon2utm(Longitude, Latitude))
   ACutm <- with(svts5, latlon2utm(Lon_M, Lat_M))
   # unique slice in AC and MT data
@@ -412,7 +412,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   svts5$nearmt <- NA
   for(i in seq(sus)) {
   	# select records from the selected slice
-  	# exclude any records with missing slice or missing lat/lon info
+  	# exclude any records with missing slice or missing lon/lat info
   	selm <- opsub$slice==sus[i] & !is.na(opsub$slice) &
   	  !apply(is.na(MTutm), 1, any)
   	sela <- svts5$slice==sus[i] & !is.na(svts5$slice)&

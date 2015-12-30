@@ -13,10 +13,10 @@
 #'   Additional arguments to the \code{\link{par}} function.
 #' @export
 #' @details
-#'   An individual graph is generated for each variable.  Barplots are drawn
+#'   An individual graph is generated for each variable.  Bar plots are drawn
 #'   for factors, characters with up to 50 unique values, and numerics
 #'   with up to 10 unique values.  Otherwise finite values are plotted versus
-#'   row number in \code{df}.  An empty plot is drawnf for numerics with
+#'   row number in \code{df}.  An empty plot is drawn for numerics with
 #'   fewer than 2 finite values and characters with more than 50 unique values.
 #' @examples
 #' mydat <- data.frame(a=c(1:5, 10:15, 6:9),

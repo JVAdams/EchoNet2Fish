@@ -2,7 +2,7 @@
 #' Catches
 #'
 #' Categorize observations as spatial slices for matching fish densities
-#' estimated from acoustic transects and speciec compositions estimated from
+#' estimated from acoustic transects and species compositions estimated from
 #' midwater trawl catches.
 #' @param sliceDef
 #'   A list of at least two named sub-lists defining the slices into which

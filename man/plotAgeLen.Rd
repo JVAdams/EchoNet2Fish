@@ -19,7 +19,7 @@ for possible values and their interpretation.}
 
 \item{fg}{A scalar giving the color the circles are to be drawn in.}
 
-\item{bg}{A scalar giving the color the circles are to be fiilled with.  The default,
+\item{bg}{A scalar giving the color with which the circles are to be filled.  The default,
 NA, leaves the symbols unfilled.}
 
 \item{...}{Additional arguments to \code{\link{plot}}.}

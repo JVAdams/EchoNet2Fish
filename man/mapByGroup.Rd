@@ -21,7 +21,7 @@ mean location of each bygroup, default TRUE.}
 \item{lon}{A numeric vector of longitudes in decimal degrees.}
 
 \item{lat}{A numeric vector of latitudes in decimal degrees.
-Same length as\code{lon}.}
+Same length as \code{lon}.}
 
 \item{rlon}{A numeric vector of length 2, range of longitudes to map,
 in decimal degrees, default is the range of \code{lon}.}

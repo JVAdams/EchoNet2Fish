@@ -2,7 +2,7 @@
 #'
 #' Multipanel histogram of values, one histogram for each group.
 #' @param x
-#'   Numeric vector of values to be be plotted.
+#'   Numeric vector of values to be plotted.
 #' @param freq
 #'   Numeric vector of frequencies corresponding to \code{x}, default
 #'   a vector of 1s the  same length as \code{x}.
@@ -19,7 +19,7 @@
 #'   Numeric scalar, the width of the bars in units of \code{x}, default 5.
 #' @param samescale
 #'   Logical scalar, indicating if the same (TRUE, default) or different
-#'   (FALSE) lat/lon scales should be used for all panels.
+#'   (FALSE) lon/lat scales should be used for all panels.
 #' @param fillcol
 #'   A scalar, the color used to fill the histograms, default "gray".
 #' @param rangecol

@@ -34,9 +34,9 @@ the reference csv file, \code{ref}, default "ACMT".}
   \item \code{trcatchf} = the midwater trawl catch file,
   \item \code{trlff} = the midwater trawl lengths file,
   \item \code{keysp1} = the species code for \code{keyfile1},
-  \item \code{keyfile1} = the age length csv file for species\code{keysp1},
+  \item \code{keyfile1} = the age-length csv file for species\code{keysp1},
   \item \code{keysp2} = the species code for \code{keyfile2},
-  \item \code{keyfile2} = the age length csv file for species\code{keysp2}.
+  \item \code{keyfile2} = the age-length csv file for species\code{keysp2}.
 }
 There should also be additional columns for \code{keyvars}.}
 }

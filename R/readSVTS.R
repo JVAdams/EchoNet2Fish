@@ -18,6 +18,7 @@
 #'   A character vector giving the names of variables with date information
 #'   stored as YYYYMMDD, default c("Date_S", "Date_E", "Date_M").
 #'   These will be converted to R dates.
+#'   If NULL, no date coversion will be carried out.
 #' @param addyear
 #'   A logical scalar indicating if a \code{year} variable should be added
 #'   to the data frame, based on the first variable named in
