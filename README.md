@@ -2,13 +2,14 @@ EchoNet2Fish
 ============
 
 **EchoNet2Fish** is a package of functions for the [R programming language](http://www.r-project.org/).  **EchoNet2Fish** estimates fish abundance from acoustic surveys combined with catch in nets (typically midwater trawls or gill nets).
+An example of how to use the functions in **EchoNet2Fish** is given in this [vignette](https://rawgit.com/JVAdams/EchoNet2Fish/master/vignettes/Intro.html).
 
 - - -
 
 You should be able to access the functions by installing them directly from within R.
 
-	library("devtools")
-	devtools::install_github("JVAdams/EchoNet2Fish")
+  install.packages("devtools")
+  devtools::install_github("JVAdams/EchoNet2Fish", build_vignettes=TRUE)
 	library(EchoNet2Fish)
 
 If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) `Rtools` from [CRAN](http://cran.r-project.org/bin/windows/Rtools/) then run the following lines of code before submitting the code above:
