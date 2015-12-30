@@ -326,6 +326,19 @@ http://r-pkgs.had.co.nz/vignettes.html
 
 The `exploreACMT` function is used to explore the acoustic and midwater trawl data.  It requires that an RData file be prepared with all the necessary input data.  This can be done with the `readAll` function.  The `readAll` function requires some data preparation as well, and assumes that your files are organized in a certain way.  
 
+
+
+
+
+# *****
+# This is a work in progress
+# More to come
+# *****
+
+
+
+
+
 ## Package development
 
 To do list:
