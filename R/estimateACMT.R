@@ -632,8 +632,6 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   tabl("Lakewide biomass estimates (t) for each species group and slice.",
   	"  Groups are defined by length cut offs (L) in mm or ages (A).", TAB=tab)
 
-  addSessionInfo(doc, locale=FALSE)
-
   endrtf()
 
 }

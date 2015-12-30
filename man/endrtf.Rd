@@ -4,7 +4,7 @@
 \alias{endrtf}
 \title{Write and Close an RTF Document}
 \usage{
-endrtf(rtf = doc, details = FALSE, ...)
+endrtf(rtf = doc, details = TRUE, ...)
 }
 \arguments{
 \item{rtf}{An rtf object, default \code{doc}.}

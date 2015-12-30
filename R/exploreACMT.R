@@ -459,8 +459,6 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
   }
 
-  addSessionInfo(doc, locale=FALSE)
-
   endrtf()
 
 }
