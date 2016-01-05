@@ -10,8 +10,7 @@
 #' @param missChars
 #'   A character vector of strings representing missing values in \code{df},
 #'   default c("NA", "NULL", ".", " ", "  ").
-#' @import
-#'   simsalapar
+#' @importFrom simsalapar tryCatch.W.E
 #' @return
 #'   A tidied version of the original data frame.
 #' @export
@@ -49,7 +48,7 @@ dfTidy <- function(df, missNums=c(-9999, -999.9, -999, 999, 9999),
   	  # remove leading and trailing white space
     	x <- gsub("^[ \t]+|[ \t]+$", "", x)
   		x[x %in% missChars] <- ""
-  		xwe <- tryCatch.W.E(as.numeric(x))
+  		xwe <- simsalapar::tryCatch.W.E(as.numeric(x))
   		if(is.null(xwe$warning)) x <- xwe$value
   		x
   	})

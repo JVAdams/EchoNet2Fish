@@ -12,8 +12,7 @@
 #' @param high
 #'   A numeric scalar giving the hue in [0, 1] at which the color palette
 #'   ends for high values, default 0 for red.
-#' @import
-#'   plotrix
+#' @importFrom plotrix rescale
 #' @export
 #' @seealso
 #'   \code{\link{rainbow}}
@@ -24,7 +23,7 @@
 colorVal <- function(x, n=100, low=4/6, high=0/6) {
 	# assign a specified number of rainbow colors to a collection of values
 	# default color range from blue (4/6) to red (0/6)
-	y <- round(rescale(x, c(0, n-1))) + 1
+	y <- round(plotrix::rescale(x, c(0, n-1))) + 1
 	# reverse the direction of y (e.g., from 1:100 to 100:1)
 	y <- n + 1 - y
 	rainbow(n, start=high, end=low)[y]

@@ -35,10 +35,24 @@
 #'     \item \code{keyfile2} = the age-length csv file for species\code{keysp2}.
 #'   }
 #'   There should also be additional columns for \code{keyvars}.
+#' @return
+#'   A character scalar giving the path of the subdirectory
+#'   containing all of inputs and outputs for the given \code{keyvars} and
+#'   \code{keyvals}.
 #' @details
 #'   The acoustic and midwater trawl data corresponding to the selected row
 #'   of the reference csv file are read in and saved as objects in the
-#'   specified RData file, in \code{subdir}.
+#'   specified RData file, in \code{subdir}.  Objects include
+#'   the scalar
+#'     \code{rdat};
+#'   the vectors
+#'     \code{keyvals} and \code{keyvars};
+#'   and the data frames
+#'     \code{inputs} (the selected row from the reference data);
+#'     \code{sv} and \code{ts} (acoustic data);
+#'     \code{optrop}, \code{trcatch}, and \code{trlf} (midwater trawl data);
+#'     \code{key1} and \code{key2} (age-length keys, if specified).
+#'
 #' @export
 #'
 readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
@@ -74,7 +88,11 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   }
 
   inputs <- df
-  rm(ref, i, sel, selrow, df)
+#  rm(ref, i, sel, selrow, df)
+
+  # list of objects to save
+  keepobjs <- c("rdat", "keyvals", "keyvars", "inputs",
+    "sv", "ts", "optrop", "trcatch", "trlf")
 
   # read in AC data
   sv <- readSVTS(svdir, oldname="Good_samples", newname="Samples",
@@ -89,16 +107,18 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   if(!is.null(keysp1.f)) {
     key1 <- read.csv(keysp1.f$file, as.is=TRUE)
     key1$sp <- keysp1.f$sp
+    keepobjs <- c(keepobjs, "key1")
   } else {
-    rm(keysp1.f)
+#    rm(keysp1.f)
   }
   if(!is.null(keysp2.f)) {
     key2 <- read.csv(keysp2.f$file, as.is=TRUE)
     key2$sp <- keysp2.f$sp
+    keepobjs <- c(keepobjs, "key2")
   } else {
-    rm(keysp2.f)
+#    rm(keysp2.f)
   }
-  rm(svdir, tsdir, optrop.f, trcatch.f, trlf.f)
-  save(list=ls(all.names=TRUE), file=paste0(maindir, rdat, ".RData"))
+#  rm(svdir, tsdir, optrop.f, trcatch.f, trlf.f)
+  save(list=keepobjs, file=paste0(maindir, rdat, ".RData"))
   return(maindir)
 }

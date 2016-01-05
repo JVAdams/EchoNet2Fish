@@ -40,6 +40,11 @@ the reference csv file, \code{ref}, default "ACMT".}
 }
 There should also be additional columns for \code{keyvars}.}
 }
+\value{
+A character scalar giving the path of the subdirectory
+  containing all of inputs and outputs for the given \code{keyvars} and
+  \code{keyvals}.
+}
 \description{
 Read in all the acoustic and midwater trawl data corresponding to the
 specified row or a reference csv file.  Save the data as objects in
@@ -48,6 +53,15 @@ an RData file.
 \details{
 The acoustic and midwater trawl data corresponding to the selected row
   of the reference csv file are read in and saved as objects in the
-  specified RData file, in \code{subdir}.
+  specified RData file, in \code{subdir}.  Objects include
+  the scalar
+    \code{rdat};
+  the vectors
+    \code{keyvals} and \code{keyvars};
+  and the data frames
+    \code{inputs} (the selected row from the reference data);
+    \code{sv} and \code{ts} (acoustic data);
+    \code{optrop}, \code{trcatch}, and \code{trlf} (midwater trawl data);
+    \code{key1} and \code{key2} (age-length keys, if specified).
 }
 

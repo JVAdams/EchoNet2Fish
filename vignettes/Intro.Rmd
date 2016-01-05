@@ -16,8 +16,7 @@ The R package **EchoNet2Fish** estimates fish abundance from acoustic echoes and
 Install the **EchoNet2Fish** package following the instructions at [Readme](https://github.com/JVAdams/EchoNet2Fish/blob/master/README.md).
 
 ```{r install_package, eval=FALSE}
-library(devtools)
-install_github("JVAdams/EchoNet2Fish")
+devtools::install_github("JVAdams/EchoNet2Fish")
 ```
 
 Then load the **EchoNet2Fish** package.

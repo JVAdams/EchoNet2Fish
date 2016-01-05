@@ -18,11 +18,11 @@ Use \code{\link{exploreACMT}} and \code{\link{estimateACMT}} to
   explore the data and estimate abundance.
 
 \emph{U.S. Geological Survey} (USGS) Computer Program \pkg{EchoNet2Fish} 
-  version 0.2.0.9003
+  version 0.2.1.9000
 Written by Jean V. Adams, USGS - Great Lakes Science Center
 \href{http://www.glsc.usgs.gov/}{glsc.usgs.gov}, Ann Arbor, Michigan, USA.
 Written in programming language R (R Core Team, 2015, www.R-project.org),
-version 3.2.2 (2015-08-14).
+version 3.2.3 (2015-12-10).
 Run on a PC with Intel(R) Core(TM) I7-4600m CPU, 2.90 GHz processor,
 16.0 GB RAM, and Microsoft Windows 7 Enterprise operating system 2009
 Service Pack 1.

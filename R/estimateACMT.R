@@ -59,7 +59,28 @@
 #'   with mean "unbiased" sigmas from cells in the same layer
 #'   and (if possible) transect.  Then, Nv is recalculated.
 #'
-#' @import class lubridate rtf RColorBrewer survey
+#'   Six different data frames of estimates are saved as objects in an Rdata
+#'   file and are written to csv files:
+#'     lake-wide totals \code{laketots_millions} and \code{laketots_t}
+#'       (in millions and t),
+#'     lake-wide means \code{lakemeans_nph} and \code{lakemeans_gph}
+#'       (in numbers and g per ha), and
+#'     interval means \code{intmeans_nph} and \code{intmeans_gph}
+#'       (in numbers and g per ha).
+#'   The Rdata and csv files are named using the lake and the year.
+#'
+#'   The data frames of lake-wide totals and lake-wide means have a row
+#'   for each species group, a column for each slice, and
+#'   additional columns for the total (of all slices) with the standard
+#'   error and relative standard error.
+#'
+#'   The data frames of intervals means have a row for each region and interval,
+#'   a column for each species group, and additional columns for region area,
+#'   and the interval bottom depth, latitude and longitude.
+#'
+#' @importFrom class knn1
+#' @importFrom RColorBrewer brewer.pal
+#' @import lubridate rtf survey
 #' @export
 #'
 estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
@@ -74,8 +95,6 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   old_options <- options(stringsAsFactors=FALSE, survey.lonely.psu="remove")
   on.exit(options(old_options))
-
-  newrdatname <- paste0("L", LAKE, " Y", YEAR, " ACMT Data.RData")
 
   # make sure selected lake and year is represented in data provided
   ly <- LAKE %in% optrop$Lake & YEAR %in% optrop$Year
@@ -235,7 +254,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # define slice
   optrop <- data.frame(optrop,
     slice=sliceCat(sliceDef, fdp=optrop$Fishing_Depth, bdp=optrop$depth_botmid,
-      lon=optrop$Longitude, lat=optrop$Latitude, 
+      lon=optrop$Longitude, lat=optrop$Latitude,
       reg=substring(optrop$Transect, 1, 2)))
 
 
@@ -420,7 +439,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	# determine the nearest MT
   	if(sum(selm)) {
   		if(sum(selm) > 1) {
-  			svts5$nearmt[sela] <- as.numeric(as.character(knn1(MTutm[selm, ],
+  			svts5$nearmt[sela] <- as.numeric(as.character(class::knn1(MTutm[selm, ],
   			  ACutm[sela, ], allops[selm])))
   		} else {
   			svts5$nearmt[sela] <- allops[selm]
@@ -510,23 +529,23 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   gph <- nph * mnwts[match(svts5$nearmt, allops), ]
 
   # summary of density by interval (summed densities over layers)
-  nph.int <- aggregate(nph ~ region + regarea + Region_name + Interval +
+  intmeans_nph <- aggregate(nph ~ region + regarea + Region_name + Interval +
       depth_botmid + Lat_M + Lon_M, sum, data=svts5)
-  names(nph.int)[is.na(names(nph.int))] <- sp.grps
-  gph.int <- aggregate(gph ~ region + regarea + Region_name + Interval +
+  names(intmeans_nph)[is.na(names(intmeans_nph))] <- sp.grps
+  intmeans_gph <- aggregate(gph ~ region + regarea + Region_name + Interval +
       depth_botmid + Lat_M + Lon_M, sum, data=svts5)
-  names(gph.int)[is.na(names(gph.int))] <- sp.grps
+  names(intmeans_gph)[is.na(names(intmeans_gph))] <- sp.grps
 
-  nph.int.domain <- aggregate(nph ~ region + regarea + Region_name + Interval +
+  intmeans_nph.domain <- aggregate(nph ~ region + regarea + Region_name + Interval +
       depth_botmid + Lat_M + Lon_M + slice, sum, data=svts5)
-  names(nph.int.domain)[is.na(names(nph.int.domain))] <- sp.grps
-  gph.int.domain <- aggregate(gph ~ region + regarea + Region_name + Interval +
+  names(intmeans_nph.domain)[is.na(names(intmeans_nph.domain))] <- sp.grps
+  intmeans_gph.domain <- aggregate(gph ~ region + regarea + Region_name + Interval +
       depth_botmid + Lat_M + Lon_M + slice, sum, data=svts5)
-  names(gph.int.domain)[is.na(names(gph.int.domain))] <- sp.grps
+  names(intmeans_gph.domain)[is.na(names(intmeans_gph.domain))] <- sp.grps
 
-  ncols <- grep("\\.", names(nph.int))
+  ncols <- grep("\\.", names(intmeans_nph))
   fig <- function() {
-    mapBy2Groups(df=nph.int[, ncols], lon=nph.int$Lon_M, lat=nph.int$Lat_M,
+    mapBy2Groups(df=intmeans_nph[, ncols], lon=intmeans_nph$Lon_M, lat=intmeans_nph$Lat_M,
       nrows=c(3, 4)[short+1])
   }
   figu("Acoustic density for each species group.  Groups are defined by",
@@ -534,9 +553,9 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	"  Darker and larger circles indicate higher density.",
     FIG=fig, newpage="port")
 
-  gcols <- grep("\\.", names(gph.int))
+  gcols <- grep("\\.", names(intmeans_gph))
   fig <- function() {
-    mapBy2Groups(df=gph.int[, gcols], lon=gph.int$Lon_M, lat=gph.int$Lat_M,
+    mapBy2Groups(df=intmeans_gph[, gcols], lon=intmeans_gph$Lon_M, lat=intmeans_gph$Lat_M,
       nrows=c(3, 4)[short+1])
   }
   figu("Acoustic biomass for each species group.  Groups are defined by",
@@ -549,15 +568,15 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # stratified cluster design ... regions are strata, transects are clusters
   # (nested in regions)
-  SCD.n <- svydesign(ids=~Region_name, strata=~region, variables=nph.int[, ncols],
-    data=nph.int, nest=TRUE, weights=~regarea)
-  SCD.n2 <- as.data.frame(svytotal(as.matrix(nph.int[, ncols]/1000000), SCD.n))
-  SCD.n2ph <- as.data.frame(svymean(as.matrix(nph.int[, ncols]), SCD.n))
+  SCD.n <- svydesign(ids=~Region_name, strata=~region, variables=intmeans_nph[, ncols],
+    data=intmeans_nph, nest=TRUE, weights=~regarea)
+  SCD.n2 <- as.data.frame(svytotal(as.matrix(intmeans_nph[, ncols]/1000000), SCD.n))
+  SCD.n2ph <- as.data.frame(svymean(as.matrix(intmeans_nph[, ncols]), SCD.n))
 
-  SCD.g <- svydesign(ids=~Region_name, strata=~region, variables=gph.int[, gcols],
-    data=gph.int, nest=TRUE, weights=~regarea)
-  SCD.g2 <- as.data.frame(svytotal(as.matrix(gph.int[, gcols]/1000000), SCD.g))
-  SCD.g2ph <- as.data.frame(svymean(as.matrix(gph.int[, gcols]), SCD.g))
+  SCD.g <- svydesign(ids=~Region_name, strata=~region, variables=intmeans_gph[, gcols],
+    data=intmeans_gph, nest=TRUE, weights=~regarea)
+  SCD.g2 <- as.data.frame(svytotal(as.matrix(intmeans_gph[, gcols]/1000000), SCD.g))
+  SCD.g2ph <- as.data.frame(svymean(as.matrix(intmeans_gph[, gcols]), SCD.g))
 
   # summarize by the new "slices" (domains) ... ignore old "strata",
   domainest <- function(dat, type="total") {
@@ -565,7 +584,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	if(dim(dat)[1]>0) {
       scd <- svydesign(ids=~Region_name, strata=~region, data=dat, nest=TRUE,
         weights=~regarea)
-      varnames <- grep("\\.", names(nph.int.domain), value=TRUE)
+      varnames <- grep("\\.", names(intmeans_nph.domain), value=TRUE)
       form <- formula(paste("~",
         paste("`", varnames, "`", sep="", collapse=" + ")))
   		if(type=="total") {
@@ -583,35 +602,39 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	d
   }
 
-  SCD.n.d2 <- domainest(nph.int.domain, type="total")
-  SCD.n.d2ph <- domainest(nph.int.domain, type="mean")
-  SCD.g.d2 <- domainest(gph.int.domain, type="total")
-  SCD.g.d2ph <- domainest(gph.int.domain, type="mean")
+  SCD.n.d2 <- domainest(intmeans_nph.domain, type="total")
+  SCD.n.d2ph <- domainest(intmeans_nph.domain, type="mean")
+  SCD.g.d2 <- domainest(intmeans_gph.domain, type="total")
+  SCD.g.d2ph <- domainest(intmeans_gph.domain, type="mean")
 
   # combine information
-  laketots.n <- cbind(SCD.n.d2, SCD.n2, rse=100*SCD.n2$SE / SCD.n2$total)
-  lakemeans.n <- cbind(SCD.n.d2ph, SCD.n2ph, rse=100*SCD.n2ph$SE / SCD.n2ph$mean)
-  laketots.g <- cbind(SCD.g.d2, SCD.g2, rse=100*SCD.g2$SE / SCD.g2$total)
-  lakemeans.g <- cbind(SCD.g.d2ph, SCD.g2ph, rse=100*SCD.g2ph$SE / SCD.g2ph$mean)
+  laketots_millions <- cbind(SCD.n.d2, SCD.n2, rse=100*SCD.n2$SE / SCD.n2$total)
+  lakemeans_nph <- cbind(SCD.n.d2ph, SCD.n2ph, rse=100*SCD.n2ph$SE / SCD.n2ph$mean)
+  laketots_t <- cbind(SCD.g.d2, SCD.g2, rse=100*SCD.g2$SE / SCD.g2$total)
+  lakemeans_gph <- cbind(SCD.g.d2ph, SCD.g2ph, rse=100*SCD.g2ph$SE / SCD.g2ph$mean)
 
   # Save estimates to csv files
-  save2csv <- c("millions", "nph", "t", "gph", "nphint", "gphint")
+  save2csv <- c("laketots_millions", "lakemeans_nph", "laketots_t",
+    "lakemeans_gph", "intmeans_nph", "intmeans_gph")
   outfiles <- paste0(maindir, "L", LAKE, " Y", YEAR, " ACMT Estimates ",
     save2csv, " ", today(), ".csv")
-  write.csv(laketots.n, outfiles[1])
-  write.csv(lakemeans.n, outfiles[2])
-  write.csv(laketots.g, outfiles[3])
-  write.csv(lakemeans.g, outfiles[4])
-  write.csv(nph.int, outfiles[5])
-  write.csv(gph.int, outfiles[6])
+  write.csv(laketots_millions, outfiles[1])
+  write.csv(lakemeans_nph, outfiles[2])
+  write.csv(laketots_t, outfiles[3])
+  write.csv(lakemeans_gph, outfiles[4])
+  write.csv(intmeans_nph, outfiles[5])
+  write.csv(intmeans_gph, outfiles[6])
 
+  # Save estiamtes to Rdata file
+  newrdat <- paste0("L", LAKE, " Y", YEAR, " ACMT Data")
+  save(list=save2csv, file=paste0(maindir, newrdat, ".RData"))
 
-  mypalette <- brewer.pal(6, "Set3")
+  mypalette <- RColorBrewer::brewer.pal(6, "Set3")
   fig <- function() {
   	par(mar=c(4, 5, 0, 1), oma=c(0, 0, 2, 0), mfrow=c(1, 2), cex=1.2)
-  	barplot(t(as.matrix(laketots.n[, 1:(length(laketots.n)-3)])), col=mypalette,
+  	barplot(t(as.matrix(laketots_millions[, 1:(length(laketots_millions)-3)])), col=mypalette,
   	  horiz=TRUE, las=1, xlab="Number of fish  (millions)")
-  	barplot(t(as.matrix(laketots.g[, 1:(length(laketots.g)-3)])), col=mypalette,
+  	barplot(t(as.matrix(laketots_t[, 1:(length(laketots_t)-3)])), col=mypalette,
   	  horiz=TRUE, las=1, xlab="Biomass of fish  (t)",
   		legend.text=TRUE, args.legend=list(x="topright"))
   }
@@ -622,13 +645,13 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     FIG=fig, h=5.8, w=9, newpage="land")
 
   # numbers in millions
-  tab <- format(round(laketots.n), big.mark=",")
+  tab <- format(round(laketots_millions), big.mark=",")
   tabl("Lakewide estimates in number (millions) for each species group and",
     " slice.",
   	"  Groups are defined by length cut offs (L) in mm or ages (A).", TAB=tab)
 
   # biomass in metric tons (t)
-  tab <- format(round(laketots.g), big.mark=",")
+  tab <- format(round(laketots_t), big.mark=",")
   tabl("Lakewide biomass estimates (t) for each species group and slice.",
   	"  Groups are defined by length cut offs (L) in mm or ages (A).", TAB=tab)
 

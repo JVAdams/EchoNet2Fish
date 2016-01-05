@@ -28,7 +28,7 @@
 #'   A numeric vector of length 4, the number of lines of margin
 #'   c(bottom, left, top, right) around each plotted map plot, default
 #'   c(0, 0, 3, 0).
-#' @import RColorBrewer
+#' @importFrom RColorBrewer brewer.pal
 #' @export
 #' @examples
 #' \dontrun{
@@ -52,7 +52,7 @@ mapBy2Groups <- function(df, lon, lat, rlon=range(lon, na.rm=TRUE),
 	ncols <- ceiling(npanels/nrows)
 
 	symsize <- seq(0.5, 2.5, length=nsymbols)
-  mypalette <- brewer.pal(nsymbols+2, "GnBu")[-(1:2)]
+  mypalette <- RColorBrewer::brewer.pal(nsymbols+2, "GnBu")[-(1:2)]
 
 	y <- unlist(df)
 	RY <- range(y[y>0 & !is.na(y) & is.finite(y)])
