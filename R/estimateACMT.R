@@ -87,6 +87,24 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
   spInfo, sliceDef, short=TRUE) {
 
+  if(FALSE) {
+    maindir=mydir
+    rdat="ACMT"
+    ageSp=106
+    region=Mreg
+    regArea=MArea
+    TSrange=c(-60, -30)
+    psi=0.007997566
+    soi=c(106, 109, 203, 204)
+    spInfo=myspInfo
+    sliceDef=MIsliceDef
+    short=FALSE
+    library(lubridate)
+    library(rtf)
+    library(survey)
+  }
+
+
   # 1.  Initial stuff ####
 
   load(paste0(maindir, rdat, ".RData"), envir=environment())
@@ -125,14 +143,14 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     ageSp <- sort(ageSp)
     para("Ages will be used for ",
       paste(with(spInfo, spname[sp %in% ageSp]), collapse=", "), ".")
-    if(exists("keysp1.f")) {
-      if(exists("keysp2.f")) {
-        ageksp <- c(keysp1.f$sp, keysp2.f$sp)
+    if(exists("key1")) {
+      if(exists("key2")) {
+        ageksp <- c(key1$sp, key2$sp)
         agekey <- list(key1, key2)
         sdf <- setdiff(ageSp, ageksp)
         if(length(sdf)>0) stop("No age-length key available for ", sdf)
       } else {
-        ageksp <- keysp1.f$sp
+        ageksp <- key1$sp
         agekey <- list(key1)
         sdf <- setdiff(ageSp, ageksp)
         if(length(sdf)>0) stop("No age-length key available for ", sdf)
@@ -626,7 +644,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   write.csv(intmeans_gph, outfiles[6])
 
   # Save estiamtes to Rdata file
-  newrdat <- paste0("L", LAKE, " Y", YEAR, " ACMT Data")
+  newrdat <- paste0("L", LAKE, " Y", YEAR, " ACMT")
   save(list=save2csv, file=paste0(maindir, newrdat, ".RData"))
 
   mypalette <- RColorBrewer::brewer.pal(6, "Set3")

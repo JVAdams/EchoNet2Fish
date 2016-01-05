@@ -68,27 +68,24 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
     stop("Need one row in reference file for the specified LAKE and YEAR.")
   }
 
-  df <- ref[selrow, ]
+  inputs <- ref[selrow, ]
 
-  maindir <-   paste0(refdir, "/", df$subdir, "/")
-  svdir <-     paste0(maindir, df$svsubdir, "/")
-  tsdir <-     paste0(maindir, df$tssubdir, "/")
-  optrop.f <-  paste0(maindir, df$optropf, ".csv")
-  trcatch.f <- paste0(maindir, df$trcatchf, ".csv")
-  trlf.f <-    paste0(maindir, df$trlff, ".csv")
-  if(!is.na(df$keysp1)) {
-    keysp1.f <- list(sp=df$keysp1, file=paste0(maindir, df$keyfile1, ".csv"))
+  maindir <-   paste0(refdir, "/", inputs$subdir, "/")
+  svdir <-     paste0(maindir, inputs$svsubdir, "/")
+  tsdir <-     paste0(maindir, inputs$tssubdir, "/")
+  optrop.f <-  paste0(maindir, inputs$optropf, ".csv")
+  trcatch.f <- paste0(maindir, inputs$trcatchf, ".csv")
+  trlf.f <-    paste0(maindir, inputs$trlff, ".csv")
+  if(!is.na(inputs$keysp1)) {
+    keysp1.f <- list(sp=inputs$keysp1, file=paste0(maindir, inputs$keyfile1, ".csv"))
   } else {
     keysp1.f <- NULL
   }
-  if(!is.na(df$keysp2)) {
-    keysp2.f <- list(sp=df$keysp2, file=paste0(maindir, df$keyfile2, ".csv"))
+  if(!is.na(inputs$keysp2)) {
+    keysp2.f <- list(sp=inputs$keysp2, file=paste0(maindir, inputs$keyfile2, ".csv"))
   } else {
     keysp2.f <- NULL
   }
-
-  inputs <- df
-#  rm(ref, i, sel, selrow, df)
 
   # list of objects to save
   keepobjs <- c("rdat", "keyvals", "keyvars", "inputs",
@@ -108,17 +105,12 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
     key1 <- read.csv(keysp1.f$file, as.is=TRUE)
     key1$sp <- keysp1.f$sp
     keepobjs <- c(keepobjs, "key1")
-  } else {
-#    rm(keysp1.f)
   }
   if(!is.null(keysp2.f)) {
     key2 <- read.csv(keysp2.f$file, as.is=TRUE)
     key2$sp <- keysp2.f$sp
     keepobjs <- c(keepobjs, "key2")
-  } else {
-#    rm(keysp2.f)
   }
-#  rm(svdir, tsdir, optrop.f, trcatch.f, trlf.f)
   save(list=keepobjs, file=paste0(maindir, rdat, ".RData"))
   return(maindir)
 }
