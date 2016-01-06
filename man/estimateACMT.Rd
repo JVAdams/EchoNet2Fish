@@ -80,7 +80,7 @@ A rich text file (rtf) with a *.doc file extension (so that it will be
   with mean "unbiased" sigmas from cells in the same layer
   and (if possible) transect.  Then, Nv is recalculated.
 
-  Six different data frames of estimates are saved as objects in an Rdata
+  Eight different data frames of estimates are saved as objects in an Rdata
   file and are written to csv files:
     lake-wide totals \code{laketots_millions} and \code{laketots_t}
       (in millions and t),
@@ -88,6 +88,8 @@ A rich text file (rtf) with a *.doc file extension (so that it will be
       (in numbers and g per ha), and
     interval means \code{intmeans_nph} and \code{intmeans_gph}
       (in numbers and g per ha).
+    interval and layer means \code{intlaymeans_nph} and
+      \code{intlaymeans_gph} (in numbers and g per ha).
   The Rdata and csv files are named using the lake and the year.
 
   The data frames of lake-wide totals and lake-wide means have a row
@@ -95,8 +97,12 @@ A rich text file (rtf) with a *.doc file extension (so that it will be
   additional columns for the total (of all slices) with the standard
   error and relative standard error.
 
-  The data frames of intervals means have a row for each region and interval,
-  a column for each species group, and additional columns for region area,
-  and the interval bottom depth, latitude and longitude.
+  The data frames of the interval means have a row for each region and
+  interval, a column for each species group, and additional columns for
+  region area, and the interval bottom depth, latitude and longitude.
+
+  The data frames of the interval and layer means have a row for each
+  region, interval, and layer, a column for each species group, and
+  many additional columns.
 }
 
