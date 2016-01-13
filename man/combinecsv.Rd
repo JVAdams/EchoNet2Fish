@@ -30,5 +30,9 @@ The \code{column1name} argument is needed to handle occasional problems
 	 in strange characters being added to the name of the first column.
 	 See, for example, this
 	 \href{http://stackoverflow.com/a/15399003/2140956}{link}.
+
+  Any variable names starting with "X." and ending with a number
+  are changed to ensure the number part of the name is rounded to the
+  nearest whole number, e.g., "X.76.000000" is renamed "X.76".
 }
 

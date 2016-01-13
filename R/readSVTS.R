@@ -26,12 +26,6 @@
 #' @param tidy
 #'   A logical scalar indicating if the data frame should be tidied using
 #'   \code{\link{dfTidy}}, default TRUE.
-#' @details
-#'   In addition to changing names, eliminating missing values, generating
-#'   dates and years, and tidying the data (as specified by the function
-#'   arguments), any variable names starting with "X." and ending with a number
-#'   are changed to ensure the number part of the name is rounded to the
-#'   nearest whole number.
 #' @return
 #'   A data frame with the all rows of the csv files in \code{svtsdir} combined.
 #' @import
@@ -65,10 +59,6 @@ readSVTS <- function(svtsdir, oldname=NULL, newname=NULL, elimMiss=NULL,
   if(tidy) {
     df <- dfTidy(df)
   }
-  # make sure numbered names are rounded to whole numbers
-  namez <- names(df)
-  sel <- substring(namez, 1, 2)=="X."
-  names(df)[sel] <- paste0("X.", round(as.numeric(substring(namez[sel], 3, 5))))
   # eliminate records with missing values
   if(!is.null(elimMiss)) {
     missmat <- sapply(elimMiss, function(var) is.na(df[, var]))

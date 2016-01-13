@@ -39,11 +39,4 @@ A data frame with the all rows of the csv files in \code{svtsdir} combined.
 Read in Sv (volume backscattering strength) or TS (single target frequencies)
 data from Echoview csv files and combine into a single data frame.
 }
-\details{
-In addition to changing names, eliminating missing values, generating
-  dates and years, and tidying the data (as specified by the function
-  arguments), any variable names starting with "X." and ending with a number
-  are changed to ensure the number part of the name is rounded to the
-  nearest whole number.
-}
 

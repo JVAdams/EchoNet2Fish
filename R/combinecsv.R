@@ -20,6 +20,10 @@
 #' 	 in strange characters being added to the name of the first column.
 #' 	 See, for example, this
 #' 	 \href{http://stackoverflow.com/a/15399003/2140956}{link}.
+#'
+#'   Any variable names starting with "X." and ending with a number
+#'   are changed to ensure the number part of the name is rounded to the
+#'   nearest whole number, e.g., "X.76.000000" is renamed "X.76".
 #' @export
 
 combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
@@ -37,6 +41,14 @@ combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
 		names(temp)[1] <- column1name
 		# add a new column identifying the source file
 		if(addSource) temp$source <- filenames[i]
+    # make sure numbered names are rounded to whole numbers
+    namez <- names(temp)
+    sel <- substring(namez, 1, 2)=="X."
+    names(temp)[sel] <-
+      paste0("X.", round(as.numeric(substring(namez[sel], 3, 5))))
+    # eliminate columns named "X"
+    xcols <- names(temp)=="X"
+    temp <- temp[, !xcols]
 		# put the data into the list
 		files.list[[i]] <- temp
 	}
@@ -58,7 +70,7 @@ combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
 	  y2 <- setdiff(x2, x1)
 	  if(length(y1) + length(y2) > 0) {
 	    errors <- errors+1
-	    cat("For each pair of files,",
+	    cat("\nFor each pair of files,",
         " these are column names present in one and not the other:\n",
 	      "  ", filenames[i-1], " has\n    ", shorten(y1), "\n",
         "  ", filenames[i], " has\n    ", shorten(y2), "\n", sep="")

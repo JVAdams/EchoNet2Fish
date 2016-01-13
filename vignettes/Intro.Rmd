@@ -266,7 +266,9 @@ myspInfo <- data.frame(
 
 #### Slices
 
-You will need a definition of the *"slices"* by which you wish to summarize the abundance estimates.  The slices can be defined by combinations of fishing depths (`fdp`), bottom depths (`bdp`), longitudes (`lon`), latitudes (`lat`), and regions (`reg`).  The slice definition is described by a list of slices; each slice is a list of defining characteristics; and each characteristic is a named vector giving the range of values.  This will be used as input to the `sliceCat` function.
+You will need a definition of the *"slices"* by which you wish to summarize the abundance estimates.  These slices represent subpopulations (or domains) for which you want separate estimates.  They are not the same as *strata* which are used in the design of the survey and the estimation of the total population.
+
+The slices can be defined by combinations of fishing depths (`fdp`), bottom depths (`bdp`), longitudes (`lon`), latitudes (`lat`), and regions (`reg`).  The slice definition is described by a list of slices; each slice is a list of defining characteristics; and each characteristic is a named vector giving the range of values.  This will be used as input to the `sliceCat` function.
 
 This is easier to explain with some examples.  Let's say you want to define two slices, based on a dividing line at a fishing depth of 20 m.  You would write your slice definition as
 
