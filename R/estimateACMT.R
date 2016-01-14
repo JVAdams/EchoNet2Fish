@@ -115,7 +115,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   doc <<- startrtf(file=docname, dir=maindir)
   heading(paste0(YEAR, " Lake ", Lakenames[LAKE],
     " Estimation from Acoustic and Trawl Data   ", today()))
-  para("R code written by Jean Adams for Dave Warner.")
+  para("R code written by Jean V. Adams for Dave Warner.")
   para(paste0(docname, " = this document."))
   heading("INPUTS", 2)
   para(paste0("maindir = ", maindir, " = main input/output directory."))

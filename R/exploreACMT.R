@@ -45,16 +45,15 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
   heading(paste0(YEAR, " Lake ", Lakenames[LAKE], " Exploration of ", descr,
     " Data   ", today()))
 
-  para("R code written by Jean Adams for Dave Warner.")
+  para("R code written by Jean V. Adams for Dave Warner.")
   para(paste0(docname, " = this document."))
-  rm(descr, docname)
 
   heading("INPUTS", 2)
   para(paste0("maindir = ", maindir, " = main input/output directory."))
   tab <- t(inputs)
+  tab <- tab[!is.na(tab), 1, drop=FALSE]
   dimnames(tab)[[2]] <- NULL
-  tabl("Input directories and files from reference file.", row.names=FALSE,
-    TAB=tab)
+  tabl("Input directories and files from reference file.", TAB=tab)
 
   if(AC) {# explore Sv and TS files
 
@@ -72,8 +71,6 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     	"  Some figures are only printed if problems are detected,",
       " noted by the word PROBLEM in the figure caption."))
 
-    attach(sv)
-
     count <- 1:dim(sv)[2]
     lcount <- split(count, ceiling(count/35))
     for(i in 1:length(lcount)) {
@@ -87,40 +84,40 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
     # lon/lat plots
     fig <- function() {
-    	mapByGroup(bygroup=Region_name, lon=Lon_M, lat=Lat_M)
+    	with(sv, mapByGroup(bygroup=Region_name, lon=Lon_M, lat=Lat_M))
     }
     figu("Location of transects in Sv files.  Colors indicate Region.",
       newpage="port", FIG=fig)
 
     # close up look at each transect - lon/lat
     fig <- function() {
-      mapMulti(Region_name, short=short, lon=Lon_M, lat=Lat_M,
-        samescale=FALSE, IDcol=as.numeric(as.factor(Region_name)))
+      with(sv, mapMulti(Region_name, short=short, lon=Lon_M, lat=Lat_M,
+        samescale=FALSE, IDcol=as.numeric(as.factor(Region_name))))
     }
     figu("Close up look at each transect location in Sv files.", newpage="port",
       FIG=fig)
 
     # interval by layer plots
-    laymid <- -(Layer_depth_min + Layer_depth_max)/2
-    lat.r <- tapply(Lat_M, Region_name, mean, na.rm=TRUE)
+    laymid <- with(sv, -(Layer_depth_min + Layer_depth_max)/2)
+    lat.r <- with(sv, tapply(Lat_M, Region_name, mean, na.rm=TRUE))
     Region_ord <- names(lat.r)[order(lat.r, decreasing=T)]
     fig <- function(x, xname) {
-      plotIntLay(Interval, laymid, Region_name, Region_ord,
-        colorVal(x), paste0("Colors indicate ", xname))
+      with(sv, plotIntLay(Interval, laymid, Region_name, Region_ord,
+        colorVal(x), paste0("Colors indicate ", xname)))
     }
     prefix <- "Interval by layer plots for Sv files.  Colors indicate "
-    figu(prefix, "Depth_mean", FIG=function() fig(-Depth_mean, "Depth_mean"),
+    figu(prefix, "Depth_mean", FIG=function() fig(-sv$Depth_mean, "Depth_mean"),
       newpage="port")
-    figu(prefix, "Sv_mean", FIG=function() fig(Sv_mean, "Sv_mean"),
+    figu(prefix, "Sv_mean", FIG=function() fig(sv$Sv_mean, "Sv_mean"),
       newpage="port")
-    figu(prefix, "PRC_ABC", FIG=function() fig(PRC_ABC^0.2, "PRC_ABC"),
+    figu(prefix, "PRC_ABC", FIG=function() fig(sv$PRC_ABC^0.2, "PRC_ABC"),
       newpage="port")
-    if(!is.null(PRC_NASC)) {
-      figu(prefix, "PRC_NASC", FIG=function() fig(PRC_NASC^0.2, "PRC_NASC"),
+    if(!is.null(sv$PRC_NASC)) {
+      figu(prefix, "PRC_NASC", FIG=function() fig(sv$PRC_NASC^0.2, "PRC_NASC"),
         newpage="port")
     }
-    if(!is.null(Samples)) {
-      figu(prefix, "Samples", FIG=function() fig(Samples, "Samples"),
+    if(!is.null(sv$Samples)) {
+      figu(prefix, "Samples", FIG=function() fig(sv$Samples, "Samples"),
         newpage="port")
     }
 
@@ -129,7 +126,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
       varnames <- paste(x, c("S", "E", "M"), sep="_")
       caption <<- paste0("PROBLEM:  Comparing ", paste(varnames, collapse=", "),
         " for Sv files.")
-      vars <- sapply(varnames, function(y) eval(parse(text=y)))
+      vars <- with(sv, sapply(varnames, function(y) eval(parse(text=y))))
       plotValues(vars[, 1], vars[, 2], vars[, 3], lowhighKnown=lhk, varname=x,
         test=tt)
     }
@@ -141,17 +138,15 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
   	if(np) figu(caption, FIG=function() fig("Lat"), newpage="port")
     np <- fig("Lon", lhk=FALSE, tt=TRUE)
   	if(np) figu(caption, FIG=function() fig("Lon"), newpage="port")
-    if(!is.null(Date_S) & !is.null(Date_E)) {
+    if(!is.null(sv$Date_S) & !is.null(sv$Date_E)) {
       fig <- function(...) {
-        plotValues(decimal_date(Date_S), decimal_date(Date_E),
-          decimal_date(Date_M), varname="Date", lhk=TRUE, ...)
+        with(sv, plotValues(decimal_date(Date_S), decimal_date(Date_E),
+          decimal_date(Date_M), varname="Date", lhk=TRUE, ...))
       }
       np <- fig(test=TRUE)
       if(np) figu("PROBLEM:  Comparing Date_S, Date_E, and Date_M for Sv files.",
         newpage="port", FIG=fig)
-      rm(np)
     }
-    detach(sv)
 
     ### TS
 
@@ -162,10 +157,9 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tab <- dfSmry(ts)
     tabl("Quick summary table of variables in TS files.", TAB=tab)
 
-    attach(ts)
-    sur <- sort(unique(Region_name))
-    lon.r <- tapply(Lon_M, Region_name, mean, na.rm=TRUE)
-    lat.r <- tapply(Lat_M, Region_name, mean, na.rm=TRUE)
+    sur <- sort(unique(ts$Region_name))
+    lon.r <- with(ts, tapply(Lon_M, Region_name, mean, na.rm=TRUE))
+    lat.r <- with(ts, tapply(Lat_M, Region_name, mean, na.rm=TRUE))
 
     count <- 1:dim(ts)[2]
     lcount <- split(count, ceiling(count/28))
@@ -180,8 +174,8 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
     # interval by layer plots
     start <- seq(16, 66, 10)
-    end <- start+10
-    laymid <- -(Layer_depth_min + Layer_depth_max)/2
+    end <- start + 10
+    laymid <- with(ts, -(Layer_depth_min + Layer_depth_max)/2)
     Region_ord <- names(lat.r)[order(lat.r, decreasing=T)]
 
     for(i in seq(along=start)) {
@@ -190,15 +184,13 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     	title. <- paste("Colors indicate binned targets from, -", end[i], " to -",
     	  start[i], " dB", sep="")
     	fig <- function() {
-  	    plotIntLay(Interval, laymid, Region_name, Region_ord,
-          colorVal(sqrt(sumtargs)), title.)
+  	    with(ts, plotIntLay(Interval, laymid, Region_name, Region_ord,
+          colorVal(sqrt(sumtargs)), title.))
     	}
   		figu(paste("Interval by layer plots for TS files. ", title.),
   		  newpage="port", FIG=fig)
     }
 
-    detach(ts)
-    rm(sur, lon.r, lat.r, start, end, i, colz, sumtargs, title.)
 
     #############################################################################
     # compare interval gaps in Sv and TS files
@@ -227,9 +219,6 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     } else {
     	para("Interval gaps in Sv and TS files match up.")
     }
-
-    rm(t1, t2, iu, ju, bigt1, bigt2, results, res)
-
   }
 
   if(MT) {# explore trawl files
@@ -244,14 +233,13 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tab <- dfSmry(optrop)
     tabl("Quick summary table of variables in OP/TROP files.", TAB=tab)
 
-    attach(optrop)
     allcols <- names(optrop)
-    pcols <- allcols[allcols %in% c("Op.Id", "Vessel", "Cruise", "Serial", 
-      "Lake", "Port", "Beg.Depth", "End.Depth", "Distance", "Fishing_Temp", 
+    pcols <- allcols[allcols %in% c("Op.Id", "Vessel", "Cruise", "Serial",
+      "Lake", "Port", "Beg.Depth", "End.Depth", "Distance", "Fishing_Temp",
       "Fishing_Depth", "Transect")]
 
-    tab <- optrop[is.na(Beg.Depth) | is.na(End.Depth) | 
-      (!is.null(Distance) & is.na(Distance)) | is.na(Fishing_Temp), pcols]
+    tab <- with(optrop, optrop[is.na(Beg.Depth) | is.na(End.Depth) |
+      (!is.null(Distance) & is.na(Distance)) | is.na(Fishing_Temp), pcols])
     if(dim(tab)[1] > 0) {
     	tabl("OP/TROP records with missing depth, distance, or temperature.",
     	  newpage="land", TAB=tab)
@@ -259,14 +247,15 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     	para("All OP/TROP records have depth, distance, and temperature entered.")
     }
 
-    if(!is.null(Set_Time)) {
-      set.time <- floor(Set_Time/100) + (Set_Time - 100*floor(Set_Time/100))/60
+    if(!is.null(optrop$Set_Time)) {
+      set.time <- with(optrop,
+        floor(Set_Time/100) + (Set_Time - 100*floor(Set_Time/100))/60)
       tod <- rep("night", length(set.time))
       tod[set.time > 7 & set.time < 19] <- "day"
       tt <- table(tod)
       mostall <- names(which.max(table(tod)))
 
-      if(length(tt)<1.5) {
+      if(length(tt) < 1.5) {
         if(mostall=="night") {
           para("All OP/TROP records were taken at night.")
         } else {
@@ -283,12 +272,10 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
             " but some were taken at night.", TAB=tab)
         }
       }
-    rm(set.time, tod, tt, mostall)
-
     }
 
-    tab <- optrop[!is.na(Beg.Depth) & !is.na(End.Depth) &
-        abs(Beg.Depth - End.Depth) > 20, pcols]
+    tab <- with(optrop, optrop[!is.na(Beg.Depth) & !is.na(End.Depth) &
+        abs(Beg.Depth - End.Depth) > 20, pcols])
     if(dim(tab)[1] > 0) {
     	tabl("OP/TROP records with > 20 m difference between",
         " beginning and ending bottom depth.", TAB=tab)
@@ -297,9 +284,9 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
         " beginning and ending bottom depth.")
     }
 
-    mind <- pmin(Beg.Depth, End.Depth, na.rm=T)
-    tab <- optrop[!is.na(mind) & !is.na(Fishing_Depth) &
-        Fishing_Depth > mind, pcols]
+    mind <- with(optrop, pmin(Beg.Depth, End.Depth, na.rm=T))
+    tab <- with(optrop, optrop[!is.na(mind) & !is.na(Fishing_Depth) &
+        Fishing_Depth > mind, pcols])
     if(dim(tab)[1] > 0) {
     	tabl("OP/TROP records with fishing depth > beginning or",
         " ending bottom depth.", TAB=tab)
@@ -316,32 +303,28 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
     # lon/lat plots
     fig <- function(x) {
-      var <- eval(parse(text=x))
-    	mapByGroup(bygroup=var, lon=Longitude, lat=Latitude, 
-        colorz=colorVal(as.numeric(as.factor(var))), pch=16, cushion=0.15)
+      var <- with(optrop, eval(parse(text=x)))
+    	with(optrop, mapByGroup(bygroup=var, lon=Longitude, lat=Latitude,
+        colorz=colorVal(as.numeric(as.factor(var))), pch=16, cushion=0.15))
     }
     cap <- function(x) {
     	paste("Identification of", x, "in OP/TROP files.")
     }
-    if(!is.null(Port)) {
+    if(!is.null(optrop$Port)) {
       figu(cap("Port"), FIG=function() fig("Port"), newpage="port")
     }
-    if(!is.null(Port)) {
+    if(!is.null(optrop$Cruise)) {
       figu(cap("Cruise"), FIG=function() fig("Cruise"), newpage="port")
     }
     figu(cap("Transect"), FIG=function() fig("Transect"), newpage="port")
-    maxd <- -pmax(Beg.Depth, End.Depth, na.rm=T)
+    maxd <- with(optrop, -pmax(Beg.Depth, End.Depth, na.rm=T))
     figu(cap("maxd"), FIG=function() fig("maxd"), newpage="port")
-    if(!is.null(Tow_Time)) {
+    if(!is.null(optrop$Tow_Time)) {
       figu(cap("Tow_Time"), FIG=function() fig("Tow_Time"), newpage="port")
     }
     if("Tr_Design" %in% names(optrop)) {
       figu(cap("Tr_Design"), FIG=function() fig("Tr_Design"), newpage="port")
     }
-
-    detach(optrop)
-
-    rm(mind, maxd)
 
     ### trcatch
     addPageBreak(doc, width=11, height=8.5)
@@ -354,20 +337,19 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tab <- dfSmry(trcatch)
     tabl("Quick summary table of variables in TRCATCH file.", TAB=tab)
 
-    attach(trcatch)
-    sus <- sort(unique(Species))
+    sus <- sort(unique(trcatch$Species))
     if("Beg.Depth" %in% names(trcatch)) {
-    	tab <- trcatch[is.na(Beg.Depth) | is.na(End.Depth),
+    	tab <- with(trcatch, trcatch[is.na(Beg.Depth) | is.na(End.Depth),
     		c("Op.Id", "Year", "Vessel", "Serial", "Lake", "Species", "Port_Name",
-    		  "Beg.Depth", "End.Depth", "N")]
+    		  "Beg.Depth", "End.Depth", "N")])
     	if(dim(tab)[1] > 0) {
     		tabl("TRCATCH records with missing beginning or ending depth.", TAB=tab)
     	}
     }
 
-    missop <- setdiff(Op.Id, optrop$Op.Id)
+    missop <- setdiff(trcatch$Op.Id, optrop$Op.Id)
     if(length(missop)>0) {
-    	tab <- trcatch[Op.Id==missop, ]
+    	tab <- trcatch[trcatch$Op.Id==missop, ]
     	tabl("TRCATCH records Op.Ids not in OPTROP.", TAB=tab)
     } else {
     		para("All TRCATCH Op.Ids are in OPTROP.")
@@ -376,15 +358,13 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     fig <- function() {
     	par(mfrow=n2mfrow(dim(trcatch)[2]+3), mar=c(3, 3, 2, 1))
     	dfPlot(trcatch)
-    	plotSpecies(N, "N")
-    	plotSpecies(Weight, "Weight")
-    	plotSpecies(Weight/N, "Weight/N")
+    	with(trcatch, {
+      	plotSpecies(N, "N", x=Species)
+      	plotSpecies(Weight, "Weight", x=Species)
+      	plotSpecies(Weight/N, "Weight/N", x=Species)
+    	})
     }
     figu("Plot of variables in the TRCATCH file.", newpage="port", FIG=fig)
-
-    detach(trcatch)
-
-    rm(sus, missop)
 
     ### trlf
     heading("TRLF FILE", 2)
@@ -396,16 +376,25 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tab <- dfSmry(trlf)
     tabl("Quick summary table of variables in TRLF file.", TAB=tab)
 
-    attach(trlf)
-
-    missop <- setdiff(Op.Id, optrop$Op.Id)
+    missop <- setdiff(trlf$Op.Id, optrop$Op.Id)
     showcols <- min(10, dim(trlf)[[2]])
     if(length(missop)>0) {
-    	tab <- trlf[Op.Id==missop, 1:showcols]
+    	tab <- trlf[trlf$Op.Id==missop, 1:showcols]
     	tabl("TRLF records Op.Ids not in OPTROP.", TAB=tab)
     } else {
     		para("All TRLF Op.Ids are in OPTROP.")
     }
+
+  	trlfmiss <- with(trlf,
+  	  is.na(Op.Id) | is.na(Species) | is.na(Length) | is.na(N))
+  	if(sum(trlfmiss) > 0) {
+  	  warning("TRLF is missing some data.  See output report for details.",
+  	    call.=FALSE)
+  		tabl("TRLF records with missing data.",
+        "  These records are excluded from the following plots and tables.",
+  		  TAB=trlf[trlfmiss, ])
+  	  trlf <- trlf[!trlfmiss, ]
+  	}
 
     fig <- function() {
     	par(mfrow=n2mfrow(dim(trlf)[2]), mar=c(3, 3, 2, 1))
@@ -414,16 +403,12 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     figu("Plot of variables in the TRLF file.", newpage="port", FIG=fig)
 
     fig <- function() {
-      histMulti(x=Length, freq=N, bygroup=Species, xlab="Length  (mm)",
-        samescale=FALSE)
+      with(trlf, histMulti(x=Length, freq=N, bygroup=Species,
+        xlab="Length  (mm)", samescale=FALSE))
     }
     figu("Length frequency histograms of species in the TRLF file.",
       "  Vertical red lines indicate the minimum and maximum lengths recorded.",
     	newpage="port", FIG=fig)
-
-    detach(trlf)
-
-    rm(missop, showcols) #, i, sel, sul, a, xr)
 
     if(!is.null(ageSp)) {
 
@@ -452,8 +437,6 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
           " probability of age, given length.",
         	"  Probabilities for all ages of a given length sum to one.",
           newpage="port", FIG=fig)
-
-        rm(m, m2)
       }
     }
 
