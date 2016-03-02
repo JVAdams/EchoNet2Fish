@@ -32,16 +32,16 @@ same length as \code{ACgroup}.}
 the mapped area is assumed to be wider (longitudinally) than tall.
 Used to better arrange multiple maps on a single page.}
 
-\item{MTlon}{Numeric vector, longitudes of midwater trawl tow locations to map, 
+\item{MTlon}{Numeric vector, longitudes of midwater trawl tow locations to map,
 in decimal degrees, same length as \code{MTgroup}.}
 
-\item{MTlat}{Numeric vector, latitudes of midwater trawl tow locations to map, 
+\item{MTlat}{Numeric vector, latitudes of midwater trawl tow locations to map,
 in decimal degrees, same length as \code{MTgroup}.}
 
-\item{AClon}{Numeric vector, longitudes of acoustic transect locations to map, 
+\item{AClon}{Numeric vector, longitudes of acoustic transect locations to map,
 in decimal degrees, same length as \code{ACgroup}.}
 
-\item{AClat}{Numeric vector, latitudes of acoustic transect locations to map, 
+\item{AClat}{Numeric vector, latitudes of acoustic transect locations to map,
 in decimal degrees, same length as \code{ACgroup}.}
 
 \item{rlon}{A numeric vector of length 2, range of longitudes to map,

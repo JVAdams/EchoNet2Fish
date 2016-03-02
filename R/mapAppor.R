@@ -23,16 +23,16 @@
 #'   the mapped area is assumed to be wider (longitudinally) than tall.
 #'   Used to better arrange multiple maps on a single page.
 #' @param MTlon
-#'   Numeric vector, longitudes of midwater trawl tow locations to map, 
+#'   Numeric vector, longitudes of midwater trawl tow locations to map,
 #'   in decimal degrees, same length as \code{MTgroup}.
 #' @param MTlat
-#'   Numeric vector, latitudes of midwater trawl tow locations to map, 
+#'   Numeric vector, latitudes of midwater trawl tow locations to map,
 #'   in decimal degrees, same length as \code{MTgroup}.
 #' @param AClon
-#'   Numeric vector, longitudes of acoustic transect locations to map, 
+#'   Numeric vector, longitudes of acoustic transect locations to map,
 #'   in decimal degrees, same length as \code{ACgroup}.
 #' @param AClat
-#'   Numeric vector, latitudes of acoustic transect locations to map, 
+#'   Numeric vector, latitudes of acoustic transect locations to map,
 #'   in decimal degrees, same length as \code{ACgroup}.
 #' @param rlon
 #'   A numeric vector of length 2, range of longitudes to map,
@@ -103,6 +103,7 @@ mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
 		sela <- ACgroup==sug[i] & !is.na(ACgroup)
 
 		map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+    map("lakes", add=TRUE, col=mapcol)
 		box(col=boxcol)
 		if(sum(selm[!is.na(selm)])>0) {
 			points(AClon[sela], AClat[sela], col=ACIDcol[sela], pch=3)

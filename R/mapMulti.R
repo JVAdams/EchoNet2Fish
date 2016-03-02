@@ -116,9 +116,9 @@ mapMulti <- function(bygroup, sug=sort(unique(bygroup)), plottext=FALSE, ID=1,
   		} else {
   		  rlat. <- rlat
   		}
-  		map("world", xlim=rlon. + cushion*c(-1, 1), ylim=rlat. + cushion*c(-1, 1), 
+  		map("world", xlim=rlon. + cushion*c(-1, 1), ylim=rlat. + cushion*c(-1, 1),
         mar=mar, col=mapcol)
-
+      map("lakes", add=TRUE, col=mapcol)
 			bold <- emphasis + 1
 			par(xpd=NA)
 			if(plottext) {

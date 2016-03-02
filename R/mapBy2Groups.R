@@ -39,7 +39,7 @@
 #'  mapBy2Groups(df=mydf, lon=mylon, lat=mylat, nrows=3)
 #'  }
 #'
-mapBy2Groups <- function(df, lon, lat, rlon=range(lon, na.rm=TRUE), 
+mapBy2Groups <- function(df, lon, lat, rlon=range(lon, na.rm=TRUE),
   rlat=range(lat, na.rm=TRUE), nrows, nsymbols=7, mar=c(0, 0, 3, 0)) {
 
   if(nsymbols < 1 | nsymbols > 7)
@@ -63,6 +63,7 @@ mapBy2Groups <- function(df, lon, lat, rlon=range(lon, na.rm=TRUE),
   	symb <- groupLog(df[, i], n=nsymbols, xR=YR)
 		map("world", xlim=rlon + 0.1*c(-1, 1),
 		  ylim=rlat + 0.1*c(-1, 1), mar=mar, col="gray")
+    map("lakes", add=TRUE, col="gray")
 		mtext(namz[i], side=3)
 		points(lon, lat, cex=symsize[symb], col=mypalette[symb])
 	}

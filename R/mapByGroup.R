@@ -58,6 +58,7 @@ mapByGroup <- function(bygroup, sug=sort(unique(bygroup)), addMean=TRUE,
 
   map("world", xlim=rlon + cushion*c(-1, 1), ylim=rlat + cushion*c(-1, 1),
 	  col=mapcol, mar=mar)
+  map("lakes", add=TRUE, col=mapcol)
   if(is.null(colorz)) {
     colorz <- as.numeric(as.factor(bygroup))
   }
