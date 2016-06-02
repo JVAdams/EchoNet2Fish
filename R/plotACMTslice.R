@@ -39,6 +39,7 @@
 #'   c(1.5, 2, 1.5, 2).
 #' @inheritParams
 #'   mapMulti
+#' @import graphics
 #' @export
 #' @examples
 #' # acoustic transects

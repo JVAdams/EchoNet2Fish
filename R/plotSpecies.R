@@ -12,6 +12,7 @@
 #' @param uniqSp
 #'   A vector of unique species, a subset of \code{x}, default
 #'   \code{sort(unique(x))}.
+#' @import graphics
 #' @export
 
 plotSpecies <- function(y, ylabb, x=Species, uniqSp=sort(unique(x))) {

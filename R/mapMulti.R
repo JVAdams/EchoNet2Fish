@@ -57,6 +57,7 @@
 #'   c(0, 0, 2.5, 0).
 #' @inheritParams
 #'   mapByGroup
+#' @import grDevices graphics stats
 #' @export
 #' @examples
 #' \dontrun{

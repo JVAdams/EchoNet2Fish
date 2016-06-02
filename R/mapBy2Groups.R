@@ -29,6 +29,7 @@
 #'   c(bottom, left, top, right) around each plotted map plot, default
 #'   c(0, 0, 3, 0).
 #' @importFrom RColorBrewer brewer.pal
+#' @import graphics
 #' @export
 #' @examples
 #' \dontrun{

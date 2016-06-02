@@ -24,7 +24,7 @@
 #' @details
 #'   A rich text file (rtf) with a *.doc file extension (so that it will be
 #'   opened with Word by default) is saved to \code{maindir}.
-#' @import rtf lubridate
+#' @import rtf lubridate grDevices graphics
 #' @export
 #'
 exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,

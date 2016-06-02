@@ -26,6 +26,7 @@
 #'   If \code{test} = TRUE, a logical scalar is returned indicating whether
 #'   there were errors in the values (TRUE) or not (FALSE).
 #'   If \code{test} = FALSE, a figure is drawn, but no value is returned.
+#' @import graphics
 #' @export
 
 plotValues <- function(low, high, between, lowhighKnown=FALSE,

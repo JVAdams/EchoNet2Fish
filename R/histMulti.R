@@ -33,6 +33,7 @@
 #'   A numeric vector of length 4, the number of lines of the outer margin
 #'   c(bottom, left, top, right) around the entire collection of panels,
 #'   default c(2, 2, 1, 1).
+#' @import grDevices graphics
 #' @export
 #' @examples
 #' myval <- c(23, 35, 47, 62)

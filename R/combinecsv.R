@@ -24,6 +24,7 @@
 #'   Any variable names starting with "X." and ending with a number
 #'   are changed to ensure the number part of the name is rounded to the
 #'   nearest whole number, e.g., "X.76.000000" is renamed "X.76".
+#' @import utils
 #' @export
 
 combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {

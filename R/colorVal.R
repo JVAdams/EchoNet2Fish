@@ -13,6 +13,7 @@
 #'   A numeric scalar giving the hue in [0, 1] at which the color palette
 #'   ends for high values, default 0 for red.
 #' @importFrom plotrix rescale
+#' @import grDevices
 #' @export
 #' @seealso
 #'   \code{\link{rainbow}}

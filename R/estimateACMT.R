@@ -86,12 +86,14 @@
 #'
 #' @importFrom class knn1
 #' @importFrom RColorBrewer brewer.pal
-#' @import lubridate rtf survey
+#' @importFrom survey svydesign svytotal svymean svyby
+#' @import lubridate rtf graphics stats utils
 #' @export
 #'
 estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
   spInfo, sliceDef, short=TRUE) {
+
 
   # 1.  Initial stuff ####
 
@@ -173,7 +175,7 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   svts$Region_name <- gsub(" ", "", svts$Region_name)
 
   # if there are more rows in the merged data frame than in
-  # the original sv file, somethings wrong
+  # the original sv file, something's wrong
   if(dim(svts)[1] > dim(sv)[1]) {
   	sel <- is.na(svts$Interval)
   	tab <- ts[ts$UID %in% svts$UID[sel], c("Region_name", "Interval", "Layer",
@@ -186,13 +188,6 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # before making changes to sigma, keep the original value for later reference
   svts$sigma.orig <- svts$sigma
-
-  # assign the value of zero to sigmas where there were no single targets
-  # There will be cells without single targets, so not all rows of Sv can
-  #   get sigma.
-  # I assign these a fish density of zero, because I never have zero targets
-  #   because of high-density inability ot detect targets.
-  svts$sigma[is.na(svts$sigma)] <- 0
 
 
   # 4.  Estimate Nv ####
@@ -218,6 +213,13 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   		"  ", TAB=tab)
   	svts <- svts[!sel, ]
   }
+
+  # assign the value of zero to sigmas where there were no single targets
+  # There will be cells without single targets, so not all rows of Sv can
+  #   get sigma.
+  # I assign these a fish density of zero, because I never have zero targets
+  #   because of high-density inability to detect targets.
+  svts$sigma[is.na(svts$sigma)] <- 0
 
 
   # 6.  Recalculate Nv and estimate density ####
@@ -280,8 +282,11 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   if(!is.null(ageSp)) {
   	allspsel <- c(ageSp, soi)
   	# create vector of ops for all selected species
-  	allops <- aggregate(N ~ Op.Id, sum,
-  	  data=trcatch2[trcatch2$Species %in% allspsel, ])$Op.Id
+  	# allops <- aggregate(N ~ Op.Id, sum,
+  	#   data=trcatch2[trcatch2$Species %in% allspsel, ])$Op.Id
+  	# create vector of all ops (not just those w/ selected species)
+  	allops <- sort(unique(trcatch2$Op.Id))
+
   	# create list for results of all selected species
   	sum.n <- vector("list", length(allspsel))
   	names(sum.n) <- allspsel
@@ -318,9 +323,12 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   } else {
   	allspsel <- soi
   	# create vector of ops for all selected species
-  	allops <- aggregate(N ~ Op.Id, sum,
-  	  data=trcatch2[trcatch2$Species %in% allspsel, ])$Op.Id
+  	# allops <- aggregate(N ~ Op.Id, sum,
+  	#   data=trcatch2[trcatch2$Species %in% allspsel, ])$Op.Id
   	# create list for results of all selected species
+  	# create vector of all ops (not just those w/ selected species)
+  	allops <- sort(unique(trcatch2$Op.Id))
+
   	sum.n <- vector("list", length(soi))
   	names(sum.n) <- soi
   	mean.w <- sum.n

@@ -51,6 +51,7 @@
 #'   mapMulti
 #' @seealso
 #'   \code{\link{mapMulti}}
+#' @import grDevices graphics stats
 #' @export
 #' @examples
 #' \dontrun{

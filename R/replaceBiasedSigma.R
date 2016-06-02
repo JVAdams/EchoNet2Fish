@@ -25,12 +25,14 @@
 #'   or time periods.
 #' @param Nvcut
 #'   A numeric scalar, the cutoff for Nv (specified by \code{VarNv}), above
-#'   which all sigma_bs are considered biased, default 0.1.
+#'   which all sigma_bs are considered biased, default 0.1.  Any sigma_bs with
+#'   missing values are left unchanged.
 #' @details
 #'   TS = 10*log10(sigma_bs).
 #' @return
 #'   A numeric vector of target strengths, TS, in dB, same
 #'   length as \code{sigmabs}.
+#' @import stats
 #' @export
 #' @examples
 #' mydf <- data.frame(nv=c(0.01, 0.1, 0.2, 0.2, 0.3, 0.05, 0.01),
@@ -60,7 +62,7 @@ replaceBiasedSigma <- function(df, varNv, varsigmabs, varTranLay,
   sig <- df3[, varsigmabs]
 
   # replace biased sigma with transect-layer mean of unbiased sigma
-  biasRmiss <- df3[, varNv] > Nvcut | is.na(df3[, varNv])
+  biasRmiss <- df3[, varNv] > Nvcut & !is.na(df3[, varNv])
   sig[biasRmiss] <- df3$sigunb.tranlay[biasRmiss]
   # if no transect-layer mean, use layer mean
   notranlay <- is.na(df3$sigunb.tranlay)

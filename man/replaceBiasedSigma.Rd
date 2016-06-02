@@ -29,7 +29,8 @@ by variables if \code{df} contains information from multiple waterbodies
 or time periods.}
 
 \item{Nvcut}{A numeric scalar, the cutoff for Nv (specified by \code{VarNv}), above
-which all sigma_bs are considered biased, default 0.1.}
+which all sigma_bs are considered biased, default 0.1.  Any sigma_bs with
+missing values are left unchanged.}
 }
 \value{
 A numeric vector of target strengths, TS, in dB, same

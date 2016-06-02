@@ -25,6 +25,7 @@
 #'
 #'   Values in the matrix \code{m} are represented as circles, with zero
 #'   values represented by black dots.
+#' @import graphics
 #' @export
 #' @examples
 #' mymat <- matrix(c(10, 1, 0, 0, 5, 0, 0, 3, 2, 0, 0, 1), nrow=3,

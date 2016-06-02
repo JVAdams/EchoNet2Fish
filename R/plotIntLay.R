@@ -20,6 +20,7 @@
 #'   the same length as \code{interval}.
 #' @param main
 #'   A character scalar of the main title of the plot, default "".
+#' @import grDevices graphics
 #' @export
 
 plotIntLay <- function(interval, layer, group, grouporder=sort(unique(group)),

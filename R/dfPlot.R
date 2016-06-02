@@ -11,6 +11,7 @@
 #'   will be magnified, default 0.8.
 #' @param ...
 #'   Additional arguments to the \code{\link{par}} function.
+#' @import graphics
 #' @export
 #' @details
 #'   An individual graph is generated for each variable.  Bar plots are drawn

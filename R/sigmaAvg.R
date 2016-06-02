@@ -38,6 +38,7 @@
 #'   one for each row in \code{TSdf}.
 #' @seealso
 #'   \code{\link{TS2sigma}}, \code{\link{regex}}
+#' @import stats
 #' @export
 #' @examples
 #' mydf <- data.frame(a=letters[1:4], x.80=0:3, x.90=1:4, x.100=c(0, 1, 0, 1))
