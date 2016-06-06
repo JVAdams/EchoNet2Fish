@@ -9,11 +9,13 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-The R package **EchoNet2Fish** estimates fish abundance from acoustic echoes and midwater trawl catch.  At its core are two functions that explore the data, `exploreACMT`, and generate the estimates, `estimateACMT`.  The code is tailored to the format and procedures used by the Great Lakes Acoustic Users Group (Parker-Stetter et al. 2009).
+The R package **EchoNet2Fish** estimates fish abundance from acoustic echoes and midwater trawl catch.  At its core are two functions that explore the data, `exploreACMT()`, and generate the estimates, `estimateACMT()`.  The code is tailored to the format and procedures used by the Great Lakes Acoustic Users Group (Parker-Stetter et al. 2009).
 
-## Install
 
-Install the **EchoNet2Fish** package following the instructions at [Readme](https://github.com/JVAdams/EchoNet2Fish/blob/master/README.md).
+
+# Install
+
+Install the **EchoNet2Fish** package.  *If you don't already have devtools installed, following the instructions at [Readme](https://github.com/JVAdams/EchoNet2Fish/blob/master/README.md).*
 
 ```{r install_package, eval=FALSE}
 devtools::install_github("JVAdams/EchoNet2Fish")
@@ -25,11 +27,13 @@ Then load the **EchoNet2Fish** package.
 library(EchoNet2Fish)
 ```
 
-## Prepare the data
+
+
+# Prepare the data
 
 Before any estimates are made, the acoustic and midwater trawl data must be prepared in the following way.   
 
-#### File organization
+## File organization
 
 For each set of data for which you would like to generate estimates (e.g., for one year of data from one lake), you should have a single sub directory (`subdir`) containing all of the relevant files.  For example, you might have a subdirectories called *H13*, *H14*, and *M14*, containing all of the data for Lake Huron in 2013 and 2014 and Lake Michigan in 2014.  Within this subdirectory, you will have two more subdirectories for the acoustic data (one for all the Sv files and one for all the TS files), and you will have all of your midwater trawl files (operations, catches, lengths, and age-length keys).  Above this subdirectory should be an overarching directory (`refdir`) that contains a reference csv file (`refcsv`).
 
@@ -65,7 +69,7 @@ For each set of data for which you would like to generate estimates (e.g., for o
         * `keyfile2`.csv
     * `subdir` ...
 
-#### Reference file
+## Reference file
 
 The reference csv file contains information, primarily the directory and file names for the acoustic and midwater trawl data, for all of the subdirectories (one row for each subdirectory).  The file must contain these 10 columns:  
 
@@ -97,11 +101,11 @@ refdat <- data.frame(
   keyfile1 = c(NA, NA, "aleagelenkey"), 
   keysp2 = c(NA, NA, NA), 
   keyfile2 = c(NA, NA, NA))
-write.csv(refdat, paste(refdir, "myref.csv", sep="/"))
+write.csv(refdat, paste(refdir, "Reference.csv", sep="/"))
 knitr::kable(refdat)
 ```
 
-#### Acoustic files
+## Acoustic files
 
 Except where noted, the order of the rows and columns in any of the acoustic or midwater trawl files is not important.  Additional columns, i.e., other than those that are required, may be included in the files, but are not necessary.
 
@@ -128,8 +132,8 @@ The following 12 columns must be included in the **SV** csv files:
 
 ```{r svexample, echo=FALSE}
 mydir <- readAll(refdir="C:/Temp", keyvals=c(2, 2014), 
-  keyvars=c("LAKE", "YEAR"), rdat="myACMT", refcsv="myref")
-load(paste(mydir, "myACMT.RData", sep="/"))
+  keyvars=c("LAKE", "YEAR"), rdat="ACMT", refcsv="Reference")
+load(paste(mydir, "ACMT.RData", sep="/"))
 sv.vars <- c("Region_name", "Interval", "Layer", "Date_M", "Sv_mean",   "Depth_mean", "Layer_depth_min", "Layer_depth_max", "Lat_M", "Lon_M", 
   "PRC_ABC")
 set.seed(395)
@@ -158,7 +162,7 @@ look <- ts[sample(dim(ts)[1], 5), ts.vars]
 knitr::kable(look, row.names=FALSE)
 ```
 
-#### Midwater trawl files
+## Midwater trawl files
 
 The following 1 column must be included in the midwater trawl **operation**, **catch**, and **length** csv files:
 
@@ -210,7 +214,7 @@ look <- trlf[sample(dim(trlf)[1], 5), lf.vars]
 knitr::kable(look, row.names=FALSE)
 ```
 
-#### Age-length key files
+## Age-length key files
 
 No age-length key is required, but you may include age-length keys in separate csv files for up to 2 different species.  Each file should be arranged such that rows represent 10-mm length categories and columns represent 1-yr ages.  The file must contain one variable called *mmgroup* giving the midpoint of the length category, e.g., *mmgroup* 15 represents fish $\geq$ 10 mm and < 20 mm.  For each length category, the proportion of fish in each age is represented by a series of columns which sum to 1 (or 0, if no fish used to derive the key were found that length category).  Each proportional column is named according to the integer age, with an *Age* prefix, e.g.: 
 
@@ -227,32 +231,54 @@ look <- apply(look, 2, round, 3)
 knitr::kable(look, row.names=FALSE)
 ```
 
-## Read in the data
 
-With the data organized as described and the reference file as a guide to the directory and file names, you can now read in the acoustic and midwater trawl data using the `readAll` function.  
 
-In the example below, the overarching directory is *C:/Temp* (use forward slashes for paths), and the reference file is *myref.csv*.  Only data from the 3rd row of the reference file will be read, specified by `keyvals` for the `keyvars`, i.e., `LAKE==2` and `YEAR==2014`.  The data are saved to an RData file named *myACMT*, and the subdirectory path is returned.
+# Read in the data
+
+With the data organized as described and the reference file as a guide to the directory and file names, you can now read in the acoustic and midwater trawl data using the `readAll()` function.  
+
+In the example below, the overarching directory `refdir` is *C:/Temp* (use forward slashes for paths), and the reference file `refcsv` is *Reference.csv*.  Only data from the 3rd row of the reference file will be read, specified by `keyvals` for the `keyvars`, i.e., `LAKE==2` and `YEAR==2014`.  The data are saved to an RData file `rdat` named *ACMT*, and the subdirectory path is returned.
 
 ```{r, eval=FALSE}
 mydir <- readAll(refdir="C:/Temp", keyvals=c(2, 2014), 
-  keyvars=c("LAKE", "YEAR"), rdat="myACMT", refcsv="myref")
+  keyvars=c("LAKE", "YEAR"), rdat="ACMT", refcsv="Reference")
 ```
 
 ```{r}
 mydir
 ```
 
-## Explore the data
 
-```{r}
-# exploreACMT(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL, short=TRUE)
+
+# Explore the data
+
+Now you're ready to explore the data with the `exploreACMT()` function.  The `AC` and `MT` arguments are used to indicate if you want to explore the AC and MT data.  The `ageSp` argument gives the species codes for species that you want to apply age-length keys to; in this example `ageSp=106` for alewife.  The `short` argument is used to indicate if the surveyed area is wider than tall; in this example `short=FALSE` because Lake Michigan is not wider than tall.
+
+```{r, eval=FALSE}
+exploreACMT(maindir=mydir, rdat="ACMT", AC=TRUE, MT=TRUE, 
+  ageSp=106, short=FALSE)
 ```
 
-To make processing run more smoothly, especially if you have multiple years or lakes that you want to process, you should prepare several pieces of information prior to running any code.
+When you run this function, a rich text file (rtf) with a *.doc file extension (so that it will be opened with Word by default) is saved to `maindir`.  It includes a long series of tables and figures summarizing the variables in the acoustic and midwater trawl data files.  These are designed to help the investigator look for potential problems in the data.
 
-#### Size information
 
-You will need a data frame of species-specific size information for each species group for which you wish to generate abundance estimates.  The data frame has five variables: `sp` species code, `spname` species name, `lcut` length cut off (in mm), `lwa` and `lwb` parameters of the length-weight relation, $Wg = lwa*Lmm^{lwb}$, where *Wg* is the weight (in g) and *Lmm* is the total length (in mm).  The length cut off is used to divide the data for a given species into two groups for abundance estimation, those with fish lengths $\leq$ `lcut` and > `lcut`) for estimation.  If you don't wish to divide a species into two length groups, set `lcut` to 0 for that species.  This will be used as input to the `estimateACMT` function.
+
+# Generate estimates
+
+Once you've error checked the data and are confident that they are in good shape, you are ready to generate lake-wide estimates.  
+
+## Regions
+
+You will need a definition of the *strata* used to design the survey.  These are assumed to be non-overlapping two-dimensional regions that correspond to `Region_name` in the SV and TS files and `Transect` in the midwater trawl operation file.  You will also need to supply the surface areas (in ha) that correspond to each stratum.
+
+```{r}
+Mreg <- c("nn", "sn", "wn", "no", "so")
+MArea <- c(10933, 8716, 6010, 12630, 10487)
+```
+
+## Size information
+
+You will need a data frame of species-specific size information for each species group for which you wish to generate abundance estimates.  The data frame has five variables: `sp` species code, `spname` species name, `lcut` length cut off (in mm), `lwa` and `lwb` parameters of the length-weight relation, $Wg = lwa*Lmm^{lwb}$, where *Wg* is the weight (in g) and *Lmm* is the total length (in mm).  The length cut off is used to divide the data for a given species into two groups for abundance estimation, those with fish lengths $\leq$ `lcut` and > `lcut`) for estimation.  If you don't wish to divide a species into two length groups, set `lcut` to 0 for that species.  This will be used as input to the `estimateACMT()` function.
 
 ```{r spinfo}
 myspInfo <- data.frame(
@@ -264,11 +290,11 @@ myspInfo <- data.frame(
 )
 ```
 
-#### Slices
+## Slices
 
-You will need a definition of the *"slices"* by which you wish to summarize the abundance estimates.  These slices represent subpopulations (or domains) for which you want separate estimates.  They are not the same as *strata* which are used in the design of the survey and the estimation of the total population.
+You will need a definition of the *"slices"* by which you wish to summarize the abundance estimates.  These slices represent subpopulations (or domains) for which you want separate estimates.  They are **not the same** as *strata* which are used in the design of the survey and the estimation of the total population.
 
-The slices can be defined by combinations of fishing depths (`fdp`), bottom depths (`bdp`), longitudes (`lon`), latitudes (`lat`), and regions (`reg`).  The slice definition is described by a list of slices; each slice is a list of defining characteristics; and each characteristic is a named vector giving the range of values.  This will be used as input to the `sliceCat` function.
+The slices can be defined by combinations of fishing depths (`fdp`), bottom depths (`bdp`), longitudes (`lon`), latitudes (`lat`), and regions (`reg`).  The slice definition is described by a list of slices; each slice is a list of defining characteristics; and each characteristic is a named vector giving the range of values.  This will be used as input to the `sliceCat()` function.
 
 This is easier to explain with some examples.  Let's say you want to define two slices, based on a dividing line at a fishing depth of 20 m.  You would write your slice definition as
 
@@ -314,49 +340,72 @@ s3 <- sliceCat(myslice3, fdp=fishingD, reg=region)
 data.frame(fishingD, latitude, region, s1, s2, s3)
 ```
 
-```{r read}
-# specify reference directory, where Reference.csv file is
-# and key values, lake (2=Michigan, 3=Huron) and year of interest
-# mydir <- readAll(refdir="C:/JVA/Consult/Warner/Nearest Trawl",
-#  keyvals=c(2, 2014))
+## Estimates
+
+Now you're ready to use the `estimateACMT()` function to generate lake-wide estimates in both number (millions) and biomass (t).  The `region` and `regArea` arguments are used to indicate the regional strata and their corresponding areas (in ha).  The `TSrange` is the target strength range of interest, and `psi` is the transducer-specific two-way equivalent beam angle in steradians.  Species of interest are specified by `soi`, and each of these species should have size information in the data frame specified by `spInfo`.  And the slice definitions by which the estimates should be summarized are specified by the `sliceDef` argument.
+ 
+```{r, eval=FALSE}
+estimateACMT(maindir=mydir, rdat="ACMT", ageSp=106, region=Mreg, regArea=MArea,
+  TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 129),
+  spInfo=myspInfo, sliceDef=myslice1, short=FALSE)
 ```
 
-http://r-pkgs.had.co.nz/vignettes.html
+When you run this function, a rich text file (rtf) with a *.doc file extension (so that it will be opened with Word by default) is saved to `maindir`.  The document includes figures showing the location and apportionment of midwater trawl hauls in the slices and spatial maps of density for each species group, as well as tables of the lake-wide estimates in both number (millions) and biomass (t) for each species group and slice.
 
-## Explore the data
+In addition, 8 different data frames of estimates are saved as objects in an RData file and are written to csv files: 
 
-The `exploreACMT` function is used to explore the acoustic and midwater trawl data.  It requires that an RData file be prepared with all the necessary input data.  This can be done with the `readAll` function.  The `readAll` function requires some data preparation as well, and assumes that your files are organized in a certain way.  
+* lake-wide totals `laketots_millions` and `laketots_t` (in millions and t)
+* lake-wide means `lakemeans_nph` and `lakemeans_gph` (in numbers and g per ha)
+* interval means `intmeans_nph` and `intmeans_gph` (in numbers and g per ha)
+* interval and layer means `intlaymeans_nph` and `intlaymeans_gph` (in numbers and g per ha)
 
+The data frames of lake-wide totals and lake-wide means have a row for each species group, a column for each slice, and additional columns for the total (of all slices) with the standard error and relative standard error.
 
+The data frames of the interval means have a row for each region and interval, a column for each species group, and additional columns for region area, and the interval bottom depth, latitude and longitude.
 
+The data frames of the interval and layer means have a row for each region, interval, and layer, a column for each species group, and many additional columns.
 
-
-# *****
-# This is a work in progress
-# More to come
-# *****
-
-
-
-
-
-## Package development
-
-To do list:
-
-1.  update package
-1.  remove unneeded columns from files, and test that everything runs okay
-
-There are a number of ways that more flexibility could be introduced to the package in its current form.  The more flexible the package is, the more useful it will be for general use.
-
-1.  allow users to organize their file structures differently
-1.  allow for more than 2 species with age-length keys
-1.  allow user to name the first column of the TS and SV files
-1.  allow layers to be defined in different ways (not fixed to 10-m depths)
-1.  allow user to specify the names of the date variables
-1.  allow user to use different key variables (not stuck with year and lake)
+The rtf, RData, and csv files are all named using the lake and the year.
 
 
-## References
+
+# Summary
+
+Below is a summary of the code used in this vignette, simplified somewhat by relying on default values wherever possible.
+
+```{r, eval=FALSE}
+library(EchoNet2Fish)
+
+# read in the data
+mydir <- readAll(refdir="C:/Temp", keyvals=c(2, 2014))
+
+# explore the data
+exploreACMT(maindir=mydir, ageSp=106, short=FALSE)
+
+# define survey strata
+Mreg <- c("nn", "sn", "wn", "no", "so")
+MArea <- c(10933, 8716, 6010, 12630, 10487)
+
+# define species size info
+myspInfo <- data.frame(
+  sp = c(106, 109, 129),
+  spname = c("alewife", "rainbow smelt", "threespine stickleback"),
+  lcut = c(100, 90, 0),
+  lwa = c(1.41e-05, 4.85e-06, 3.95e-05),
+  lwb = c(2.87, 3.03, 2.59)
+)
+
+# define summary slices
+myslice1 <- list(
+  epi  = list(fdp=c(-Inf,  20)),
+  hypo = list(fdp=c(  20, Inf))
+  )
+
+# generate estimates
+estimateACMT(maindir=mydir, ageSp=106, region=Mreg, regArea=MArea,
+  soi=c(106, 109, 129), spInfo=myspInfo, sliceDef=myslice1, short=FALSE)
+```
+
+# References
 
 Parker-Stetter, S. L., Rudstam, L. G., Sullivan, P. J., and Warner, D. M.  2009.  Standard operating procedures for fisheries acoustic surveys in the  Great Lakes. Great Lakes Fish. Comm. Spec. Pub. 09-01.  [www.glfc.org/pubs/SpecialPubs/Sp09_1.pdf](http://www.glfc.org/pubs/SpecialPubs/Sp09_1.pdf).
