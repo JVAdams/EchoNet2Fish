@@ -327,7 +327,7 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     if(!is.null(optrop$Cruise)) {
       figu(cap("Cruise"), FIG=function() fig("Cruise"), newpage="port")
     }
-    if(!optrop$Transect[1]=="R") {
+    if(!optrop$Transect[1]=="RR") {
       figu(cap("Transect"), FIG=function() fig("Transect"), newpage="port")
     }
 

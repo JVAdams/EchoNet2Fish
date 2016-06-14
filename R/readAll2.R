@@ -99,8 +99,10 @@ readAll2 <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   ts <- readSVTS(tsdir, datevars=NULL)
 
   # add Region_Name to SV and TS files
-  if(!("Region_name" %in% names(sv))) sv$Region_name <- "R"
-  if(!("Region_name" %in% names(ts))) ts$Region_name <- "R"
+  if(!("Region_name" %in% names(sv))) sv$Region_name <-
+    paste0("RR", as.numeric(as.factor(sv$source)))
+  if(!("Region_name" %in% names(ts))) ts$Region_name <-
+    paste0("RR", as.numeric(as.factor(ts$source)))
 
   # read in MT data
   # RVCAT data

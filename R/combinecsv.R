@@ -24,6 +24,7 @@
 #'   Any variable names starting with "X." and ending with a number
 #'   are changed to ensure the number part of the name is rounded to the
 #'   nearest whole number, e.g., "X.76.000000" is renamed "X.76".
+#' @importFrom plyr rbind.fill
 #' @import utils
 #' @export
 
@@ -77,7 +78,7 @@ combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
         "  ", filenames[i], " has\n    ", shorten(y2), "\n", sep="")
 	  }
 	}
-	if(errors>0) stop("Column names mismatch")
+	if(errors>0) warning("Column names mismatch")
 	# combined each of the files from the list into one single file
-	do.call(rbind, files.list)
+	do.call(plyr::rbind.fill, files.list)
 }
