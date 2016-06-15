@@ -5,7 +5,7 @@
 \title{Read in All the Data Corresponding to a Specified Reference Row}
 \usage{
 readAll2(refdir, keyvals, keyvars = c("LAKE", "YEAR"), rdat = "ACMT",
-  refcsv = "Reference")
+  AC = TRUE, MT = TRUE, refcsv = "Reference")
 }
 \arguments{
 \item{refdir}{A character scalar giving the directory in which the reference csv file,
@@ -21,6 +21,12 @@ c("LAKE", "YEAR").}
 \item{rdat}{A character scalar giving the name of the RData file that will be saved
 containing all of the objects corresponding to the selected row of
 the reference csv file, \code{ref}, default "ACMT".}
+
+\item{AC}{A logical scalar indicating if you want to read in the acoustic data,
+default TRUE.}
+
+\item{MT}{A logical scalar indicating if you want to read in the midwater trawl
+data, default TRUE.}
 
 \item{refcsv}{A character scalar giving the name of the reference csv file,
 \code{ref}, default "Reference".  The csv file must have the following

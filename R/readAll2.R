@@ -17,6 +17,12 @@
 #'   A character scalar giving the name of the RData file that will be saved
 #'   containing all of the objects corresponding to the selected row of
 #'   the reference csv file, \code{ref}, default "ACMT".
+#' @param AC
+#'   A logical scalar indicating if you want to read in the acoustic data,
+#'   default TRUE.
+#' @param MT
+#'   A logical scalar indicating if you want to read in the midwater trawl
+#'   data, default TRUE.
 #' @param refcsv
 #'   A character scalar giving the name of the reference csv file,
 #'   \code{ref}, default "Reference".  The csv file must have the following
@@ -56,7 +62,7 @@
 #' @export
 #'
 readAll2 <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
-  refcsv="Reference") {
+  AC=TRUE, MT=TRUE, refcsv="Reference") {
   # read in file that has subdirectory and file names for each lake-year
   ref <- read.csv(paste0(refdir, "/", refcsv, ".csv"))
   sel <- array(NA, dim=c(dim(ref)[1], length(keyvars)))
@@ -71,8 +77,10 @@ readAll2 <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   inputs <- ref[selrow, ]
 
   maindir <-   paste0(refdir, "/", inputs$subdir, "/")
+
   svdir <-     paste0(maindir, inputs$svsubdir, "/")
   tsdir <-     paste0(maindir, inputs$tssubdir, "/")
+
   optrop.f <-  paste0(maindir, inputs$optropf, ".csv")
   trcatch.f <- paste0(maindir, inputs$trcatchf, ".csv")
   trlf.f <-    paste0(maindir, inputs$trlff, ".csv")
@@ -88,66 +96,72 @@ readAll2 <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   }
 
   # list of objects to save
-  keepobjs <- c("rdat", "keyvals", "keyvars", "inputs",
-    "sv", "ts", "optrop", "trcatch", "trlf")
+  keepobjs <- c("rdat", "keyvals", "keyvars", "inputs")
+  if(AC) keepobjs <- c(keepobjs, "sv", "ts")
+  if(MT) keepobjs <- c(keepobjs, "optrop", "trcatch", "trlf")
 
-  # read in AC data
-  sv <- readSVTS(svtsdir=svdir, oldname="ABC", newname="PRC_ABC",
-    elimMiss=c("Lat_M", "Sv_mean", "PRC_ABC"),
-    datevars="Date_M", addyear=TRUE, tidy=TRUE)
+  if(AC) {
+    # read in AC data
+    sv <- readSVTS(svtsdir=svdir, oldname="ABC", newname="PRC_ABC",
+      elimMiss=c("Lat_M", "Sv_mean", "PRC_ABC"),
+      datevars="Date_M", addyear=TRUE, tidy=TRUE)
 
-  ts <- readSVTS(tsdir, datevars=NULL)
+    ts <- readSVTS(tsdir, datevars=NULL)
 
-  # add Region_Name to SV and TS files
-  if(!("Region_name" %in% names(sv))) sv$Region_name <-
-    paste0("RR", as.numeric(as.factor(sv$source)))
-  if(!("Region_name" %in% names(ts))) ts$Region_name <-
-    paste0("RR", as.numeric(as.factor(ts$source)))
-
-  # read in MT data
-  # RVCAT data
-  optrop <- read.csv(optrop.f, as.is=TRUE, na.strings="NULL")
-  trcatch <- read.csv(trcatch.f, as.is=TRUE, na.strings="NULL")
-  trlf <- read.csv(trlf.f, as.is=TRUE, na.strings="NULL")
-
-  jvanames <- function(charvec) {
-    make.names(casefold(charvec), unique = TRUE, allow_ = FALSE)
+    # add Region_Name to SV and TS files
+    if(!("Region_name" %in% names(sv))) sv$Region_name <-
+      paste0("RR", as.numeric(as.factor(sv$source)))
+    if(!("Region_name" %in% names(ts))) ts$Region_name <-
+      paste0("RR", as.numeric(as.factor(ts$source)))
   }
 
-  fixnames <- function(df, needed) {
-    now <- names(df)
-    have <- jvanames(now)
-    need <- jvanames(needed)
-    miss <- needed[setdiff(need, have)]
-    if(length(miss)>0) stop("The ", deparse(substitute(x)),
-      " csv file is missing at least one needed column: ",
-      paste(miss, collapse=", "))
-    indx <- match(need, have)
-    now[indx] <- needed
-    return(now)
+  if(MT) {
+    # read in MT data
+    # RVCAT data
+    optrop <- read.csv(optrop.f, as.is=TRUE, na.strings="NULL")
+    trcatch <- read.csv(trcatch.f, as.is=TRUE, na.strings="NULL")
+    trlf <- read.csv(trlf.f, as.is=TRUE, na.strings="NULL")
+
+    jvanames <- function(charvec) {
+      make.names(casefold(charvec), unique = TRUE, allow_ = FALSE)
+    }
+
+    fixnames <- function(df, needed) {
+      now <- names(df)
+      have <- jvanames(now)
+      need <- jvanames(needed)
+      miss <- needed[setdiff(need, have)]
+      if(length(miss)>0) stop("The ", deparse(substitute(x)),
+        " csv file is missing at least one needed column: ",
+        paste(miss, collapse=", "))
+      indx <- match(need, have)
+      now[indx] <- needed
+      return(now)
+    }
+
+    # needed names for optrop, trcatch, and trlf files
+    neednames <- list(
+      c("Op.Id", "Year", "Lake", "Beg.Depth", "End.Depth", "Fishing_Depth",
+        "Transect", "Latitude", "Longitude"),
+      c("Op.Id", "Species", "Weight", "N"),
+      c("Op.Id", "Species", "Length", "N"))
+
+    names(optrop) <- fixnames(optrop, neednames[[1]])
+    names(trcatch) <- fixnames(trcatch, neednames[[2]])
+    names(trlf) <- fixnames(trlf, neednames[[3]])
+
+    if(!is.null(keysp1.f)) {
+      key1 <- read.csv(keysp1.f$file, as.is=TRUE)
+      key1$sp <- keysp1.f$sp
+      keepobjs <- c(keepobjs, "key1")
+    }
+    if(!is.null(keysp2.f)) {
+      key2 <- read.csv(keysp2.f$file, as.is=TRUE)
+      key2$sp <- keysp2.f$sp
+      keepobjs <- c(keepobjs, "key2")
+    }
   }
 
-  # needed names for optrop, trcatch, and trlf files
-  neednames <- list(
-    c("Op.Id", "Year", "Lake", "Beg.Depth", "End.Depth", "Fishing_Depth",
-      "Transect", "Latitude", "Longitude"),
-    c("Op.Id", "Species", "Weight", "N"),
-    c("Op.Id", "Species", "Length", "N"))
-
-  names(optrop) <- fixnames(optrop, neednames[[1]])
-  names(trcatch) <- fixnames(trcatch, neednames[[2]])
-  names(trlf) <- fixnames(trlf, neednames[[3]])
-
-  if(!is.null(keysp1.f)) {
-    key1 <- read.csv(keysp1.f$file, as.is=TRUE)
-    key1$sp <- keysp1.f$sp
-    keepobjs <- c(keepobjs, "key1")
-  }
-  if(!is.null(keysp2.f)) {
-    key2 <- read.csv(keysp2.f$file, as.is=TRUE)
-    key2$sp <- keysp2.f$sp
-    keepobjs <- c(keepobjs, "key2")
-  }
   save(list=keepobjs, file=paste0(maindir, rdat, ".RData"))
   return(maindir)
 }
