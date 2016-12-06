@@ -12,12 +12,13 @@ You should be able to access the functions by installing them directly from with
     devtools::install_github("JVAdams/EchoNet2Fish", build_vignettes=TRUE)
     library(EchoNet2Fish)
 
-If you don't already have `Rtools` and `devtools`, you will need to download and install (as administrator, if using a PC) `Rtools` from [CRAN](http://cran.r-project.org/bin/windows/Rtools/) then run the following lines of code before submitting the code above:
+If you get an error saying "Peer certificate cannot be authenticated", try the fix suggested in this post to [R-bloggers](https://www.r-bloggers.com/fixing-peer-certificate-cannot-be-authenticated/).
+
+If you don't already have `Rtools` and `devtools`, you may need to download and install (as administrator, if using a PC) `Rtools` from [CRAN](http://cran.r-project.org/bin/windows/Rtools/) then run the following lines of code before submitting the code above:
 
     find_rtools()
-    install.packages("devtools")
 
-An alternative approach for Windows users is to download this [zip file](https://github.com/JVAdams/EchoNet2Fish/raw/master/) and install the package from the R menu:
+An alternative approach for Windows users is to download this [zip file](https://github.com/JVAdams/EchoNet2Fish/archive/master.zip) and install the package from the R menu:
 - Packages
 - Install package(s) from local zip files...
 	
