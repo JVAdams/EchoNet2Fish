@@ -63,22 +63,27 @@ combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
 	  }
 	  y
 	}
-	# check for name consistency
-	errors <- 0
-	for(i in 2:nfiles) {
-	  x1 <- names(files.list[[i-1]])
-	  x2 <- names(files.list[[i]])
-	  y1 <- setdiff(x1, x2)
-	  y2 <- setdiff(x2, x1)
-	  if(length(y1) + length(y2) > 0) {
-	    errors <- errors+1
-	    cat("\nFor each pair of files,",
-        " these are column names present in one and not the other:\n",
-	      "  ", filenames[i-1], " has\n    ", shorten(y1), "\n",
-        "  ", filenames[i], " has\n    ", shorten(y2), "\n", sep="")
-	  }
+	if(nfiles > 1) {
+  	# check for name consistency
+  	errors <- 0
+  	for(i in 2:nfiles) {
+  	  x1 <- names(files.list[[i-1]])
+  	  x2 <- names(files.list[[i]])
+  	  y1 <- setdiff(x1, x2)
+  	  y2 <- setdiff(x2, x1)
+  	  if(length(y1) + length(y2) > 0) {
+  	    errors <- errors+1
+  	    cat("\nFor each pair of files,",
+          " these are column names present in one and not the other:\n",
+  	      "  ", filenames[i-1], " has\n    ", shorten(y1), "\n",
+          "  ", filenames[i], " has\n    ", shorten(y2), "\n", sep="")
+  	  }
+  	}
+  	if(errors>0) warning("Column names mismatch")
+  	# combined each of the files from the list into one single file
+  	out <- do.call(plyr::rbind.fill, files.list)
+	} else {
+	  out <- files.list[[1]]
 	}
-	if(errors>0) warning("Column names mismatch")
-	# combined each of the files from the list into one single file
-	do.call(plyr::rbind.fill, files.list)
+	return(out)
 }
