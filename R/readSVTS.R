@@ -18,7 +18,7 @@
 #'   A character vector giving the names of variables with date information
 #'   stored as YYYYMMDD, default c("Date_S", "Date_E", "Date_M").
 #'   These will be converted to R dates.
-#'   If NULL, no date coversion will be carried out.
+#'   If NA, no date coversion will be carried out.
 #' @param addyear
 #'   A logical scalar indicating if a \code{year} variable should be added
 #'   to the data frame, based on the first variable named in
@@ -46,13 +46,14 @@ readSVTS <- function(svtsdir, oldname=NULL, newname=NULL, elimMiss=NULL,
     }
   }
   # create date variables
-  if(!is.null(datevars)) {
-    for(i in seq_along(datevars)) {
-      df[, datevars[i]] <- ymd(df[, datevars[i]], quiet=TRUE)
+  dboth <- intersect(names(df), datevars)
+  if(length(dboth)>0) {
+    for(i in seq_along(dboth)) {
+      df[, dboth[i]] <- ymd(df[, dboth[i]], quiet=TRUE)
     }
     # create variable for year
     if(addyear) {
-      df$year <- year(df[, datevars[1]])
+      df$year <- year(df[, dboth[1]])
     }
   }
   # assign NAs to missing value codes
