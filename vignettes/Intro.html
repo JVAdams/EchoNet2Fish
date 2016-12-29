@@ -12,7 +12,7 @@
 
 <meta name="author" content="Jean V. Adams" />
 
-<meta name="date" content="2016-06-06" />
+<meta name="date" content="2016-12-29" />
 
 <title>Introduction to EchoNet2Fish</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">Introduction to EchoNet2Fish</h1>
 <h4 class="author"><em>Jean V. Adams</em></h4>
-<h4 class="date"><em>2016-06-06</em></h4>
+<h4 class="date"><em>2016-12-29</em></h4>
 
 
 
@@ -227,28 +227,30 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div id="acoustic-files" class="section level2">
 <h2>Acoustic files</h2>
 <p>Except where noted, the order of the rows and columns in any of the acoustic or midwater trawl files is not important. Additional columns, i.e., other than those that are required, may be included in the files, but are not necessary.</p>
-<p>In both the <strong>SV and TS</strong> csv files, the first column is automatically assigned the name <em>Region_ID</em>. This name write-over is needed to handle occasional problems with byte order marks at the beginning of the csv files. The variable <em>Region_ID</em> is not actually used in the exploration or estimation procedures.</p>
-<p>The following 3 columns must be included in both the <strong>SV and TS</strong> csv files:</p>
+<p>In both the <strong>SV and TS</strong> csv files, the first column is automatically assigned the name <em>Dummy_ID</em>. This name write-over is needed to handle occasional problems with byte order marks at the beginning of the csv files. The variable <em>Dummy_ID</em> is not actually used in the exploration or estimation procedures.</p>
+<p>The following 8 columns must be included in both the <strong>SV and TS</strong> csv files:</p>
 <ul>
+<li>Dummy_ID = dummy variable not used at all, must be the <strong>FIRST COLUMN</strong></li>
 <li>Region_name = transect name, composed of region and transect ID number</li>
 <li>Interval = interval ID numbers, identifying acoustic transect segments</li>
 <li>Layer = layer ID numbers, identifying 10-m acoustic layers in the water column, numbered from the surface to the bottom</li>
-</ul>
-<p>These columns serve to uniquely identify each row in the files, and are used to combine the information from both types of files.</p>
-<p>The following 12 columns must be included in the <strong>SV</strong> csv files:</p>
-<ul>
-<li>Date_M = date, YYYYMMDD</li>
-<li>Sv_mean = mean volume backscattering strength in dB</li>
-<li>Depth_mean = range to target in m</li>
 <li>Layer_depth_min = minimum of corresponding depth layer in m</li>
 <li>Layer_depth_max = maximum of corresponding depth layer in m</li>
 <li>Lat_M = latitude in decimal degrees</li>
 <li>Lon_M = longitude in decimal degrees</li>
+</ul>
+<p>These columns serve to uniquely identify each row in the files, and are used to combine the information from both types of files.</p>
+<p>The following 4 columns must be included in the <strong>SV</strong> csv files:</p>
+<ul>
+<li>Date_M = date, YYYYMMDD</li>
+<li>Sv_mean = mean volume backscattering strength in dB</li>
+<li>Depth_mean = range to target in m</li>
 <li>PRC_ABC = area backscattering coefficient (unitless)</li>
 </ul>
 <table>
 <thead>
 <tr class="header">
+<th align="right">Dummy_ID</th>
 <th align="left">Region_name</th>
 <th align="right">Interval</th>
 <th align="right">Layer</th>
@@ -264,6 +266,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </thead>
 <tbody>
 <tr class="odd">
+<td align="right">1</td>
 <td align="left">nn5</td>
 <td align="right">1</td>
 <td align="right">8</td>
@@ -277,6 +280,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="left">3.78e-08</td>
 </tr>
 <tr class="even">
+<td align="right">1</td>
 <td align="left">nn2</td>
 <td align="right">3</td>
 <td align="right">9</td>
@@ -290,6 +294,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="left">4.11e-07</td>
 </tr>
 <tr class="odd">
+<td align="right">1</td>
 <td align="left">no2</td>
 <td align="right">3</td>
 <td align="right">3</td>
@@ -303,6 +308,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="left">8.21e-09</td>
 </tr>
 <tr class="even">
+<td align="right">1</td>
 <td align="left">sn2</td>
 <td align="right">2</td>
 <td align="right">1</td>
@@ -316,6 +322,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="left">7.54e-08</td>
 </tr>
 <tr class="odd">
+<td align="right">1</td>
 <td align="left">nn4</td>
 <td align="right">6</td>
 <td align="right">4</td>
@@ -341,9 +348,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <table>
 <thead>
 <tr class="header">
+<th align="right">Dummy_ID</th>
 <th align="left">Region_name</th>
 <th align="right">Interval</th>
 <th align="right">Layer</th>
+<th align="right">Layer_depth_min</th>
+<th align="right">Layer_depth_max</th>
+<th align="right">Lat_M</th>
+<th align="right">Lon_M</th>
 <th align="right">X.36</th>
 <th align="right">X.37</th>
 <th align="right">X.38</th>
@@ -354,9 +366,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </thead>
 <tbody>
 <tr class="odd">
+<td align="right">1</td>
 <td align="left">no5</td>
 <td align="right">3</td>
 <td align="right">16</td>
+<td align="right">150</td>
+<td align="right">160</td>
+<td align="right">45.04050</td>
+<td align="right">-86.60167</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -365,9 +382,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="right">95</td>
 </tr>
 <tr class="even">
+<td align="right">1</td>
 <td align="left">sn3</td>
 <td align="right">3</td>
 <td align="right">5</td>
+<td align="right">40</td>
+<td align="right">50</td>
+<td align="right">42.43448</td>
+<td align="right">-86.47229</td>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1</td>
@@ -376,9 +398,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="right">0</td>
 </tr>
 <tr class="odd">
+<td align="right">1</td>
 <td align="left">nn1</td>
 <td align="right">1</td>
 <td align="right">2</td>
+<td align="right">10</td>
+<td align="right">20</td>
+<td align="right">43.78406</td>
+<td align="right">-86.70974</td>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -387,9 +414,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="right">2</td>
 </tr>
 <tr class="even">
+<td align="right">1</td>
 <td align="left">no6</td>
 <td align="right">9</td>
 <td align="right">14</td>
+<td align="right">130</td>
+<td align="right">140</td>
+<td align="right">45.36167</td>
+<td align="right">-86.44783</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -398,9 +430,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <td align="right">13</td>
 </tr>
 <tr class="odd">
+<td align="right">1</td>
 <td align="left">so2</td>
 <td align="right">8</td>
 <td align="right">1</td>
+<td align="right">0</td>
+<td align="right">10</td>
+<td align="right">43.56600</td>
+<td align="right">-86.86962</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>

@@ -45,7 +45,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
   heading(paste0(YEAR, " Lake ", Lakenames[LAKE], " Exploration of ", descr,
     " Data   ", today()))
 
-  para("R code written by Jean V. Adams for Dave Warner.")
+  para("Created using the R package EchoNet2Fish (https://github.com/JVAdams/EchoNet2Fish), written by Jean V. Adams for Dave Warner.")
   para(paste0(docname, " = this document."))
 
   heading("INPUTS", 2)
@@ -121,31 +121,34 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
         newpage="port")
     }
 
-    # plots comparing extremes with middle values
-    fig <- function(x, lhk=TRUE, tt=FALSE) {
-      varnames <- paste(x, c("S", "E", "M"), sep="_")
-      caption <<- paste0("PROBLEM:  Comparing ", paste(varnames, collapse=", "),
-        " for Sv files.")
-      vars <- with(sv, sapply(varnames, function(y) eval(parse(text=y))))
-      plotValues(vars[, 1], vars[, 2], vars[, 3], lowhighKnown=lhk, varname=x,
-        test=tt)
-    }
-    np <- fig("Ping", tt=TRUE)
-  	if(np) figu(caption, FIG=function() fig("Ping", lhk=TRUE), newpage="port")
-    np <- fig("Dist", lhk=FALSE, tt=TRUE)
-  	if(np) figu(caption, FIG=function() fig("Dist"), newpage="port")
-    np <- fig("Lat", lhk=FALSE, tt=TRUE)
-  	if(np) figu(caption, FIG=function() fig("Lat"), newpage="port")
-    np <- fig("Lon", lhk=FALSE, tt=TRUE)
-  	if(np) figu(caption, FIG=function() fig("Lon"), newpage="port")
-    if(!is.null(sv$Date_S) & !is.null(sv$Date_E)) {
-      fig <- function(...) {
-        with(sv, plotValues(decimal_date(Date_S), decimal_date(Date_E),
-          decimal_date(Date_M), varname="Date", lhk=TRUE, ...))
+    if(length(grep("_E", names(sv))) > 0) {
+
+      # plots comparing extremes with middle values
+      fig <- function(x, lhk=TRUE, tt=FALSE) {
+        varnames <- paste(x, c("S", "E", "M"), sep="_")
+        caption <<- paste0("PROBLEM:  Comparing ", paste(varnames, collapse=", "),
+          " for Sv files.")
+        vars <- with(sv, sapply(varnames, function(y) eval(parse(text=y))))
+        plotValues(vars[, 1], vars[, 2], vars[, 3], lowhighKnown=lhk, varname=x,
+          test=tt)
       }
-      np <- fig(test=TRUE)
-      if(np) figu("PROBLEM:  Comparing Date_S, Date_E, and Date_M for Sv files.",
-        newpage="port", FIG=fig)
+      np <- fig("Ping", tt=TRUE)
+    	if(np) figu(caption, FIG=function() fig("Ping", lhk=TRUE), newpage="port")
+      np <- fig("Dist", lhk=FALSE, tt=TRUE)
+    	if(np) figu(caption, FIG=function() fig("Dist"), newpage="port")
+      np <- fig("Lat", lhk=FALSE, tt=TRUE)
+    	if(np) figu(caption, FIG=function() fig("Lat"), newpage="port")
+      np <- fig("Lon", lhk=FALSE, tt=TRUE)
+    	if(np) figu(caption, FIG=function() fig("Lon"), newpage="port")
+      if(!is.null(sv$Date_S) & !is.null(sv$Date_E)) {
+        fig <- function(...) {
+          with(sv, plotValues(decimal_date(Date_S), decimal_date(Date_E),
+            decimal_date(Date_M), varname="Date", lhk=TRUE, ...))
+        }
+        np <- fig(test=TRUE)
+        if(np) figu("PROBLEM:  Comparing Date_S, Date_E, and Date_M for Sv files.",
+          newpage="port", FIG=fig)
+      }
     }
 
     ### TS
@@ -238,8 +241,11 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
       "Lake", "Port", "Beg.Depth", "End.Depth", "Distance", "Fishing_Temp",
       "Fishing_Depth", "Transect")]
 
-    tab <- with(optrop, optrop[is.na(Beg.Depth) | is.na(End.Depth) |
-      (!is.null(Distance) & is.na(Distance)) | is.na(Fishing_Temp), pcols])
+    nacols <- allcols[allcols %in%
+        c("Beg.Depth", "End.Depth", "Distance", "Fishing_Temp")]
+    narows <- apply(is.na(optrop[, nacols]), 1, any)
+    tab <- optrop[narows, pcols]
+
     if(dim(tab)[1] > 0) {
     	tabl("OP/TROP records with missing depth, distance, or temperature.",
     	  newpage="land", TAB=tab)

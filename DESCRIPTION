@@ -1,6 +1,6 @@
 Package: EchoNet2Fish
-Version: 0.2.5.9000
-Date: 2016-12-14
+Version: 0.2.6.9000
+Date: 2016-12-29
 Title: Estimate Fish Abundance from Acoustic Echoes and Net Catch
 Authors@R: person(given="Jean V.", family="Adams", email="jvadams@usgs.gov", 
   role=c("aut", "cre"))

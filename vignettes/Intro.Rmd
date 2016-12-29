@@ -109,35 +109,38 @@ knitr::kable(refdat)
 
 Except where noted, the order of the rows and columns in any of the acoustic or midwater trawl files is not important.  Additional columns, i.e., other than those that are required, may be included in the files, but are not necessary.
 
-In both the **SV and TS** csv files, the first column is automatically assigned the name *Region_ID*. This name write-over is needed to handle occasional problems with byte order marks at the beginning of the csv files. The variable *Region_ID* is not actually used in the exploration or estimation procedures.
+In both the **SV and TS** csv files, the first column is automatically assigned the name *Dummy_ID*. This name write-over is needed to handle occasional problems with byte order marks at the beginning of the csv files. The variable *Dummy_ID* is not actually used in the exploration or estimation procedures.
 
-The following 3 columns must be included in both the **SV and TS** csv files:
+The following 8 columns must be included in both the **SV and TS** csv files:
 
+* Dummy_ID = dummy variable not used at all, must be the **FIRST COLUMN**
 * Region_name = transect name, composed of region and transect ID number
 * Interval = interval ID numbers, identifying acoustic transect segments 
 * Layer = layer ID numbers, identifying 10-m acoustic layers in the water column, numbered from the surface to the bottom
-
-These columns serve to uniquely identify each row in the files, and are used to combine the information from both types of files.
-
-The following 12 columns must be included in the **SV** csv files:
-
-* Date_M = date, YYYYMMDD
-* Sv_mean = mean volume backscattering strength in dB
-* Depth_mean = range to target in m
 * Layer_depth_min = minimum of corresponding depth layer in m
 * Layer_depth_max = maximum of corresponding depth layer in m
 * Lat_M = latitude in decimal degrees
 * Lon_M = longitude in decimal degrees
+
+These columns serve to uniquely identify each row in the files, and are used to combine the information from both types of files.
+
+The following 4 columns must be included in the **SV** csv files:
+
+* Date_M = date, YYYYMMDD
+* Sv_mean = mean volume backscattering strength in dB
+* Depth_mean = range to target in m
 * PRC_ABC = area backscattering coefficient (unitless)
 
 ```{r svexample, echo=FALSE}
 mydir <- readAll(refdir="C:/Temp", keyvals=c(2, 2014), 
   keyvars=c("LAKE", "YEAR"), rdat="ACMT", refcsv="Reference")
 load(paste(mydir, "ACMT.RData", sep="/"))
-sv.vars <- c("Region_name", "Interval", "Layer", "Date_M", "Sv_mean",   "Depth_mean", "Layer_depth_min", "Layer_depth_max", "Lat_M", "Lon_M", 
-  "PRC_ABC")
+sv.vars <- c("Dummy_ID", "Region_name", "Interval", "Layer", "Date_M",
+  "Sv_mean", "Depth_mean", "Layer_depth_min", "Layer_depth_max", "Lat_M",
+  "Lon_M", "PRC_ABC")
 set.seed(395)
 look <- sv[sample(dim(sv)[1], 5), sv.vars]
+look$Dummy_ID <- rep(1, 5)
 look$Date_M <- format(look$Date_M, "%Y%m%d")
 look$Sv_mean <- round(look$Sv_mean, 1)
 look$Depth_mean <- round(look$Depth_mean, 1)
@@ -156,9 +159,11 @@ Several columns must be included in the **TS** csv files indicating the number o
 * X.76 
 
 ```{r, echo=FALSE}
-ts.vars <- c("Region_name", "Interval", "Layer", "X.36", "X.37", "X.38", 
-  "X.64", "X.65", "X.66")
+ts.vars <- c("Dummy_ID", "Region_name", "Interval", "Layer", "Layer_depth_min",
+  "Layer_depth_max", "Lat_M", "Lon_M", "X.36", "X.37", "X.38", "X.64", "X.65",
+  "X.66")
 look <- ts[sample(dim(ts)[1], 5), ts.vars]
+look$Dummy_ID <- rep(1, 5)
 knitr::kable(look, row.names=FALSE)
 ```
 

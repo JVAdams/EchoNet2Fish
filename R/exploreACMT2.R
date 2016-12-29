@@ -50,7 +50,7 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     c("No", "Trawl", "Acoustic", "Acoustic and Trawl"))
   heading(paste0(nick, " Exploration of ", descr, " Data   ", today()))
 
-  para("R code written by Jean V. Adams for Dave Warner.")
+  para("Created using the R package EchoNet2Fish (https://github.com/JVAdams/EchoNet2Fish), written by Jean V. Adams for Dave Warner.")
   para(paste0(docname, " = this document."))
 
   heading("INPUTS", 2)

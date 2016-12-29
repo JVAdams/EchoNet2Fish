@@ -11,7 +11,7 @@
 #'   be added to the data frame identifying the source file, default TRUE.
 #' @param column1name
 #'   A character scalar assigning a name to the first column in the data
-#'   frame (writing over whatever name is there already), default "Region_ID".
+#'   frame (writing over whatever name is there already), default "Dummy_ID".
 #' @return
 #'   A data frame with the information from all the csv files combined.
 #' @details
@@ -28,7 +28,7 @@
 #' @import utils
 #' @export
 
-combinecsv <- function(myDir, addSource=TRUE, column1name="Region_ID") {
+combinecsv <- function(myDir, addSource=TRUE, column1name="Dummy_ID") {
 	# combine all csv files in a given directory into a single data frame
 	# file names
 	filenames <- list.files(myDir)[grep(".csv$", list.files(myDir))]

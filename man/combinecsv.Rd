@@ -4,7 +4,7 @@
 \alias{combinecsv}
 \title{Combine Several Comma Delimited Files into a Single Data Frame}
 \usage{
-combinecsv(myDir, addSource = TRUE, column1name = "Region_ID")
+combinecsv(myDir, addSource = TRUE, column1name = "Dummy_ID")
 }
 \arguments{
 \item{myDir}{A character scalar naming the directory in which the csv files
@@ -16,7 +16,7 @@ header row of column names.}
 be added to the data frame identifying the source file, default TRUE.}
 
 \item{column1name}{A character scalar assigning a name to the first column in the data
-frame (writing over whatever name is there already), default "Region_ID".}
+frame (writing over whatever name is there already), default "Dummy_ID".}
 }
 \value{
 A data frame with the information from all the csv files combined.
