@@ -25,7 +25,7 @@
 #'   Based on a function posted by Stanislav on 13 May 2015 on stackoverflow
 #'   \href{http://stackoverflow.com/a/30225804/2140956}{[link]}.
 #' @import
-#'   sp stats
+#'   sp stats rgdal
 #' @examples
 #' mylon <- c(-92.11, -76.47, -82.27, -83.42)
 #' mylat <- c(46.76, 44.34, 44.76, 45.41)

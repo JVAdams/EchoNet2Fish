@@ -112,6 +112,11 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # make sure species names are character (not factor)
   spInfo$spname <- as.character(spInfo$spname)
 
+  # make sure all species of interest are listed in info file
+  xtra <- setdiff(soi, spInfo$sp)
+  if(length(xtra)>0) stop(paste0("\nThere is at least one species listed in soi= that has no information in spInfo=: ",
+    paste(xtra, collapse=", "), "."))
+
   # create rtf document to save printed output (tables and figures)
   docname <- paste0("L", LAKE, " Y", YEAR, " ACMT Estimate ", today(), ".doc")
   doc <<- startrtf(file=docname, dir=maindir)
@@ -164,6 +169,19 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   ts$UID <- interaction(gsub(" ", "", ts$Region_name), ts$Interval, ts$Layer)
   ts$source.ts <- ts$source
 
+  svdup <- sv[sv$UID %in% sv$UID[duplicated(sv$UID)], ]
+  tsdup <- ts[ts$UID %in% ts$UID[duplicated(ts$UID)], ]
+
+  if(dim(svdup)[1]>0) {
+    print(svdup[, c("Region_name", "Interval", "Layer", "source.sv")])
+    stop("There should be only one row in SV for each Region_name, Interval, and Layer.")
+  }
+
+  if(dim(tsdup)[1]>0) {
+    print(tsdup[, c("Region_name", "Interval", "Layer", "source.ts")])
+    stop("There should be only one row in TS for each Region_name, Interval, and Layer.")
+  }
+
   # merge sv and ts files
   svts <- merge(sv[, c("UID", "Region_name", "Interval", "Layer",
     "Layer_depth_min", "Layer_depth_max", "Lat_M", "Lon_M", "year", "Date_M",
@@ -174,17 +192,40 @@ estimateACMT <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # get rid of blanks in Region_name
   svts$Region_name <- gsub(" ", "", svts$Region_name)
 
-  # if there are more rows in the merged data frame than in
-  # the original sv file, something's wrong
-  if(dim(svts)[1] > dim(sv)[1]) {
-  	sel <- is.na(svts$Interval)
-  	tab <- ts[ts$UID %in% svts$UID[sel], c("Region_name", "Interval", "Layer",
-  	  "source.ts")]
+  svx <- setdiff(sv$UID, ts$UID)
+  tsx <- setdiff(ts$UID, sv$UID)
+
+  if(length(svx)>0) {
+    sel <- svts$UID %in% svx
+    tab <- svts[sel, c("Region_name", "Interval", "Layer", "source.sv")]
+  	tabl("There is at least one region-interval-layer combination that occurs",
+      " in the SV data but not in the TS data.",
+  		"  These data will be removed from further calculations.", TAB=tab)
+  	svts <- svts[!sel, ]
+  }
+
+  if(length(tsx)>0) {
+    sel <- svts$UID %in% tsx
+    tab <- svts[sel, c("Region_name", "Interval", "Layer", "source.ts")]
   	tabl("There is at least one region-interval-layer combination that occurs",
       " in the TS data but not in the SV data.",
   		"  These data will be removed from further calculations.", TAB=tab)
   	svts <- svts[!sel, ]
   }
+
+  # if there are more rows in the merged data frame than in
+  # the original sv file, something's wrong
+  # if(dim(svts)[1] > dim(sv)[1]) {
+ 	# sel <- is.na(svts$Interval)
+ 	# tab <- ts[ts$UID %in% svts$UID[sel], c("Region_name", "Interval", "Layer",
+ 	#   "source.ts")]
+  # 	tab <- ts[ts$UID %in% setdiff(svts$UID, ts$UID),
+  # 	  c("Region_name", "Interval", "Layer", "source.ts")]
+  # 	tabl("There is at least one region-interval-layer combination that occurs",
+  #     " in the TS data but not in the SV data.",
+  # 		"  These data will be removed from further calculations.", TAB=tab)
+  # 	svts <- svts[!sel, ]
+  # }
 
   # before making changes to sigma, keep the original value for later reference
   svts$sigma.orig <- svts$sigma
