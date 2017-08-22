@@ -30,4 +30,3 @@ This is a copy of the \code{heading} function from the
   \code{\link{endrtf}},
   \code{\link[rtf]{RTF}}.
 }
-

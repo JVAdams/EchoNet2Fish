@@ -105,4 +105,3 @@ A rich text file (rtf) with a *.doc file extension (so that it will be
   region, interval, and layer, a column for each species group, and
   many additional columns.
 }
-

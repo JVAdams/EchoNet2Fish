@@ -84,4 +84,3 @@ myslicedef2 <- list(
 )
 sliceCat(myslicedef2, fdp=fishingD, reg=region)
 }
-

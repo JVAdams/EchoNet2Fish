@@ -55,4 +55,3 @@ sigmaAvg(TSdf=mydf, TSrange=c(-105, -85))
 \seealso{
 \code{\link{TS2sigma}}, \code{\link{regex}}
 }
-

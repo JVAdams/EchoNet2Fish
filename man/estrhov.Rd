@@ -36,4 +36,3 @@ estrhov(Sv=mySv, sigmabs=mysigma)
 \seealso{
 \code{\link{estNv}}
 }
-

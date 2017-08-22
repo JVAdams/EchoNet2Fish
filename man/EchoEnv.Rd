@@ -12,4 +12,3 @@ Post from Hadley Wickham to r-help on 2 Dec 2014
 An environment local to the EchoNet2Fish package, used to hold objects
   outside of the individual package functions
 }
-

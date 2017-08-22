@@ -29,4 +29,3 @@ plot(rand, rand, pch=16, col=colorVal(rand))
 \seealso{
 \code{\link{rainbow}}
 }
-

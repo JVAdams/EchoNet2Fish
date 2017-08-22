@@ -30,4 +30,3 @@ Assign new values to a vector.
 recode(c(1,1,1,2,3,4,1,10,3), 1:3, 1001:1003)
 recode(c(1,1,1,2,3,4,1,10,3), 1:3, 1001:1003, must.match=TRUE)
 }
-

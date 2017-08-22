@@ -33,4 +33,3 @@ Based on a function posted by Josh O'Brien on 8 Feb 2012 on stackoverflow
   and code for exceptions posted by wittrup on 13 Sep 2013 on stackoverflow
   \href{http://stackoverflow.com/a/18785421/2140956}{[link]}.
 }
-

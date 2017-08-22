@@ -21,4 +21,3 @@ default \code{Species}.}
 \description{
 Boxplots of species versus continuous data on the square root scale.
 }
-

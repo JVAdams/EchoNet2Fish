@@ -35,4 +35,3 @@ Explore acoustic and midwater trawl data.
 A rich text file (rtf) with a *.doc file extension (so that it will be
   opened with Word by default) is saved to \code{maindir}.
 }
-

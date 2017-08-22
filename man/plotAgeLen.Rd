@@ -42,4 +42,3 @@ plotAgeLen(mymat, inc=1)
 plotAgeLen(t(mymat), xlab="Length", ylab="Age")
 
 }
-

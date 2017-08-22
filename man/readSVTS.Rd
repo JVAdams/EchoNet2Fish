@@ -39,4 +39,3 @@ A data frame with the all rows of the csv files in \code{svtsdir} combined.
 Read in Sv (volume backscattering strength) or TS (single target frequencies)
 data from Echoview csv files and combine into a single data frame.
 }
-

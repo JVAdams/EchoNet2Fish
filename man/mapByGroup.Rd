@@ -63,4 +63,3 @@ Draw a map using different colored symbols for different groups.
 }
 
 }
-

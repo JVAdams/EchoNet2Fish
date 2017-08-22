@@ -38,4 +38,3 @@ mydat <- data.frame(a=c(1, 2, -999, 4, 5),
 dfTidy(mydat)
 
 }
-

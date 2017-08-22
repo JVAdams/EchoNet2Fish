@@ -95,4 +95,3 @@ Multipanel map of locations, one map for each group.
 \seealso{
 \code{\link{mapMulti}}
 }
-

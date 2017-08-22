@@ -81,4 +81,3 @@ This is a copy of the \code{startrtf} function from the
   \code{\link{figu}}, \code{\link{endrtf}},
   \code{\link[rtf]{RTF}}.
 }
-

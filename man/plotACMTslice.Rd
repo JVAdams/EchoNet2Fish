@@ -67,4 +67,3 @@ plotACMTslice(MTgroup=mgroup, ACgroup=agroup, MTbd=mbd, ACbd=abd,
   MTwd=mwd, ACwd=awd)
 
 }
-

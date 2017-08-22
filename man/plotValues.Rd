@@ -37,4 +37,3 @@ If \code{test} = TRUE, a logical scalar is returned indicating whether
 Test for and plot errors in acoustic survey data, based on reported
 lows, highs, and in-between values.
 }
-

@@ -45,4 +45,3 @@ Based on a function posted by Stanislav on 13 May 2015 on stackoverflow
 \seealso{
 \code{\link{lon2utmZone}}
 }
-

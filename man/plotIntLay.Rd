@@ -30,4 +30,3 @@ Plot acoustic survey data, interval vs. layer, using different colored
 symbols for data exploration purposes.  Place multiple group-specific plots
 on one page, using the same x- and y-scales.
 }
-

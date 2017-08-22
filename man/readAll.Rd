@@ -64,4 +64,3 @@ The acoustic and midwater trawl data corresponding to the selected row
     \code{optrop}, \code{trcatch}, and \code{trlf} (midwater trawl data);
     \code{key1} and \code{key2} (age-length keys, if specified).
 }
-

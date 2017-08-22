@@ -57,4 +57,3 @@ This is a copy of the \code{tabl} function from the
   \code{\link{endrtf}},
   \code{\link[rtf]{RTF}}.
 }
-

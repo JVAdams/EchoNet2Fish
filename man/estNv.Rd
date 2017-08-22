@@ -45,4 +45,3 @@ Sawada, K., Furusawa, M., and Williamson, N.J. 1993.
 \seealso{
 \code{\link{estrhov}}
 }
-

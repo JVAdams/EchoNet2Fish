@@ -27,4 +27,3 @@ TS2sigma(c(-30, -40, -50, -60))
 \seealso{
 \code{\link{sigma2TS}}
 }
-

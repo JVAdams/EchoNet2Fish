@@ -53,4 +53,3 @@ histMulti(x=myval, freq=myfreq, bygroup=mygroup)
 histMulti(x=myval, freq=myfreq, bygroup=mygroup, samescale=FALSE)
 
 }
-

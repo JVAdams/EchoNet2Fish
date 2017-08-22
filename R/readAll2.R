@@ -103,9 +103,18 @@ readAll2 <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
   if(AC) {
     # read in AC data
     sv <- readSVTS(svtsdir=svdir, oldname="ABC", newname="PRC_ABC",
-      elimMiss=c("Lat_M", "Sv_mean", "PRC_ABC"),
+      elimMiss=c("Lat_M", "Sv_mean"),
       datevars="Date_M", addyear=TRUE, tidy=TRUE)
 
+    if(!("PRC_ABC" %in% names(sv))) {
+      if(!("Thickness_mean" %in% names(sv))) {
+        print(names(sv))
+        stop("The sv file MUST include either the area backscattering coefficient, named 'ABC' or 'PRC_ABC', or the mean thickness of the analyzed domain, named 'Thickness_mean'.")
+      } else {
+        sv$PRC_ABC = 10^(sv$Sv_mean/10)*sv$Thickness_mean
+        sv <- sv[!is.na(sv$PRC_ABC), ]
+      }
+    }
     ts <- readSVTS(tsdir, datevars=NULL)
 
     # add Region_Name to SV and TS files

@@ -63,4 +63,3 @@ This is a copy of the \code{figu} function from the
   \code{\link{endrtf}},
   \code{\link[rtf]{RTF}}.
 }
-

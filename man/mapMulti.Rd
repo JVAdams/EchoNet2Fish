@@ -86,4 +86,3 @@ Multipanel map of locations, one map for each group.
 }
 
 }
-

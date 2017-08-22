@@ -52,4 +52,3 @@ sig <- replaceBiasedSigma(df=mydf, varNv="nv", varsigmabs="sig",
 cbind(mydf, sig)
 
 }
-

@@ -35,4 +35,3 @@ mydat <- data.frame(a=c(1:5, 10:15, 6:9),
 dfPlot(mydat)
 
 }
-

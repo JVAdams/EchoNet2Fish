@@ -26,4 +26,3 @@ mydat <- data.frame(a=c(1, 1, NA, 2, 2),
 dfSmry(mydat)
 
 }
-

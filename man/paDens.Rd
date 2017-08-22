@@ -32,4 +32,3 @@ For density in number per m^2, p_a = s_a / sigma_bs.
 paDens(c(0.001, 0.01, 0.1), c(4e-5, 5e-6, 8e-9))
 
 }
-

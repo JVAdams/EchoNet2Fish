@@ -27,4 +27,3 @@ This is a copy of the \code{endrtf} function from the
   \code{\link{figu}},
   \code{\link[rtf]{RTF}}, \code{\link[rtf]{addPageBreak}}.
 }
-

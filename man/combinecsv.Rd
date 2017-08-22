@@ -35,4 +35,3 @@ The \code{column1name} argument is needed to handle occasional problems
   are changed to ensure the number part of the name is rounded to the
   nearest whole number, e.g., "X.76.000000" is renamed "X.76".
 }
-

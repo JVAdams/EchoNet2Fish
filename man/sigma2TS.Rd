@@ -27,4 +27,3 @@ sigma2TS(c(1e-03, 1e-04, 1e-05, 1e-06))
 \seealso{
 \code{\link{TS2sigma}}
 }
-
