@@ -32,6 +32,16 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
   load(paste0(maindir, rdat, ".RData"), envir=environment())
 
+  if(all(is.na(sv$Region_name))) {
+    sv$Region_name <- 1
+  }
+  if(all(is.na(ts$Region_name))) {
+    ts$Region_name <- 1
+  }
+  if(all(is.na(optrop$Transect))) {
+    optrop$Transect <- 1
+  }
+
   nk <- length(keyvals)
   nick <- rep("", nk)
   for(i in 1:nk) {
@@ -188,7 +198,7 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     Region_ord <- names(lat.r)[order(lat.r, decreasing=T)]
 
     for(i in seq(along=start)) {
-      end <- max(start[i]+9, min(dbs))
+      end <- min(start[i]+9, max(dbs))
     	colz <- paste0("X.", start[i]:end)
     	sumtargs <- apply(ts[, colz], 1, sum)
     	title. <- paste("Colors indicate binned targets from, -", end, " to -",
@@ -327,7 +337,7 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     if(!is.null(optrop$Cruise)) {
       figu(cap("Cruise"), FIG=function() fig("Cruise"), newpage="port")
     }
-    if(!optrop$Transect[1]=="RR") {
+    if(length(unique(optrop$Transect))>1) {
       figu(cap("Transect"), FIG=function() fig("Transect"), newpage="port")
     }
 
@@ -364,7 +374,7 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
     missop <- setdiff(trcatch$Op.Id, optrop$Op.Id)
     if(length(missop)>0) {
-    	tab <- trcatch[trcatch$Op.Id==missop, ]
+    	tab <- trcatch[trcatch$Op.Id %in% missop, ]
     	tabl("TRCATCH records Op.Ids not in OPTROP.", TAB=tab)
     } else {
     		para("All TRCATCH Op.Ids are in OPTROP.")
@@ -394,7 +404,7 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     missop <- setdiff(trlf$Op.Id, optrop$Op.Id)
     showcols <- min(10, dim(trlf)[[2]])
     if(length(missop)>0) {
-    	tab <- trlf[trlf$Op.Id==missop, 1:showcols]
+    	tab <- trlf[trlf$Op.Id %in% missop, 1:showcols]
     	tabl("TRLF records Op.Ids not in OPTROP.", TAB=tab)
     } else {
     		para("All TRLF Op.Ids are in OPTROP.")
