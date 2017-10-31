@@ -38,8 +38,10 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
   if(all(is.na(ts$Region_name))) {
     ts$Region_name <- 1
   }
-  if(all(is.na(optrop$Transect))) {
-    optrop$Transect <- 1
+  if(exists("optrop")) {
+    if(all(is.na(optrop$Transect))) {
+      optrop$Transect <- 1
+    }
   }
 
   nk <- length(keyvals)

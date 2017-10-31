@@ -463,8 +463,16 @@ estimateACMT2 <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	# determine the nearest MT
   	if(sum(selm)) {
   		if(sum(selm) > 1) {
-  			svts5$nearmt[sela] <- as.numeric(as.character(class::knn1(MTutm[selm, ],
-  			  ACutm[sela, ], allops[selm])))
+
+   			tempx <- as.character(class::knn1(MTutm[selm, ], ACutm[sela, ],
+   			  allops[selm]))
+  		  if(sum(grepl("^[0-9]+$", tempx)) > 0) {
+  		    svts5$nearmt[sela] <- as.numeric(tempx)
+  		  } else {
+  		    svts5$nearmt[sela] <- tempx
+  		  }
+  			# svts5$nearmt[sela] <- as.numeric(as.character(class::knn1(MTutm[selm, ],
+  			#   ACutm[sela, ], allops[selm])))
   		} else {
   			svts5$nearmt[sela] <- allops[selm]
   		}
