@@ -14,6 +14,7 @@ You can access the functions by installing the package from within R.
 
 - - -
 
+
 _U.S. Geological Survey_ (USGS) Computer Program **EchoNet2Fish** version 0.2.11.9000. 
 Written by Jean V. Adams, [USGS - Great Lakes Science Center](http://www.glsc.usgs.gov/), Ann Arbor, Michigan, USA. 
 Written in programming language R (R Core Team, 2016, www.R-project.org), version 3.4.1 (2017-06-30). 
