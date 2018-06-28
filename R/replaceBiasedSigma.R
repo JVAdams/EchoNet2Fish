@@ -32,7 +32,6 @@
 #' @return
 #'   A numeric vector of target strengths, TS, in dB, same
 #'   length as \code{sigmabs}.
-#' @import stats
 #' @export
 #' @examples
 #' mydf <- data.frame(nv=c(0.01, 0.1, 0.2, 0.2, 0.3, 0.05, 0.01),

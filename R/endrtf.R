@@ -7,7 +7,7 @@
 #'   Logical scalar indicating if session details should be added to
 #'   the end of the document, default FALSE.
 #' @param ...
-#'   Additional parameters to \code{\link[rtf]{addPageBreak}}.
+#'   Additional parameters to \code{rtf::addPageBreak}.
 #' @references
 #'   This is a copy of the \code{endrtf} function from the
 #'   \href{https://github.com/JVAdams/GLFC}{[GLFC]} package.
@@ -15,7 +15,7 @@
 #'   \code{\link{startrtf}} for an example, \code{\link{heading}},
 #'   \code{\link{para}}, \code{\link{tabl}},
 #'   \code{\link{figu}},
-#'   \code{\link[rtf]{RTF}}, \code{\link[rtf]{addPageBreak}}.
+#'   \code{\link[rtf]{RTF}}, \code{rtf::addPageBreak}.
 #' @import
 #'   rtf
 #' @export

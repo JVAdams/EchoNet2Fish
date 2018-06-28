@@ -51,7 +51,7 @@
 #'   mapMulti
 #' @seealso
 #'   \code{\link{mapMulti}}
-#' @import grDevices graphics stats
+#' @import grDevices graphics
 #' @export
 #' @examples
 #' \dontrun{
@@ -103,8 +103,8 @@ mapAppor <- function(MTgroup, ACgroup, sug=sort(unique(c(MTgroup, ACgroup))),
 		selm <- MTgroup==sug[i] & !is.na(MTgroup)
 		sela <- ACgroup==sug[i] & !is.na(ACgroup)
 
-		map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
-    map("lakes", add=TRUE, col=mapcol)
+		maps::map("world", xlim=rlon, ylim=rlat, mar=mar, col=mapcol)
+    maps::map("lakes", add=TRUE, col=mapcol)
 		box(col=boxcol)
 		if(sum(selm[!is.na(selm)])>0) {
 			points(AClon[sela], AClat[sela], col=ACIDcol[sela], pch=3)

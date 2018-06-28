@@ -12,7 +12,7 @@ endrtf(rtf = doc, details = TRUE, ...)
 \item{details}{Logical scalar indicating if session details should be added to
 the end of the document, default FALSE.}
 
-\item{...}{Additional parameters to \code{\link[rtf]{addPageBreak}}.}
+\item{...}{Additional parameters to \code{rtf::addPageBreak}.}
 }
 \description{
 Write and close an rtf (rich text format) document.
@@ -25,5 +25,5 @@ This is a copy of the \code{endrtf} function from the
 \code{\link{startrtf}} for an example, \code{\link{heading}},
   \code{\link{para}}, \code{\link{tabl}},
   \code{\link{figu}},
-  \code{\link[rtf]{RTF}}, \code{\link[rtf]{addPageBreak}}.
+  \code{\link[rtf]{RTF}}, \code{rtf::addPageBreak}.
 }

@@ -8,7 +8,6 @@
 #' @param xR
 #'   Numeric vector of length two, range of values used to define groups,
 #'   default is the range of finite, positive, non-missing \code{x} values.
-#' @import stats
 #' @export
 #' @examples
 #' myx <- c(100, 3000, 3, 20, 8000, 1000, 400, 50, 7, 20000)

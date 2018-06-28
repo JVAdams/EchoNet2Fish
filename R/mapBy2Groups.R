@@ -62,9 +62,9 @@ mapBy2Groups <- function(df, lon, lat, rlon=range(lon, na.rm=TRUE),
 		if(i>1) if(grp.sp[i]!=grp.sp[i-1]) frame()
 		# divide the nonzero data into nsymbols groups on a log scale
   	symb <- groupLog(df[, i], n=nsymbols, xR=YR)
-		map("world", xlim=rlon + 0.1*c(-1, 1),
+		maps::map("world", xlim=rlon + 0.1*c(-1, 1),
 		  ylim=rlat + 0.1*c(-1, 1), mar=mar, col="gray")
-    map("lakes", add=TRUE, col="gray")
+    maps::map("lakes", add=TRUE, col="gray")
 		mtext(namz[i], side=3)
 		points(lon, lat, cex=symsize[symb], col=mypalette[symb])
 	}

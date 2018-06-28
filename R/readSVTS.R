@@ -28,8 +28,7 @@
 #'   \code{\link{dfTidy}}, default TRUE.
 #' @return
 #'   A data frame with the all rows of the csv files in \code{svtsdir} combined.
-#' @import
-#'   lubridate
+#' @importFrom lubridate year ymd
 #' @export
 #'
 readSVTS <- function(svtsdir, oldname=NULL, newname=NULL, elimMiss=NULL,
@@ -49,11 +48,11 @@ readSVTS <- function(svtsdir, oldname=NULL, newname=NULL, elimMiss=NULL,
   dboth <- intersect(names(df), datevars)
   if(length(dboth)>0) {
     for(i in seq_along(dboth)) {
-      df[, dboth[i]] <- ymd(df[, dboth[i]], quiet=TRUE)
+      df[, dboth[i]] <- lubridate::ymd(df[, dboth[i]], quiet=TRUE)
     }
     # create variable for year
     if(addyear) {
-      df$year <- year(df[, dboth[1]])
+      df$year <- lubridate::year(df[, dboth[1]])
     }
   }
   # assign NAs to missing value codes

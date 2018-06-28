@@ -24,7 +24,8 @@
 #' @details
 #'   A rich text file (rtf) with a *.doc file extension (so that it will be
 #'   opened with Word by default) is saved to \code{maindir}.
-#' @import rtf lubridate grDevices graphics
+#' @importFrom lubridate today
+#' @import rtf grDevices graphics
 #' @export
 #'
 exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
@@ -54,13 +55,13 @@ exploreACMT2 <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
   # exploratory plots - save output to *.doc file ####
 
-  docname <- paste0(nick2, " ACMT Explore ", today(), ".doc")
+  docname <- paste0(nick2, " ACMT Explore ", lubridate::today(), ".doc")
   doc <<- startrtf(file=docname, dir=maindir)
 
   explore <- 10*AC + MT
   descr <- recode(explore, c(0, 1, 10, 11),
     c("No", "Trawl", "Acoustic", "Acoustic and Trawl"))
-  heading(paste0(nick, " Exploration of ", descr, " Data   ", today()))
+  heading(paste0(nick, " Exploration of ", descr, " Data   ", lubridate::today()))
 
   para("Created using the R package EchoNet2Fish (https://github.com/JVAdams/EchoNet2Fish), written by Jean V. Adams for Dave Warner.")
   para(paste0(docname, " = this document."))

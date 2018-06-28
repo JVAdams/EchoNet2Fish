@@ -24,8 +24,7 @@
 #' @references
 #'   Based on a function posted by Stanislav on 13 May 2015 on stackoverflow
 #'   \href{http://stackoverflow.com/a/30225804/2140956}{[link]}.
-#' @import
-#'   sp stats rgdal
+#' @importFrom sp coordinates proj4string CRS spTransform
 #' @examples
 #' mylon <- c(-92.11, -76.47, -82.27, -83.42)
 #' mylat <- c(46.76, 44.34, 44.76, 45.41)
@@ -40,8 +39,8 @@ latlon2utm <- function(lon, lat, zone=NULL, quiet=TRUE) {
     if(!quiet) print(zone)
   }
   xy <- data.frame(easting=lon, northing=lat)
-  coordinates(xy) <- c("easting", "northing")
-  proj4string(xy) <- CRS("+proj=longlat +datum=WGS84")
-  res <- spTransform(xy, CRS(paste0("+proj=utm +zone=", zone, " ellps=WGS84")))
+  sp::coordinates(xy) <- c("easting", "northing")
+  sp::proj4string(xy) <- sp::CRS("+proj=longlat +datum=WGS84")
+  res <- sp::spTransform(xy, sp::CRS(paste0("+proj=utm +zone=", zone, " ellps=WGS84")))
   return(as.data.frame(res))
 }

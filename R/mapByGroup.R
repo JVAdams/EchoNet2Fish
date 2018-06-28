@@ -42,7 +42,6 @@
 #'   A numeric vector of length 4, the number of lines of margin
 #'   c(bottom, left, top, right) around the plotted map plot, default
 #'   c(0, 0, 0, 0).
-#' @import maps
 #' @export
 #' @examples
 #' \dontrun{
@@ -56,9 +55,9 @@ mapByGroup <- function(bygroup, sug=sort(unique(bygroup)), addMean=TRUE,
   lon, lat, rlon=range(lon, na.rm=TRUE), rlat=range(lat, na.rm=TRUE),
   cushion=0.1, colorz=NULL, pch=1, cex=1.5, mapcol="gray", mar=c(0, 0, 2, 0)) {
 
-  map("world", xlim=rlon + cushion*c(-1, 1), ylim=rlat + cushion*c(-1, 1),
+  maps::map("world", xlim=rlon + cushion*c(-1, 1), ylim=rlat + cushion*c(-1, 1),
 	  col=mapcol, mar=mar)
-  map("lakes", add=TRUE, col=mapcol)
+  maps::map("lakes", add=TRUE, col=mapcol)
   if(is.null(colorz)) {
     colorz <- as.numeric(as.factor(bygroup))
   }

@@ -4,104 +4,16 @@
 \alias{estimateACMT}
 \title{Estimate Fish Density and Biomass from Acoustic and Midwater Trawl Data}
 \usage{
-estimateACMT(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-  TSrange = c(-60, -30), psi = 0.007997566, soi = c(106, 109, 203, 204),
-  spInfo, sliceDef, short = TRUE)
+estimateACMT(...)
 }
 \arguments{
-\item{maindir}{A character scalar giving the directory where \code{rdat} is located
-and where output will be placed.  Use forward slashes, e.g., "C:/temp/".}
-
-\item{rdat}{A character scalar giving the name of the RData file in \code{maindir}
-with the acoustic and midwater trawl data, typically the output from
-\code{\link{readAll}}.}
-
-\item{ageSp}{A numeric vector giving the species codes for species for which
-age-length keys should be used, default NULL.}
-
-\item{region}{A character vector, names of regions used in laying out sampling design.}
-
-\item{regArea}{A numeric vector, corresponding areas (in ha) of \code{region}.}
-
-\item{TSrange}{A numeric vector of length 2, the target strength range of interest,
-minimum and maximum in dB, default c(-60, -30).}
-
-\item{psi}{A numeric scalar, the transducer-specific two-way equivalent beam angle
-in steradians, default 0.007997566.}
-
-\item{soi}{A numeric vector, codes of fish species for which estimates will be
-generated, default c(106, 109, 203, 204).}
-
-\item{spInfo}{A data frame with five variables
-\itemize{
-  \item \code{sp} = numeric, species code, must include all codes listed
-    in \code{soi}, may include codes not listed in \code{soi}
-  \item \code{spname} = character, species name
-  \item \code{lcut} = numeric, the length cut off (in mm) at which to
-    divide the corresponding species data into two groups (those with fish
-    lengths <= lcut and > lcut) for estimation,
-    use 0 for species with no length cut offs
-  \item \code{lwa} and \code{lwb} = numeric parameters of length-weight
-    relations, Wg = \code{lwa} * Lmm ^ \code{lwb}, where Wg is the weight
-    (in g) and Lmm is the total length (in mm)
-}}
-
-\item{sliceDef}{A list of at least two named sub-lists defining the slices into which
-observations will be classified.  Each sub-list contains one or more
-named numeric vectors of length two, identifying the parameter
-(the name of the vector) and the range of values (see Details) that
-contribute
-to the slice definition, with one exception.  For slicing by regions,
-the named vector is character (not numeric), is of length one or more
-(not necessarily two), and specifies all of the regions that contribute
-to the slice definition.
-The name of each sub-list is the name of the slice to be assigned.
-See Examples.}
-
-\item{short}{Logical scalar, indicating aspect of map area.  If TRUE, the default,
-the mapped area is assumed to be wider (longitudinally) than tall.
-Used to better arrange multiple maps on a single page.}
+\item{...}{any arguments}
 }
 \description{
 Estimate fish density (number per ha) and biomass (kg per ha) from
 acoustic and midwater trawl data.
 }
 \details{
-A rich text file (rtf) with a *.doc file extension (so that it will be
-  opened with Word by default) is saved to \code{maindir}.
-
-  The sigma for each acoustic cell is estimated as the mean of the
-  linearized target strength (TS) weighted by the number of targets in
-  each dB bin using the TS frequency distribution.
-
-  The number of scatterers per unit volume, Nv,
-  is estimated according to Sawada et al. (1993) (see \code{\link{estNv}}).
-  So called "biased" sigmas where Nv > 0.1 are replaced
-  with mean "unbiased" sigmas from cells in the same layer
-  and (if possible) transect.  Then, Nv is recalculated.
-
-  Eight different data frames of estimates are saved as objects in an Rdata
-  file and are written to csv files:
-    lake-wide totals \code{laketots_millions} and \code{laketots_t}
-      (in millions and t),
-    lake-wide means \code{lakemeans_nph} and \code{lakemeans_gph}
-      (in numbers and g per ha), and
-    interval means \code{intmeans_nph} and \code{intmeans_gph}
-      (in numbers and g per ha).
-    interval and layer means \code{intlaymeans_nph} and
-      \code{intlaymeans_gph} (in numbers and g per ha).
-  The Rdata and csv files are named using the lake and the year.
-
-  The data frames of lake-wide totals and lake-wide means have a row
-  for each species group, a column for each slice, and
-  additional columns for the total (of all slices) with the standard
-  error and relative standard error.
-
-  The data frames of the interval means have a row for each region and
-  interval, a column for each species group, and additional columns for
-  region area, and the interval bottom depth, latitude and longitude.
-
-  The data frames of the interval and layer means have a row for each
-  region, interval, and layer, a column for each species group, and
-  many additional columns.
+This function is now deprecated.
+  Use \code{\link{estimateLake}} instead.
 }

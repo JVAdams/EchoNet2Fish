@@ -57,7 +57,7 @@
 #'   c(0, 0, 2.5, 0).
 #' @inheritParams
 #'   mapByGroup
-#' @import grDevices graphics stats
+#' @import grDevices graphics
 #' @export
 #' @examples
 #' \dontrun{
@@ -117,9 +117,9 @@ mapMulti <- function(bygroup, sug=sort(unique(bygroup)), plottext=FALSE, ID=1,
   		} else {
   		  rlat. <- rlat
   		}
-  		map("world", xlim=rlon. + cushion*c(-1, 1), ylim=rlat. + cushion*c(-1, 1),
+  		maps::map("world", xlim=rlon. + cushion*c(-1, 1), ylim=rlat. + cushion*c(-1, 1),
         mar=mar, col=mapcol)
-      map("lakes", add=TRUE, col=mapcol)
+      maps::map("lakes", add=TRUE, col=mapcol)
 			bold <- emphasis + 1
 			par(xpd=NA)
 			if(plottext) {
