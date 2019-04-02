@@ -8,15 +8,15 @@ An example of how to use the functions in **EchoNet2Fish** is given in this [vig
 
 You can access the functions by installing the package from within R.
 
-    source("https://raw.githubusercontent.com/MangoTheCat/remotes/master/install-github.R")$value("mangothecat/remotes")
+    install.packages("remotes")
     remotes::install_github("JVAdams/EchoNet2Fish")
     library(EchoNet2Fish)
 
 - - -
 
-_U.S. Geological Survey_ (USGS) Computer Program **EchoNet2Fish** version 0.3.1.9000. 
+_U.S. Geological Survey_ (USGS) Computer Program **EchoNet2Fish** version 0.3.2.9000. 
 Written by Jean V. Adams, [USGS - Great Lakes Science Center](http://www.glsc.usgs.gov/), Ann Arbor, Michigan, USA. 
-Written in programming language R (R Core Team, 2018, www.R-project.org), version 3.5.0 (2018-04-23).
+Written in programming language R (R Core Team, 2018, www.R-project.org), version 3.5.2 (2018-12-20).
 Run on a PC with Intel(R) Core(TM) I7-7600U CPU, 2.90 GHz processor, 16.0 GB RAM, and Microsoft Windows 10 Enterprise operating system 2017.
 Source code is available from Jean V. Adams on [GitHub](https://github.com/JVAdams/EchoNet2Fish), _jvadams (at) usgs (dot) gov_.
 

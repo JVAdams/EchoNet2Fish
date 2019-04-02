@@ -5,10 +5,10 @@
 \title{Multipanel Map of Locations}
 \usage{
 mapAppor(MTgroup, ACgroup, sug = sort(unique(c(MTgroup, ACgroup))), MTID,
-  ACID, short = TRUE, MTlon, MTlat, AClon, AClat, rlon = range(MTlon, AClon,
-  na.rm = TRUE), rlat = range(MTlat, AClat, na.rm = TRUE), MTIDcol = NULL,
-  mapcol = "gray", boxcol = "gray", misscol = "brown",
-  misstext = " - No tows", mar = c(0, 0, 2.5, 0))
+  ACID, short = TRUE, MTlon, MTlat, AClon, AClat, rlon = range(MTlon,
+  AClon, na.rm = TRUE), rlat = range(MTlat, AClat, na.rm = TRUE),
+  MTIDcol = NULL, mapcol = "gray", boxcol = "gray",
+  misscol = "brown", misstext = " - No tows", mar = c(0, 0, 2.5, 0))
 }
 \arguments{
 \item{MTgroup}{Vector, identifying the group membership of the midwater trawl tow

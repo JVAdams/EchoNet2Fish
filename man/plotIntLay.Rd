@@ -4,8 +4,8 @@
 \alias{plotIntLay}
 \title{Plot Acoustic Survey Data using Different Colored Symbols}
 \usage{
-plotIntLay(interval, layer, group, grouporder = sort(unique(group)), colorz,
-  main = "")
+plotIntLay(interval, layer, group, grouporder = sort(unique(group)),
+  colorz, main = "")
 }
 \arguments{
 \item{interval}{A numeric vector of intervals along the length of an acoustic transect.}

@@ -4,11 +4,11 @@
 \alias{mapMulti}
 \title{Multipanel Map of Locations}
 \usage{
-mapMulti(bygroup, sug = sort(unique(bygroup)), plottext = FALSE, ID = 1,
-  emphasis = NULL, short = TRUE, lon, lat, samescale = TRUE,
-  rlon = NULL, rlat = NULL, cushion = 0.1, IDcol = NULL,
-  mapcol = "gray", boxcol = "gray", misscol = "brown",
-  misstext = " - No sites", mar = c(0, 0, 2.5, 0))
+mapMulti(bygroup, sug = sort(unique(bygroup)), plottext = FALSE,
+  ID = 1, emphasis = NULL, short = TRUE, lon, lat,
+  samescale = TRUE, rlon = NULL, rlat = NULL, cushion = 0.1,
+  IDcol = NULL, mapcol = "gray", boxcol = "gray",
+  misscol = "brown", misstext = " - No sites", mar = c(0, 0, 2.5, 0))
 }
 \arguments{
 \item{bygroup}{Vector, identifying the group membership of the locations to be mapped.}

@@ -4,8 +4,8 @@
 \alias{dfTidy}
 \title{Tidy Up a Data Frame}
 \usage{
-dfTidy(df, missNums = c(-9999, -999.9, -999, 999, 9999), missChars = c("NA",
-  "NULL", "."))
+dfTidy(df, missNums = c(-9999, -999.9, -999, 999, 9999),
+  missChars = c("NA", "NULL", "."))
 }
 \arguments{
 \item{df}{A data frame to be tidied.}

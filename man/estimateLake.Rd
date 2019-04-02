@@ -5,8 +5,8 @@
 \title{Lake-Wide Fish Estimates from Acoustic and Midwater Trawl Data}
 \usage{
 estimateLake(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-  TSrange = c(-60, -30), psi = 0.007997566, soi = c(106, 109, 203, 204),
-  spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
+  TSrange = c(-60, -30), psi = 0.007997566, soi = c(106, 109, 203,
+  204), spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where \code{rdat} is located
@@ -69,7 +69,7 @@ files, default "ACMT Estimates".}
 A rich text file (rtf) with a *.doc file extension (so that it will be
   opened with Word by default) is saved to \code{maindir}.
 
-  Six different data frames are saved as objects in an Rdata
+  Seven different data frames are saved as objects in an Rdata
   file and are written to csv files in \code{maindir}:
   \itemize{
     \item \code{Lakes} = lake-wide totals (in millions and t) and
@@ -90,6 +90,11 @@ A rich text file (rtf) with a *.doc file extension (so that it will be
       species group, and many additional columns.
     \item \code{intlaymeans_gph} = interval and layer means (in g per ha),
       similar to \code{intlaymeans_nph}.
+    \item \code{svts5} = the result of merging the SV and TS data, with
+      several changes made: subsetted to valid regions, original and modified
+      sigma estimates of n1, nv, fish_ha, depth_botmid (bottom depth range),
+      and identity of slice, nearmt (nearest midwater trawl), region, and
+      region area.
   }
   The Rdata and csv files are named using the lake and the year.
 }

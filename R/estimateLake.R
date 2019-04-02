@@ -53,7 +53,7 @@
 #'   A rich text file (rtf) with a *.doc file extension (so that it will be
 #'   opened with Word by default) is saved to \code{maindir}.
 #'
-#'   Six different data frames are saved as objects in an Rdata
+#'   Seven different data frames are saved as objects in an Rdata
 #'   file and are written to csv files in \code{maindir}:
 #'   \itemize{
 #'     \item \code{Lakes} = lake-wide totals (in millions and t) and
@@ -74,6 +74,11 @@
 #'       species group, and many additional columns.
 #'     \item \code{intlaymeans_gph} = interval and layer means (in g per ha),
 #'       similar to \code{intlaymeans_nph}.
+#'     \item \code{svts5} = the result of merging the SV and TS data, with
+#'       several changes made: subsetted to valid regions, original and modified
+#'       sigma estimates of n1, nv, fish_ha, depth_botmid (bottom depth range),
+#'       and identity of slice, nearmt (nearest midwater trawl), region, and
+#'       region area.
 #'   }
 #'   The Rdata and csv files are named using the lake and the year.
 #'
@@ -658,7 +663,7 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   # Save estimates to csv files
   save2csv <- c("Regions", "Lakes", "intmeans_nph", "intmeans_gph",
-    "intlaymeans_nph", "intlaymeans_gph")
+    "intlaymeans_nph", "intlaymeans_gph", "svts5")
   outfiles <- paste0(maindir, "L", LAKE, " Y", YEAR, " ", descr, " ",
     save2csv, " ", lubridate::today(), ".csv")
   invisible(lapply(seq(save2csv), function(i)
