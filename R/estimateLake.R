@@ -98,10 +98,10 @@
 #'
 #' @importFrom class knn1
 #' @importFrom RColorBrewer brewer.pal
-#' @importFrom purrr map
+#' @importFrom purrr map map_df
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate today decimal_date
-#' @import dplyr rtf graphics utils tidyr purrr
+#' @import dplyr rtf graphics utils tidyr
 #' @export
 #'
 estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
@@ -316,8 +316,10 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   warnsub <- filter(look, scaleup<1)
   if(dim(warnsub)[1]>0) {
-    print(select(warnsub, -scaleup))
+    cat("\n\n")
     warning("There was at least one case where the number of fish captured was LESS THAN the number of fish measured.")
+    print(select(warnsub, -scaleup))
+    cat("\n\n")
   }
 
   trlf3 <- trlf %>%
@@ -647,9 +649,9 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     purrr::map(stratClust, stratum="region", cluster="Region_name",
       response="nph", sizedf=areas, size="regArea")
 
-  nphTrans <- map_df(nphests, "Cluster", .id="spgrp")
-  nphRegion <- map_df(nphests, "Stratum", .id="spgrp")
-  nphLake <- map_df(nphests, "Population", .id="spgrp")
+  nphTrans <- purrr::map_df(nphests, "Cluster", .id="spgrp")
+  nphRegion <- purrr::map_df(nphests, "Stratum", .id="spgrp")
+  nphLake <- purrr::map_df(nphests, "Population", .id="spgrp")
 
   # lake-wide estimates of gph
   gphests <- intmeans_gph %>%
@@ -660,9 +662,9 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     purrr::map(stratClust, stratum="region", cluster="Region_name",
       response="gph", sizedf=areas, size="regArea")
 
-  gphTrans <- map_df(gphests, "Cluster", .id="spgrp")
-  gphRegion <- map_df(gphests, "Stratum", .id="spgrp")
-  gphLake <- map_df(gphests, "Population", .id="spgrp")
+  gphTrans <- purrr::map_df(gphests, "Cluster", .id="spgrp")
+  gphRegion <- purrr::map_df(gphests, "Stratum", .id="spgrp")
+  gphLake <- purrr::map_df(gphests, "Population", .id="spgrp")
 
   # Trans <- bind_rows(nph=nphTrans, gph=gphTrans, .id="metric") %>%
   #   select(metric, spgrp, region=h, transect=i, n.intervals=m_hi,
