@@ -5,8 +5,9 @@
 \title{Lake-Wide Fish Estimates from Acoustic and Midwater Trawl Data}
 \usage{
 estimateLake(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-  TSrange = c(-60, -30), psi = 0.007997566, soi = c(106, 109, 203,
-  204), spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
+  TSrange = c(-60, -30), TSthresh = 1, psi = 0.007997566,
+  soi = c(106, 109, 203, 204), spInfo, sliceDef, short = TRUE,
+  descr = "ACMT Estimates")
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where \code{rdat} is located
@@ -25,6 +26,9 @@ age-length keys should be used, default NULL.}
 
 \item{TSrange}{A numeric vector of length 2, the target strength range of interest,
 minimum and maximum in dB, default c(-60, -30).}
+
+\item{TSthresh}{A numeric scalar, the minimum number of binned targets required to
+incorporate the TS information from a given (interval by layer) cell.}
 
 \item{psi}{A numeric scalar, the transducer-specific two-way equivalent beam angle
 in steradians, default 0.007997566.}

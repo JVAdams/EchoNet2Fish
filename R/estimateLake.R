@@ -17,6 +17,9 @@
 #' @param TSrange
 #'   A numeric vector of length 2, the target strength range of interest,
 #'   minimum and maximum in dB, default c(-60, -30).
+#' @param TSthresh
+#'   A numeric scalar, the minimum number of binned targets required to
+#'   incorporate the TS information from a given (interval by layer) cell.
 #' @param psi
 #'   A numeric scalar, the transducer-specific two-way equivalent beam angle
 #'   in steradians, default 0.007997566.
@@ -97,12 +100,12 @@
 #' @importFrom RColorBrewer brewer.pal
 #' @importFrom purrr map
 #' @importFrom magrittr "%>%"
-#' @importFrom lubridate today
-#' @import dplyr rtf graphics utils
+#' @importFrom lubridate today decimal_date
+#' @import dplyr rtf graphics utils tidyr purrr
 #' @export
 #'
 estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
-  TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 203, 204),
+  TSrange=c(-60, -30), TSthresh=1, psi=0.007997566, soi=c(106, 109, 203, 204),
   spInfo, sliceDef, short=TRUE, descr="ACMT Estimates") {
 
 
@@ -139,6 +142,8 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   para(paste0("maindir = ", maindir, " = main input/output directory."))
   para(paste0("TSrange = ", TSrange[1], " to ", TSrange[2],
     " = TS range of interest."))
+  para(paste0("TSthresh = ", TSthresh,
+    " = minimum threshold for binned targets in a cell."))
   para(paste0("psi = ", psi,
     " = the transducer-specific two-way equivalent beam angle in steradians."))
 
@@ -170,6 +175,9 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # 2.  Estimate sigma for each cell using TS frequency dist file ####
   ts$sigma <- sigmaAvg(TSdf=ts, TSrange=TSrange)
 
+  # remove all rows (cells) from the TS data frame if they don't meet
+  # the minimum number of targets threshold
+  ts <- filter(ts, Targets_Binned>TSthresh)
 
   # 3.  Merge Sv and sigma data ####
 
@@ -296,9 +304,33 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   # summarize trcatch by species and op.id
   trcatch2 <- aggregate(cbind(N, Weight) ~ Op.Id + Species, sum, data=trcatch)
 
-  # estimate weight from length for each fish
-  indx <- match(trlf$Species, spInfo$sp)
-  trlf$estfw <- estWeight(trlf$Length, spInfo$lwa[indx], spInfo$lwb[indx])
+  # scale up number measured (trlf) to number captured (trcatch2)
+  trlf2 <- aggregate(N ~ Op.Id + Species, sum, data=trlf)
+
+  look <- trcatch2 %>%
+    full_join(trlf2, by=c("Op.Id", "Species"),
+      suffix=c(".caught", ".measured")) %>%
+    mutate(
+      scaleup=N.caught/N.measured
+    )
+
+  warnsub <- filter(look, scaleup<1)
+  if(dim(warnsub)[1]>0) {
+    print(select(warnsub, -scaleup))
+    warning("There was at least one case where the number of fish captured was LESS THAN the number of fish measured.")
+  }
+
+  trlf3 <- trlf %>%
+    left_join(select(look, Op.Id, Species, scaleup),
+      by=c("Op.Id", "Species")) %>%
+    mutate(
+      N.scaled = N * scaleup
+    )
+
+  # estimate weight from length for all measured fish
+  indx <- match(trlf3$Species, spInfo$sp)
+  trlf3$estwal <- estWeight(trlf3$Length, spInfo$lwa[indx], spInfo$lwb[indx])
+  trlf3$estfw <- trlf3$estwal * trlf3$N.scaled
 
   # calculate proportion of catch and mean weight for each MT and each
   # species-age-length group
@@ -324,10 +356,10 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
 
   	for(i in seq_along(ageSp)) {
     	# tally up lengths by mmgroup
-    	lfa <- trlf[trlf$Species %in% ageSp[i], ]
+    	lfa <- trlf3[trlf3$Species %in% ageSp[i], ]
     	lfa$mmgroup <- 10*round((lfa$Length+5)/10)-5
     	# total count and mean weight
-    	ga <- aggregate(cbind(N, estfw) ~ Op.Id + mmgroup, sum, data=lfa)
+    	ga <- aggregate(cbind(N.scaled, estfw) ~ Op.Id + mmgroup, sum, data=lfa)
     	gkeya <- merge(ga, agekey[[i]], all.x=TRUE)
     	# rename ages
     	agecolz <- grep("Age", names(gkeya))
@@ -335,7 +367,7 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
     	  paste0(ageSp[i], ".A", substring(names(gkeya)[agecolz], 4, 10))
     	# apply probabilities from key to both counts and weights
     	# total numbers and mean weight by age group
-    	tot.n <- apply(gkeya$N * gkeya[, agecolz], 2, tapply, gkeya$Op.Id, sum)
+    	tot.n <- apply(gkeya$N.scaled * gkeya[, agecolz], 2, tapply, gkeya$Op.Id, sum)
     	m.w <- apply(gkeya$estfw * gkeya[, agecolz], 2,
     	  tapply, gkeya$Op.Id, sum)/tot.n
     	sum.n[[i]] <- tidyup(tot.n, allops)
@@ -370,10 +402,10 @@ estimateLake <- function(maindir, rdat="ACMT", ageSp=NULL, region, regArea,
   	lc <- spInfo$lcut[spInfo$sp==sp]
   	lclong <- unique(c(0, lc))
   	# tally up lengths by length group
-  	lf <- trlf[trlf$Species==sp, ]
+  	lf <- trlf3[trlf3$Species==sp, ]
   	lf$mmgroup <- lc*(lf$Length > lc)
   	# total up numbers and weights by length group
-  	tot.n <- tapply(lf$N, list(lf$Op.Id, lf$mmgroup), sum)
+  	tot.n <- tapply(lf$N.scaled, list(lf$Op.Id, lf$mmgroup), sum)
   	tot.n[is.na(tot.n)] <- 0
   	m.w <- tapply(lf$estfw, list(lf$Op.Id, lf$mmgroup), sum)/tot.n
   	m.w[is.na(m.w)] <- 0

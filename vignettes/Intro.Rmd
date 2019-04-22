@@ -219,6 +219,8 @@ look <- trlf[sample(dim(trlf)[1], 5), lf.vars]
 knitr::kable(look, row.names=FALSE)
 ```
 
+Note that the number of fish measured (N in the **length** csv file) need not be the same as the total number captured (N in the **catch** csv file).  All proportions based on size are calculated by first scaling up the measured fish to the total catch, to account for those instances when only a subset of the catch is measured.
+
 ## Age-length key files
 
 No age-length key is required, but you may include age-length keys in separate csv files for up to 2 different species.  Each file should be arranged such that rows represent 10-mm length categories and columns represent 1-yr ages.  The file must contain one variable called *mmgroup* giving the midpoint of the length category, e.g., *mmgroup* 15 represents fish $\geq$ 10 mm and < 20 mm.  For each length category, the proportion of fish in each age is represented by a series of columns which sum to 1 (or 0, if no fish used to derive the key were found that length category).  Each proportional column is named according to the integer age, with an *Age* prefix, e.g.: 
@@ -353,11 +355,11 @@ data.frame(fishingD, latitude, region, s1, s2, s3)
 
 ## Estimates
 
-Now you're ready to use the `estimateLake()` function to generate lake-wide estimates in both number (millions) and biomass (t).  The `region` and `regArea` arguments are used to indicate the regional strata and their corresponding areas (in ha).  The `TSrange` is the target strength range of interest, and `psi` is the transducer-specific two-way equivalent beam angle in steradians.  Species of interest are specified by `soi`, and each of these species should have size information in the data frame specified by `spInfo`.  The slice definitions by which the estimates should be summarized are specified by the `sliceDef` argument.  Finally, the `descr` argument is used to add a little descriptive text to the names of the output files.
+Now you're ready to use the `estimateLake()` function to generate lake-wide estimates in both number (millions) and biomass (t).  The `region` and `regArea` arguments are used to indicate the regional strata and their corresponding areas (in ha).  The `TSrange` is the target strength range of interest.  The `TSthresh` is the minimum threshold for the number of binned targets in a cell (layer by interval) for calculating target strength.  The `psi` is the transducer-specific two-way equivalent beam angle in steradians.  Species of interest are specified by `soi`, and each of these species should have size information in the data frame specified by `spInfo`.  The slice definitions by which the estimates should be summarized are specified by the `sliceDef` argument.  Finally, the `descr` argument is used to add a little descriptive text to the names of the output files.
  
 ```{r, eval=FALSE}
 estimateLake(maindir=mydir, rdat="ACMT", ageSp=106, region=Mreg, regArea=MArea,
-  TSrange=c(-60, -30), psi=0.007997566, soi=c(106, 109, 129),
+  TSrange=c(-60, -30), TSthresh=1, psi=0.007997566, soi=c(106, 109, 129),
   spInfo=myspInfo, sliceDef=myslice1, short=FALSE, descr="vignette")
 ```
 
