@@ -178,8 +178,6 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     }
 
     # interval by layer plots
-    start <- seq(min(abs(TSrange)), (max(abs(TSrange))-10), 10)
-    end <- start + 10
     startbin <- TSrange[[1]]
     endbin <- TSrange[[2]]
     init.start <- seq(-1*endbin, (-1*startbin) - 10, 10)
