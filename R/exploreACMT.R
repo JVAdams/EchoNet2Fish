@@ -29,7 +29,7 @@
 #' @export
 #'
 
-exploreACMT.ts.range <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
+exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
                         short=TRUE, TSrange = c(-60, -27))  {
 
   load(paste0(maindir, rdat, ".RData"), envir=environment())
