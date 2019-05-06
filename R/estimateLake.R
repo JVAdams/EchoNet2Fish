@@ -1,7 +1,7 @@
 estimateLake <-
 function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
           TSrange = c(-60, -30), TSthresh = 1, psi = 0.007997566, soi = c(106,
-                                                                          109, 203, 204), spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
+          109, 203, 204), spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
 {
   load(paste0(maindir, rdat, ".RData"), envir = environment())
   LAKE <- keyvals[1]
