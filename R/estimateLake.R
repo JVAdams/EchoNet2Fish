@@ -18,7 +18,9 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
   spInfo$spname <- as.character(spInfo$spname)
   xtra <- setdiff(soi, spInfo$sp)
 
-  PsiReader()
+  sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
+  ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
+  unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
 
   if (length(xtra) > 0)
     stop(paste0("\nThere is at least one species listed in soi= that has no information in spInfo=: ",

@@ -41,7 +41,6 @@
   return(psi.df)
   }
 
-psi.read <- ReadPsi()
 
 
 
