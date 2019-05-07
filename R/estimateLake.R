@@ -1,7 +1,10 @@
 estimateLake <-
 function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-          TSrange = c(-60, -30), TSthresh = 1, psi = 0.007997566, soi = c(106,
-          109, 203, 204), spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
+          TSrange = c(-60, -30), TSthresh = 1, psi = NULL, chngBinCntToZero =FALSE,
+          BinCntZeroParams =c(depth = 40,TS = -45), SpeciesFromDepthTS = FALSE,
+          DepthTSParams = c(SpDepth = 40, SpTS = -45, Species = 204 ), rmBycatch = FALSE,
+          ByCatchParams = c(bcdepth = 40, bcSpecies = c(106, 109)),
+          soi = c(106,109, 203, 204), spInfo, sliceDef, short = TRUE, descr = "ACMT Estimates")
 {
   load(paste0(maindir, rdat, ".RData"), envir = environment())
   LAKE <- keyvals[1]
@@ -14,6 +17,9 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
                 " in ", YEAR, " in RVCAT data.\n\n"))
   spInfo$spname <- as.character(spInfo$spname)
   xtra <- setdiff(soi, spInfo$sp)
+
+  PsiReader()
+
   if (length(xtra) > 0)
     stop(paste0("\nThere is at least one species listed in soi= that has no information in spInfo=: ",
                 paste(xtra, collapse = ", "), "."))
@@ -58,10 +64,19 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
     }
   }
   TS.range.abs <- abs(TSrange)
-  ts.names <- paste0("X.", seq(TSrange.abs[[1]], TSrange.abs[[2]], -1))
+  ts.names <- paste0("X.", seq(TS.range.abs[[1]], TS.range.abs[[2]], -1))
   ts$ts.range.binned <- rowSums(ts[,ts.names])
   ts$sigma <- sigmaAvg(TSdf = ts, TSrange = TSrange)
-  ts <- filter(ts, ts.range.binned > TSthresh)
+  ts <- subset(ts, ts.range.binned > TSthresh)
+
+  #if mean TS is < -45 and deeperwe set # of targets in each bin to zero
+  # Replace the # of targets binned with zero
+  if(chngBinCntToZero == TRUE) ts[which(ts$Layer_depth_min >= 40 & ts$sigma < 3.162278e-05),
+              ts %in% c(ts.names)] <- 0
+
+  #This section asks the user to enter psi for as many different transducers are being use.
+
+
   sv$UID <- interaction(gsub(" ", "", sv$Region_name), sv$Interval,
                         sv$Layer)
   sv$source.sv <- sv$source
