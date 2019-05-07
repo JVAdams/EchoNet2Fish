@@ -5,7 +5,7 @@
 \title{Explore Acoustic and Midwater Trawl Data}
 \usage{
 exploreACMT(maindir, rdat = "ACMT", AC = TRUE, MT = TRUE,
-  ageSp = NULL, short = TRUE)
+  ageSp = NULL, short = TRUE, TSrange = c(-60, -27))
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where output will be placed.

@@ -1,7 +1,9 @@
-#' Get transducer equivalent beam angle (EBA, dB) for all transducers
-#' in the input Sv data and convert to psi 10^(EBA/10) for use in estNv
-#' This implementation requires the user to respond to prompts, with
-#' the number of prompts = length of list of unique transducers.
+#' Get transducer equivalent beam angle(s) and convert
+#' to Psi for use in by estNv and potentially for adjusting
+#' Psi with temperature.
+#' \code{PsiReader} prompts the user for as many equivalent beam (EBA)
+#' angles as there are unique transducers in the Sv data. EBA is then
+#' converted to Psi (Psi = 10^(EBA/10)).
 #' @param sv
 #'   Data frame of Sv data that is the result of readAll().
 #' @param EVfolder
