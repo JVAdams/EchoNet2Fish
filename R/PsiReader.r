@@ -1,9 +1,10 @@
-#' Get transducer equivalent beam angle(s) and convert
-#' to Psi for use in by estNv and potentially for adjusting
-#' Psi with temperature.
-#' \code{PsiReader} prompts the user for as many equivalent beam (EBA)
+#' @title {Obtain EBA for all transducers}
+#'
+#'
+#' @description {
+#' \code{PsiReader}() prompts the user for as many equivalent beam (EBA)
 #' angles as there are unique transducers in the Sv data. EBA is then
-#' converted to Psi (Psi = 10^(EBA/10)).
+#' converted to Psi (Psi = 10^(EBA/10)).}
 #' @param sv
 #'   Data frame of Sv data that is the result of readAll().
 #' @param EVfolder
@@ -13,10 +14,12 @@
 #'   Numeric scalar of the equivalent beam angle. Must be negative and in dB.
 #'   Unknown what will happen if otherwise.
 #' @details
-#'   If \code{EBA} is positive the calculated psi will be incorrect.
+#'   This function is primarily intended for use by estimateLake() to enable use
+#'   of transducer specific Psi rather than one value assumed to be adequate for
+#'   all transducers.
 #' @return
 #'   A data frame with three columns (dat.source, psi, and EBA) and as many rows as
-#'   the length of the number of unique transducers in the Sv data.
+#'   the number of unique transducers in the Sv data.
 #' @export
 #' @seealso
 #'   \code{\link{EstNv}}
