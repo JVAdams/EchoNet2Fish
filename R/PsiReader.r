@@ -34,7 +34,7 @@
     sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
     ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
     unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
-    while(x<=length(ev.psi.lab)) {
+    while(x<=length(unique.transducer)) {
       df <- data.frame(dat.source = NA, psi = NA)
       dat.source <- unique.transducer[x]
       df$dat.source <- dat.source
