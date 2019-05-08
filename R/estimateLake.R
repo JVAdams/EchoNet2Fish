@@ -129,6 +129,61 @@
 #' @export
 #'
 
+######################
+# data creation
+# length weight info
+myspInfo <- data.frame(
+  sp = c(106, 109, 129, 130, 204),
+  spname = c("alewife", "rainbow smelt", "threespine stickleback",
+             "ninespine stickleback","bloater"),
+  lcut = c(100, 90, 0, 0,120),
+  lwa = c(1.413254e-05, 4.851203e-06, 3.954044e-05, 3.954044e-05,
+          3.434977e-07),
+  lwb = c(2.867839, 3.031524, 2.591946, 2.591946,
+          3.561819))
+
+### a single year of data ###
+
+MIsliceDef <- list(
+  nn.epi  = list( fdp=c(-Inf,  40), reg="nn" ),
+  no.epi  = list( fdp=c(-Inf,  40), reg="no" ),
+  sn.epi  = list( fdp=c(-Inf,  40), reg="sn" ),
+  so.epi  = list( fdp=c(-Inf,  40), reg="so" ),
+  wn.epi  = list( fdp=c(-Inf,  40), reg="wn" ),
+
+  hypo  = list( fdp=c(40,  Inf), reg=c("wn", "nn", "sn", "no", "so") )
+)
+
+Mreg <- c("nn", "no", "sn", "so","wn")
+MArea <- c(1093300, 1263000, 871600, 1048700, 601000)
+
+#ags <- list(NULL, NULL, NULL, NULL, NULL)
+#for(i in seq_along(lks)) {
+
+
+mydir <- readAll(refdir="Q:/Acoustics/EchoNet2Fish",
+                 keyvals=c(2, 2018))
+maindir <- mydir
+rdat <- "ACMT"
+ageSp <- NULL
+TSrange <- c(-60, -30)
+psi <- 0.007997566
+soi <- c(106, 109,204)
+region <- Mreg
+regArea <- MArea
+short <- FALSE
+descr <- "ACMT Estimates"
+sliceDef <- MIsliceDef
+spInfo <- myspInfo
+keyvals <- c(2, 2018)
+TSthresh <- 20
+chngBinCntToZero <- TRUE
+BinCntZeroParams =c(depth = 40,TS = -45)
+SpeciesFromDepthTS = TRUE
+DepthTSParams = c(40, -45)
+rmBycatch = TRUE
+ByCatchParams = c(40, c(106,109))
+#############################
 
 estimateLake <-
 function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
@@ -150,11 +205,18 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
   spInfo$spname <- as.character(spInfo$spname)
   xtra <- setdiff(soi, spInfo$sp)
 
+  ###################################################################
+  ###################################################################
+  # 1. new function/argument implementation   #######################
+  # ################################################################
   sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
   ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
+  sv$dat.source <- paste0(sv$EVfolder, " - ", sv$Frequency, " kHz")
   unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
-  psi.df <- ReadPsi()
-
+  psi.df <- ReadPsi()  #the new function
+  names(sv)
+  sv$dat.source
+  sv$psi <- psi.df$psi[match(sv$dat.source, psi.df$dat.source)]
 
   if (length(xtra) > 0)
     stop(paste0("\nThere is at least one species listed in soi= that has no information in spInfo=: ",
@@ -171,11 +233,10 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
   para(paste0("TSrange = ", TSrange[1], " to ", TSrange[2],
               " = TS range of interest."))
   para(paste0("TSthresh = ", TSthresh, " = minimum threshold for binned targets in a cell."))
-  para(paste0("psi = ", psi, " = the transducer-specific two-way equivalent beam angle in steradians."))
+  para(paste0("psi = ", unique(sv$psi), " = the transducer-specific two-way equivalent beam angle in steradians."))
   if (is.null(ageSp)) {
     para("Ages will NOT be used.")
-  }
-  else {
+  } else {
     ageSp <- sort(ageSp)
     para("Ages will be used for ", paste(with(spInfo, spname[sp %in%
                                                                ageSp]), collapse = ", "), ".")
@@ -205,10 +266,12 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
   ts$sigma <- sigmaAvg(TSdf = ts, TSrange = TSrange)
   ts <- subset(ts, ts.range.binned > TSthresh)
 
-  #if mean TS is < -45 and deeperwe set # of targets in each bin to zero
-  # Replace the # of targets binned with zero
-  if(chngBinCntToZero == TRUE) ts[which(ts$Layer_depth_min >= 40 & ts$sigma < 3.162278e-05),
-              ts %in% c(ts.names)] <- 0
+  ##################################################################################
+  ##################################################################################
+  # 2. This is an implementation of a new argument to the function.
+  # If argument chngBinCntToZero == TRUE, replace the # of targets binned with zero
+  if(chngBinCntToZero == TRUE) ts[which(ts$Layer_depth_min >= BinCntZeroParams[[1]] &
+            ts$sigma < 10^(BinCntZeroParams[[2]]/10)), ts %in% c(ts.names)] <- 0
 
   sv$UID <- interaction(gsub(" ", "", sv$Region_name), sv$Interval,
                         sv$Layer)
@@ -229,7 +292,7 @@ function (maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
   svts <- merge(sv[, c("UID", "Region_name", "Interval", "Layer",
                        "Layer_depth_min", "Layer_depth_max", "Lat_M", "Lon_M",
                        "year", "Date_M", "Sv_mean", "Depth_mean", "PRC_ABC",
-                       "source.sv")], ts[, c("UID", "source.ts", "sigma")],
+                       "source.sv", "psi")], ts[, c("UID", "source.ts", "sigma")],
                 by = "UID", all = TRUE)
   svts$Region_name <- gsub(" ", "", svts$Region_name)
   svx <- setdiff(sv$UID, ts$UID)
