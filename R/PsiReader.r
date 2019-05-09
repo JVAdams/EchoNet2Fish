@@ -5,8 +5,6 @@
 #' \code{PsiReader}() prompts the user for as many equivalent beam (EBA)
 #' angles as there are unique transducers in the Sv data. EBA is then
 #' converted to Psi (Psi = 10^(EBA/10)).}
-#' @param sv
-#'   Data frame of Sv data that is the result of readAll().
 #' @param EVfolder
 #'   Vector of base folder names in which the EV files used to generate the
 #'   data are location. Length is the same as the number of rows in \code{sv}.
@@ -38,7 +36,7 @@
       df <- data.frame(dat.source = NA, psi = NA)
       dat.source <- unique.transducer[x]
       df$dat.source <- dat.source
-      df$EBA <- as.numeric(readline(prompt=paste0("Enter Equivalent beam angle in dB for ", unique.transducer[x], ":")))
+      df$EBA <- as.numeric(svDialogs::dlg_input(GUI = EBA, paste0("Enter Equivalent beam angle in dB for ", unique.transducer[x], ":"))$res)
       df$psi <- 10^(df$EBA/10)
       psi.df <- rbind(psi.df, df)
       x <- x+1
