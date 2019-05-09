@@ -7,8 +7,6 @@
 ReadPsi()
 }
 \arguments{
-\item{sv}{Data frame of Sv data that is the result of readAll().}
-
 \item{EVfolder}{Vector of base folder names in which the EV files used to generate the
 data are location. Length is the same as the number of rows in \code{sv}.}
 
