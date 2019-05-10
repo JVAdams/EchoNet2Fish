@@ -274,11 +274,16 @@ estimateLake <-
     # If argument chngBinCntToZero == TRUE, replace the # of targets binned with zero
     #
     # ################################################################################
+    tsorig <- ts
+    orig <- data.frame(TS = log10(tsorig$sigma)*10, orign = rowSums(tsorig[57:87]))
     bin.num.st <- which( colnames(ts)==paste0("X.", abs(TSrange[[1]])))
     bin.num.end <- which( colnames(ts)==paste0("X.", abs(TSrange[[2]])))
+    ts$nums <- rowSums(ts[bin.num.st:bin.num.end])
 
     if (chngBinCntToZero == TRUE) ts[which(ts$Layer_depth_min >= BinCntZeroParams[[1]] & ts$sigma < 10^(BinCntZeroParams[[2]]/10)), bin.num.st:bin.num.end] <- 0
-
+    modded <- data.frame(TS = log10(ts$sigma)*10, newcount = rowSums(ts[57:87]))
+    diff <- orig$orign - modded$newcount
+    if(sum(diff)<1)
 
     # Combine sv and ts
     sv$UID <-interaction(gsub(" ", "", sv$Region_name), sv$Interval,
