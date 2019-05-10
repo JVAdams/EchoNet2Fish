@@ -30,7 +30,8 @@
 #'
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate today
-#' @import dplyr tidyr ggplot2 scales
+#' @importFrom scales "pretty_breaks"
+#' @import dplyr tidyr ggplot2
 EchogramCurtain <-
   function(the.dir,
            d.units,
