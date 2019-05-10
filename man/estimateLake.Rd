@@ -5,7 +5,7 @@
 \title{Lake-Wide Fish Estimates from Acoustic and Midwater Trawl Data}
 \usage{
 estimateLake(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-  TSrange = c(-60, -30), TSthresh = 1, psi = NULL,
+  TSrange = c(-60, -30), TSthresh = 1, psi = 0.01,
   chngBinCntToZero = FALSE, BinCntZeroParams = c(depth = 40, TS = -45),
   SpeciesFromDepthTS = FALSE, DepthTSParams = c(SpDepth = 40, SpTS =
   -45, Species = 204), rmBycatch = FALSE, ByCatchParams = c(bcdepth =

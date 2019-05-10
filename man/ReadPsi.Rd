@@ -2,36 +2,18 @@
 % Please edit documentation in R/PsiReader.R
 \name{ReadPsi}
 \alias{ReadPsi}
-\title{{Obtain EBA for all transducers}}
+\title{PsiReader}
 \usage{
-ReadPsi()
+ReadPsi(sv)
 }
 \arguments{
-\item{EVfolder}{Vector of base folder names in which the EV files used to generate the
-data are location. Length is the same as the number of rows in \code{sv}.}
-
-\item{EBA}{Numeric scalar of the equivalent beam angle. Must be negative and in dB.
-Unknown what will happen if otherwise.}
+\item{sv}{Sv data set resulting from readAll().}
 }
 \value{
-A data frame with three columns (dat.source, psi, and EBA) and as many rows as
-  the number of unique transducers in the Sv data.
+Creates a data frame with as many rows as unique transducers and the columns
+'EV file folder name - frequency kHz', psi, and EBA.
 }
 \description{
-{
-\code{PsiReader}() prompts the user for as many equivalent beam (EBA)
-angles as there are unique transducers in the Sv data. EBA is then
-converted to Psi (Psi = 10^(EBA/10)).}
-}
-\details{
-This function is primarily intended for use by estimateLake() to enable use
-  of transducer specific Psi rather than one value assumed to be adequate for
-  all transducers.
-}
-\references{
-Based on a function posted by EuGENE on 02 February 2018 on stackoverflow
-  \href{https://stackoverflow.com/questions/48588180/in-r-how-to-read-multiple-integers-from-user-prompt/48588287#48588287}{[link]}.
-}
-\seealso{
-\code{\link{EstNv}}
+Read EBA (equivalent beam angle, dB) provided by the user and convert
+to psi.
 }

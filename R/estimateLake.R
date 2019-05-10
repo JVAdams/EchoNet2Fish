@@ -137,7 +137,7 @@ estimateLake <-
             regArea,
             TSrange = c(-60,-30),
             TSthresh = 1,
-            psi = NULL,
+            psi = 0.01,
             chngBinCntToZero = FALSE,
             BinCntZeroParams = c(depth = 40, TS = -45),
             SpeciesFromDepthTS = FALSE,
@@ -176,22 +176,27 @@ estimateLake <-
     # 1. new function/argument implementation
     # Prompts user for EBA from unique transducers
     ##################################################################
-    sv$EVfolder <-
-      sapply(strsplit(sapply(
-        strsplit(sv$EV_filename, "[\\]"),  "[", 6
-      ), "[/]"), "[", 1)
+    psi.df = data.frame()
+    sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
     ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
-    sv$dat.source <-
-      paste0(sv$EVfolder, " - ", sv$Frequency, " kHz")
-    unique.transducer <-
-      paste0(ev.source.freq$EVfolder,
-             " - ",
-             ev.source.freq$Frequency,
-             " kHz")
-    psi.df <- ReadPsi()  #the new function
-    names(sv)
-    sv$dat.source
-
+    unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
+    x <- 1
+    psi.df = data.frame()
+    sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
+    ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
+    unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
+    while(x<=length(unique.transducer)) {
+      df <- data.frame(dat.source = NA, psi = NA)
+      dat.source <- unique.transducer[x]
+      df$dat.source <- dat.source
+      df$EBA <- as.numeric(svDialogs::dlg_input(GUI = EBA, paste0("Enter Equivalent beam angle in dB for ", unique.transducer[x], ":"))$res)
+      df$psi <- 10^(df$EBA/10)
+      psi.df <- rbind(psi.df, df)
+      x <- x+1
+    }
+    x <- NULL
+    write.csv(psi.df, paste0(maindir, substr(strsplit(maindir, "[/]")[[1]][4], 1,2), YEAR, "sources_EBA_psi.csv"), row.names = FALSE)
+    sv$psi <- NA
     sv$psi <- psi.df$psi[match(sv$dat.source, psi.df$dat.source)]
 
     if (length(xtra) > 0)
@@ -274,16 +279,10 @@ estimateLake <-
     # If argument chngBinCntToZero == TRUE, replace the # of targets binned with zero
     #
     # ################################################################################
-    tsorig <- ts
-    orig <- data.frame(TS = log10(tsorig$sigma)*10, orign = rowSums(tsorig[57:87]))
     bin.num.st <- which( colnames(ts)==paste0("X.", abs(TSrange[[1]])))
     bin.num.end <- which( colnames(ts)==paste0("X.", abs(TSrange[[2]])))
-    ts$nums <- rowSums(ts[bin.num.st:bin.num.end])
 
     if (chngBinCntToZero == TRUE) ts[which(ts$Layer_depth_min >= BinCntZeroParams[[1]] & ts$sigma < 10^(BinCntZeroParams[[2]]/10)), bin.num.st:bin.num.end] <- 0
-    modded <- data.frame(TS = log10(ts$sigma)*10, newcount = rowSums(ts[57:87]))
-    diff <- orig$orign - modded$newcount
-    if(sum(diff)<1)
 
     # Combine sv and ts
     sv$UID <-interaction(gsub(" ", "", sv$Region_name), sv$Interval,
@@ -416,11 +415,10 @@ estimateLake <-
     #
     ################################################################################
 
-    while (SpeciesFromDepthTS == TRUE) {
+    if (SpeciesFromDepthTS == TRUE) {
       tsdeep <- subset(ts, Layer_depth_min>=DepthTSParams[[1]] & !(is.nan(ts$sigma)) &
                                                        ts$sigma !=0)
     #keep only the hypo layers with actual sigma
-
     tsdeep$TS <- log10(tsdeep$sigma)*10
     tran.sig <- tsdeep %>% group_by(Region_name, Interval, Layer, Layer_depth_min) %>%
       summarise(mn.sigma = mean(sigma), Latitude = mean(Lat_M),
@@ -436,7 +434,6 @@ estimateLake <-
     tran.sim <- tran.sig %>% group_by(Transect, Interval) %>%
       summarise(Length = round(mean(Length.m)), fish.wt = mean(Weight.m), N=round(mean(N)),
                 cat.wt =mean(Weight))
-
     ts.op <- data.frame(tran.sim[1:2]) # this will be used
     # in merge wth sim.op to reduce the data to the transect-interval combos where
     # we had TS
@@ -466,15 +463,12 @@ estimateLake <-
     cols <- c("Transect","Interval","Op.Id")
     opid.for.catch.lf <- sim.op3[,cols]
 
-
     #now us above data frame to create catch and lf data by merging on tran-interval
     sim.catch <- merge(opid.for.catch.lf, tran.sim, by=c("Transect", "Interval"))
 
     png("TSsimulated_bloater_weight.png")
     hist(sim.catch$fish.wt)
     dev.off()
-
-
 
     sim.catch$Species <- 204
     names(sim.catch)
@@ -483,8 +477,6 @@ estimateLake <-
     sim.catch2$Weight <- sim.catch2$cat.wt
     sim.catch2$cat.wt <- NULL
     sim.catch2$fish.wt <- NULL
-
-
     # now we have a catch file
     #
     #now make tr_lf file from the catch data
@@ -496,14 +488,10 @@ estimateLake <-
     hist(sim.tr_lf$Length, breaks = seq(100,350,25))
     dev.off()
 
-
     ##################################Now we have to add the simulated op, catch,
     #and tr_lf to the actual data.
-
-
     deepops <- subset(optrop$Op.Id, optrop$Fishing_Depth >= 40)
     nonbloatdeepcatch <- unique(subset(trcatch$Op.Id, trcatch$Op.Id %in% deepops & trcatch$Species %in% c(106,109)))
-
     #remove tows from op where tow was deep and catch was nonbloater
     optrop.sub <- subset(optrop, !(Op.Id %in% nonbloatdeepcatch))
 
@@ -512,7 +500,6 @@ estimateLake <-
 
     #and finally trlf
     trlf.sub <- subset(trlf, !(Op.Id %in% nonbloatdeepcatch))
-
 
     optrop.new <- rbind.fill(optrop.sub, sim.op3)
     optrop.new$Layer <- NULL
