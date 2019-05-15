@@ -72,10 +72,6 @@
 #'   Logical scalar, indicating aspect of map area.  If TRUE, the default,
 #'   the mapped area is assumed to be wider (longitudinally) than tall.
 #'   Used to better arrange multiple maps on a single page.
-#' @param IntMeansPlots
-#' Logical scalar, indicating whether or not the user wants to have
-#' maps of density by interval. This exists because at least
-#' one instance has been observed of the
 #' @param descr
 #'   A character scalar to be incorporated in the name of the saved output
 #'   files, default "ACMT Estimates".
