@@ -10,7 +10,8 @@ estimateLake(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
   SpeciesFromDepthTS = FALSE, DepthTSParams = c(SpDepth = 40, SpTS =
   -45, Species = 204), rmBycatch = FALSE, ByCatchParams = c(bcdepth =
   40, bcSpecies = c(106, 109)), soi = c(106, 109, 203, 204), spInfo,
-  sliceDef, short = TRUE, descr = "ACMT Estimates")
+  sliceDef, short = TRUE, IntMeansPlots = FALSE,
+  descr = "ACMT Estimates")
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where \code{rdat} is located
@@ -92,6 +93,10 @@ See Examples.}
 \item{short}{Logical scalar, indicating aspect of map area.  If TRUE, the default,
 the mapped area is assumed to be wider (longitudinally) than tall.
 Used to better arrange multiple maps on a single page.}
+
+\item{IntMeansPlots}{Logical scalar, indicating whether or not the user wants to have
+maps of density by interval. This exists because at least
+one instance has been observed of the}
 
 \item{descr}{A character scalar to be incorporated in the name of the saved output
 files, default "ACMT Estimates".}

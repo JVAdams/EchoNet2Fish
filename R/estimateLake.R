@@ -72,6 +72,10 @@
 #'   Logical scalar, indicating aspect of map area.  If TRUE, the default,
 #'   the mapped area is assumed to be wider (longitudinally) than tall.
 #'   Used to better arrange multiple maps on a single page.
+#' @param IntMeansPlots
+#' Logical scalar, indicating whether or not the user wants to have
+#' maps of density by interval. This exists because at least
+#' one instance has been observed of the
 #' @param descr
 #'   A character scalar to be incorporated in the name of the saved output
 #'   files, default "ACMT Estimates".
@@ -150,6 +154,7 @@ estimateLake <-
             spInfo,
             sliceDef,
             short = TRUE,
+            IntMeansPlots = FALSE,
             descr = "ACMT Estimates")
   {
     load(paste0(maindir, rdat, ".RData"), envir = environment())
@@ -176,19 +181,15 @@ estimateLake <-
     # 1. new function/argument implementation
     # Prompts user for EBA from unique transducers
     ##################################################################
-    psi.df = data.frame()
     sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
+    sv$dat.source <-paste0(sv$EVfolder, " - ", sv$Frequency, " kHz")
     ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
-    unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
     x <- 1
     psi.df = data.frame()
-    sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
-    ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
     unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
     while(x<=length(unique.transducer)) {
-      df <- data.frame(dat.source = NA, psi = NA)
-      dat.source <- unique.transducer[x]
-      df$dat.source <- dat.source
+      df <- data.frame(dat.source = NA, psi = NA, EBA = NA)
+      df$dat.source <- unique.transducer[x]
       df$EBA <- as.numeric(svDialogs::dlg_input(GUI = EBA, paste0("Enter Equivalent beam angle in dB for ", unique.transducer[x], ":"))$res)
       df$psi <- 10^(df$EBA/10)
       psi.df <- rbind(psi.df, df)
@@ -232,13 +233,20 @@ estimateLake <-
       TSthresh,
       " = minimum threshold for binned targets in a cell."
     ))
-    para(
-      paste0(
-        "psi = ",
-        unique(sv$psi),
-        " = the transducer-specific two-way equivalent beam angle in steradians."
+
+    psi.list <- unique(psi.df$dat.source)
+    para(paste0('The number of vessels involved = ', length(psi.list)))
+
+    for (i in seq_along(psi.list)) {
+      para(
+        paste0("For ", psi.df$dat.source[i],
+               " psi = ",
+               round(psi.df$psi[i], 6),
+               " = the transducer-specific two-way equivalent beam angle(s) in steradians."
+        )
       )
-    )
+    }
+
     if (is.null(ageSp)) {
       para("Ages will NOT be used.")
     } else {
@@ -856,6 +864,7 @@ estimateLake <-
                               data = svts5)
     names(intmeans_gph)[is.na(names(intmeans_gph))] <- sp.grps
     ncols <- grep("\\.", names(intmeans_nph))
+    ncols <- ncols[colSums(intmeans_nph[, ncols] != 0)>3]
     fig <- function() {
       mapBy2Groups(
         df = intmeans_nph[, ncols],
@@ -873,6 +882,7 @@ estimateLake <-
       newpage = "port"
     )
     gcols <- grep("\\.", names(intmeans_gph))
+    gcols <- gcols[colSums(intmeans_nph[, gcols] != 0)>3]
     fig <- function() {
       mapBy2Groups(
         df = intmeans_gph[, gcols],
