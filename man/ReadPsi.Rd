@@ -4,10 +4,7 @@
 \alias{ReadPsi}
 \title{PsiReader}
 \usage{
-ReadPsi(sv)
-}
-\arguments{
-\item{sv}{Sv data set resulting from readAll().}
+ReadPsi()
 }
 \value{
 Creates a data frame with as many rows as unique transducers and the columns
@@ -16,4 +13,7 @@ Creates a data frame with as many rows as unique transducers and the columns
 \description{
 Read EBA (equivalent beam angle, dB) provided by the user and convert
 to psi.
+}
+\details{
+Sv data set resulting from readAll().
 }

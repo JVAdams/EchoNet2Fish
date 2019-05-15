@@ -4,7 +4,6 @@
 #' Read EBA (equivalent beam angle, dB) provided by the user and convert
 #' to psi.
 #'
-#' @param sv
 #' Sv data set resulting from readAll().
 #' @return
 #' Creates a data frame with as many rows as unique transducers and the columns
@@ -12,7 +11,7 @@
 #' @export
 #'
 
-  ReadPsi <- function(sv) {
+  ReadPsi <- function() {
     x <- 1
     psi.df = data.frame()
     sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
