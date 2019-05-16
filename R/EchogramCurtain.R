@@ -116,7 +116,7 @@ EchogramCurtain <-
 
     # Create the list of spgrp to loop through
     spgrp.list <- unique(df.long$spgrp)
-
+    leg.title <- ifelse(d.units == 'nph', "Fish per hectare", 'Grams per hectare')
     for (i in seq_along(spgrp.list)) {
       dat <- filter(df.long, spgrp == spgrp[i])
       Int <- as.factor(dat$Interval)
@@ -134,7 +134,7 @@ EchogramCurtain <-
           stat = "identity"
         ) +
         scale_fill_viridis_c(
-          paste0("Fish per hectare ", spgrp.list[i]),
+          paste0(leg.title, "  ", spgrp.list[i]),
           option = "plasma",
           breaks = pretty_breaks(n = 10)
         ) +
