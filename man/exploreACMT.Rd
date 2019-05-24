@@ -27,6 +27,9 @@ age-length keys should be used, default NULL.}
 \item{short}{Logical scalar, indicating aspect of map area.  If TRUE, the default,
 the mapped area is assumed to be wider (longitudinally) than tall.
 Used to better arrange multiple maps on a single page.}
+
+\item{TSrange}{A numeric vector of length 2, the target strength range of interest,
+minimum and maximum in dB, default c(-60, -30). Must be a whole number.}
 }
 \description{
 Explore acoustic and midwater trawl data.

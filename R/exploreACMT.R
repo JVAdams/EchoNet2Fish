@@ -17,6 +17,9 @@
 #' @param ageSp
 #'   A numeric vector giving the species codes for species for which
 #'   age-length keys should be used, default NULL.
+#' @param TSrange
+#'   A numeric vector of length 2, the target strength range of interest,
+#'   minimum and maximum in dB, default c(-60, -30). Must be a whole number.
 #' @param short
 #'   Logical scalar, indicating aspect of map area.  If TRUE, the default,
 #'   the mapped area is assumed to be wider (longitudinally) than tall.
