@@ -125,6 +125,7 @@
 #' @importFrom purrr map map_df
 #' @importFrom magrittr "%>%"
 #' @importFrom lubridate today decimal_date
+#' @importFrom stringr str_extract
 #' @import dplyr rtf graphics utils tidyr
 #' @export
 #'
@@ -177,7 +178,8 @@ estimateLake <-
     # 1. new function/argument implementation
     # Prompts user for EBA from unique transducers
     ##################################################################
-    sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
+    #sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 6), "[/]"), "[",1)
+    sv$EVfolder <- sapply(strsplit(str_extract(sv$EV_filename, pattern = 'EVfiles_baird/|EVfiles_sturgeon/|EVfiles_ltbb/'), '[/]'), "[", 1 )
     sv$dat.source <-paste0(sv$EVfolder, " - ", sv$Frequency, " kHz")
     ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
     x <- 1
