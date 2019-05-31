@@ -16,8 +16,9 @@
   ReadPsi <- function() {
     x <- 1
     psi.df = data.frame()
-    #sv$EVfolder <- sapply(strsplit(str_extract(sv$EV_filename, pattern = 'EVfiles_baird/|EVfiles_sturgeon/|EVfiles_ltbb/'), '[/]'), "[", 1 )
-    sv$EVfolder <- sapply(strsplit(sapply(strsplit(sv$EV_filename, "[\\]"),  "[", 8), "[/]"), "[",1)
+    EV_filename_parts <- strsplit(sv$EV_filename, "[\\]")
+    parts_length <- sum(count(unlist(EV_filename_parts))$freq)
+    sv$EVfolder <- sapply(strsplit(EV_filename_parts[[1]][parts_length], "[/]"),  "[", 1)
     ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
     unique.transducer <- paste0(ev.source.freq$EVfolder, " - ", ev.source.freq$Frequency, " kHz" )
     while(x<=length(unique.transducer)) {
