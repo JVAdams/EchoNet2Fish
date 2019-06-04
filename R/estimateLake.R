@@ -41,7 +41,7 @@
 #'   species from midwater trawl data because they are believed to be bycatch. One
 #'   common example of a need for this was reported by Warner et al. (2012), who
 #'   found that catch observed over the course of three decades varied with fishing
-#'   depth. At depths > 40 m below the surface, the vast majority (> 70%) of fish
+#'   depth. At depths > 40 m below the surface, the vast majority (> 70 percent) of fish
 #'   were bloater > 120 mm.
 #' @param ByCatchParams
 #'   A vector with the first entry being depth, below which the user believes
@@ -469,10 +469,10 @@ estimateLake <-
     cols <- c("Transect","Interval","Op.Id")
     opid.for.catch.lf <- sim.op3[,cols]
 
-    #now us above data frame to create catch and lf data by merging on tran-interval
+    #now use above data frame to create catch and lf data by merging on tran-interval
     sim.catch <- merge(opid.for.catch.lf, tran.sim, by=c("Transect", "Interval"))
-
-    png("TSsimulated_bloater_weight.png")
+    place <- ifelse(keyval[1]==2, 'MI', "HU")
+    png(paste0(maindir, place, keyval[2], "/TSsimulated_bloater_weight.png"))
     hist(sim.catch$fish.wt)
     dev.off()
 
@@ -490,7 +490,7 @@ estimateLake <-
     cols <- c("Op.Id", "Species", "Length", "N")
     sim.tr_lf <- sim.catch[,cols]
 
-    png("TSsimulated_bloater_length.png")
+    png(paste0(maindir, place, keyval[2], "/TSsimulated_bloater_length.png"))
     hist(sim.tr_lf$Length, breaks = seq(100,350,25))
     dev.off()
 

@@ -54,7 +54,7 @@ provided here. Future modifications may provide more flexibility.}
 species from midwater trawl data because they are believed to be bycatch. One
 common example of a need for this was reported by Warner et al. (2012), who
 found that catch observed over the course of three decades varied with fishing
-depth. At depths > 40 m below the surface, the vast majority (> 70%) of fish
+depth. At depths > 40 m below the surface, the vast majority (> 70 percent) of fish
 were bloater > 120 mm.}
 
 \item{ByCatchParams}{A vector with the first entry being depth, below which the user believes
