@@ -423,104 +423,104 @@ estimateLake <-
 
     if (SpeciesFromDepthTS == TRUE) {
       tsdeep <- subset(ts, Layer_depth_min>=DepthTSParams[[1]] & !(is.nan(ts$sigma)) &
-                                                       ts$sigma !=0)
-    #keep only the hypo layers with actual sigma
-    tsdeep$TS <- log10(tsdeep$sigma)*10
-    tran.sig <- tsdeep %>% group_by(Region_name, Interval, Layer, Layer_depth_min) %>%
-      summarise(mn.sigma = mean(sigma), Latitude = mean(Lat_M),
-                Longitude = mean(Lon_M), Fishing_Depth =mean(Layer_depth_min)) %>%
-      mutate(TS = log10(mn.sigma)*10) %>%
-      filter(TS >= DepthTSParams[[2]] & TS < -35.9) %>%
-      mutate(Length.m = round((10^(3.2 + 0.047*TS))*10)) %>%
-      mutate(Weight.m = 10^(7.449 + 0.141*TS), N=round(rnorm(1,50,8)))%>%
-      mutate(Weight = round(N * Weight.m))
-    tran.sig$Transect <- tran.sig$Region_name
-    tran.sig$Region_name <- NULL
+                         ts$sigma !=0)
+      #keep only the hypo layers with actual sigma
+      tsdeep$TS <- log10(tsdeep$sigma)*10
+      tran.sig <- tsdeep %>% group_by(Region_name, Interval, Layer, Layer_depth_min) %>%
+        summarise(mn.sigma = mean(sigma), Latitude = mean(Lat_M),
+                  Longitude = mean(Lon_M), Fishing_Depth =mean(Layer_depth_min)) %>%
+        mutate(TS = log10(mn.sigma)*10) %>%
+        filter(TS >= DepthTSParams[[2]] & TS < -35.9) %>%
+        mutate(Length.m = round((10^(3.2 + 0.047*TS))*10)) %>%
+        mutate(Weight.m = 10^(7.449 + 0.141*TS), N=round(rnorm(1,50,8)))%>%
+        mutate(Weight = round(N * Weight.m))
+      tran.sig$Transect <- tran.sig$Region_name
+      tran.sig$Region_name <- NULL
 
-    tran.sim <- tran.sig %>% group_by(Transect, Interval) %>%
-      summarise(Length = round(mean(Length.m)), fish.wt = mean(Weight.m), N=round(mean(N)),
-                cat.wt =mean(Weight))
-    ts.op <- data.frame(tran.sim[1:2]) # this will be used
-    # in merge wth sim.op to reduce the data to the transect-interval combos where
-    # we had TS
-    #############################################################################
-    # Now we need to get the different variables required to make
-    # Op, catch, and lf data.
-    #
-    #Op needs
-    #Op.Id Year Lake Beg.Depth End.Depth Fishing_Depth Transect Latitude Longitude
-    #We will get all of these from the Sv data (sv data.frame), merge it with our TS data,
-    #and generate Op.Id there.
-    #
-    sim.op <- data.frame(Year = YEAR, Lake = LAKE, Transect = sv$Region_name, Interval = sv$Interval,
-                         Layer = sv$Layer, Fishing_Depth = sv$Layer_depth_min, Beg.Depth = sv$Exclude_below_line_depth_min,
-                         End.Depth = sv$Exclude_below_line_depth_max, Latitude = sv$Lat_M, Longitude = sv$Lon_M)
-    sim.op <- subset(sim.op, Fishing_Depth>=40)
-    sim.op2 <- sim.op %>% group_by(Transect, Interval) %>%
-      summarise_all(mean)
-    sim.op3 <- merge(sim.op2, ts.op, by=c("Transect", "Interval"))
+      tran.sim <- tran.sig %>% group_by(Transect, Interval) %>%
+        summarise(Length = round(mean(Length.m)), fish.wt = mean(Weight.m), N=round(mean(N)),
+                  cat.wt =mean(Weight))
+      ts.op <- data.frame(tran.sim[1:2]) # this will be used
+      # in merge wth sim.op to reduce the data to the transect-interval combos where
+      # we had TS
+      #############################################################################
+      # Now we need to get the different variables required to make
+      # Op, catch, and lf data.
+      #
+      #Op needs
+      #Op.Id Year Lake Beg.Depth End.Depth Fishing_Depth Transect Latitude Longitude
+      #We will get all of these from the Sv data (sv data.frame), merge it with our TS data,
+      #and generate Op.Id there.
+      #
+      sim.op <- data.frame(Year = YEAR, Lake = LAKE, Transect = sv$Region_name, Interval = sv$Interval,
+                           Layer = sv$Layer, Fishing_Depth = sv$Layer_depth_min, Beg.Depth = sv$Exclude_below_line_depth_min,
+                           End.Depth = sv$Exclude_below_line_depth_max, Latitude = sv$Lat_M, Longitude = sv$Lon_M)
+      sim.op <- subset(sim.op, Fishing_Depth>=40)
+      sim.op2 <- sim.op %>% group_by(Transect, Interval) %>%
+        summarise_all(mean)
+      sim.op3 <- merge(sim.op2, ts.op, by=c("Transect", "Interval"))
 
-    #need Op.Id, we have 90 unique tran-interval combos
-    sim.op3$Op.Id <- seq(1,length(sim.op3$Interval ),1)
+      #need Op.Id, we have 90 unique tran-interval combos
+      sim.op3$Op.Id <- seq(1,length(sim.op3$Interval ),1)
 
-    #now have to add Op.Id to tran.hoyi.sim to create catch data and tr_lf data
-    #will do this by merging sim.op3 Op.Id, Tran, and Interval
-    names(sim.op3)
-    cols <- c("Transect","Interval","Op.Id")
-    opid.for.catch.lf <- sim.op3[,cols]
+      #now have to add Op.Id to tran.hoyi.sim to create catch data and tr_lf data
+      #will do this by merging sim.op3 Op.Id, Tran, and Interval
+      names(sim.op3)
+      cols <- c("Transect","Interval","Op.Id")
+      opid.for.catch.lf <- sim.op3[,cols]
 
-    #now use above data frame to create catch and lf data by merging on tran-interval
-    sim.catch <- merge(opid.for.catch.lf, tran.sim, by=c("Transect", "Interval"))
-    place <- ifelse(keyvals[1]==2, 'MI', "HU")
-    png(paste0(maindir, place, keyvals[2], "/TSsimulated_bloater_weight.png"))
-    hist(sim.catch$fish.wt)
-    dev.off()
+      #now use above data frame to create catch and lf data by merging on tran-interval
+      sim.catch <- merge(opid.for.catch.lf, tran.sim, by=c("Transect", "Interval"))
+      place <- ifelse(keyvals[1]==2, 'MI', "HU")
+      png(paste0(maindir, "TSsimulated_bloater_weight.png"))
+      hist(sim.catch$fish.wt)
+      dev.off()
 
-    sim.catch$Species <- 204
-    names(sim.catch)
-    cols <- c("Op.Id","N","cat.wt","Species")
-    sim.catch2 <- sim.catch[,cols]
-    sim.catch2$Weight <- sim.catch2$cat.wt
-    sim.catch2$cat.wt <- NULL
-    sim.catch2$fish.wt <- NULL
-    # now we have a catch file
-    #
-    #now make tr_lf file from the catch data
-    names(sim.catch)
-    cols <- c("Op.Id", "Species", "Length", "N")
-    sim.tr_lf <- sim.catch[,cols]
+      sim.catch$Species <- 204
+      names(sim.catch)
+      cols <- c("Op.Id","N","cat.wt","Species")
+      sim.catch2 <- sim.catch[,cols]
+      sim.catch2$Weight <- sim.catch2$cat.wt
+      sim.catch2$cat.wt <- NULL
+      sim.catch2$fish.wt <- NULL
+      # now we have a catch file
+      #
+      #now make tr_lf file from the catch data
+      names(sim.catch)
+      cols <- c("Op.Id", "Species", "Length", "N")
+      sim.tr_lf <- sim.catch[,cols]
 
-    png(paste0(maindir, place, keyvals[2], "/TSsimulated_bloater_length.png"))
-    hist(sim.tr_lf$Length, breaks = seq(100,350,25))
-    dev.off()
+      png(paste0(maindir, "TSsimulated_bloater_length.png"))
+      hist(sim.tr_lf$Length, breaks = seq(100,350,25))
+      dev.off()
 
-    ##################################Now we have to add the simulated op, catch,
-    #and tr_lf to the actual data.
-    deepops <- subset(optrop$Op.Id, optrop$Fishing_Depth >= 40)
-    nonbloatdeepcatch <- unique(subset(trcatch$Op.Id, trcatch$Op.Id %in% deepops & trcatch$Species %in% c(106,109)))
-    #remove tows from op where tow was deep and catch was nonbloater
-    optrop.sub <- subset(optrop, !(Op.Id %in% nonbloatdeepcatch))
+      ##################################Now we have to add the simulated op, catch,
+      #and tr_lf to the actual data.
+      deepops <- subset(optrop$Op.Id, optrop$Fishing_Depth >= 40)
+      nonbloatdeepcatch <- unique(subset(trcatch$Op.Id, trcatch$Op.Id %in% deepops & trcatch$Species %in% c(106,109)))
+      #remove tows from op where tow was deep and catch was nonbloater
+      optrop.sub <- subset(optrop, !(Op.Id %in% nonbloatdeepcatch))
 
-    # same with catch now
-    trcatch.sub <- subset(trcatch, !(Op.Id %in% nonbloatdeepcatch))
+      # same with catch now
+      trcatch.sub <- subset(trcatch, !(Op.Id %in% nonbloatdeepcatch))
 
-    #and finally trlf
-    trlf.sub <- subset(trlf, !(Op.Id %in% nonbloatdeepcatch))
+      #and finally trlf
+      trlf.sub <- subset(trlf, !(Op.Id %in% nonbloatdeepcatch))
 
-    optrop.new <- rbind.fill(optrop.sub, sim.op3)
-    optrop.new$Layer <- NULL
-    optrop.new$Interval <- NULL
-    optrop <- optrop.new
+      optrop.new <- plyr::rbind.fill(optrop.sub, sim.op3)
+      optrop.new$Layer <- NULL
+      optrop.new$Interval <- NULL
+      optrop <- optrop.new
 
-    trcatch.new <- rbind.fill(trcatch.sub, sim.catch2)
-    names(trcatch.new)
-    cols <- c("Op.Id","N","Weight","Species")
-    trcatch <- trcatch.new[,cols]
+      trcatch.new <- plyr::rbind.fill(trcatch.sub, sim.catch2)
+      names(trcatch.new)
+      cols <- c("Op.Id","N","Weight","Species")
+      trcatch <- trcatch.new[,cols]
 
-    trlf.new <- rbind.fill(trlf.sub, sim.tr_lf)
-    names(trlf.new)
-    cols <- c("Op.Id","Species","Length","N")
-    trlf <- trlf.new[,cols]
+      trlf.new <- plyr::rbind.fill(trlf.sub, sim.tr_lf)
+      names(trlf.new)
+      cols <- c("Op.Id","Species","Length","N")
+      trlf <- trlf.new[,cols]
     }
 
     # Trawl stuff
@@ -683,8 +683,8 @@ estimateLake <-
         )
         mtops <- if (exists("mtops"))
           c(mtops, names(propother)[sel])
-       } else {
-          names(propother)[sel]
+      } else {
+        names(propother)[sel]
       }
     }
     ord <- order(names(sum.n))
@@ -1001,9 +1001,9 @@ estimateLake <-
                        ".csv")
     invisible(lapply(seq(save2csv), function(i)
       write.csv(eval(
-        parse(text = save2csv[i])
+        parse(text = save2csv[i]),
       ),
-      outfiles[i])))
+      outfiles[i], row.names = F)))
     newrdat <- paste0("L", LAKE, " Y", YEAR, " ", descr)
     save(list = save2csv,
          file = paste0(maindir, newrdat, ".RData"))
