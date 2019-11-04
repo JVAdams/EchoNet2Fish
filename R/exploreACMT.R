@@ -258,12 +258,12 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tabl("Quick summary table of variables in OP/TROP files.", TAB=tab)
 
     allcols <- names(optrop)
-    pcols <- allcols[allcols %in% c("Op.Id", "Vessel", "Cruise", "Serial",
-                                    "Lake", "Port", "Beg.Depth", "End.Depth", "Distance", "Fishing_Temp",
+    pcols <- allcols[allcols %in% c("Op_Id", "Vessel", "Cruise", "Serial",
+                                    "Lake", "Port", "Beg_Depth", "End.Depth", "Distance", "Fishing_Temp",
                                     "Fishing_Depth", "Transect")]
 
     nacols <- allcols[allcols %in%
-                        c("Beg.Depth", "End.Depth", "Distance", "Fishing_Temp")]
+                        c("Beg_Depth", "End.Depth", "Distance", "Fishing_Temp")]
     narows <- apply(is.na(optrop[, nacols]), 1, any)
     tab <- optrop[narows, pcols]
 
@@ -301,8 +301,8 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
       }
     }
 
-    tab <- with(optrop, optrop[!is.na(Beg.Depth) & !is.na(End.Depth) &
-                                 abs(Beg.Depth - End.Depth) > 20, pcols])
+    tab <- with(optrop, optrop[!is.na(Beg_Depth) & !is.na(End.Depth) &
+                                 abs(Beg_Depth - End.Depth) > 20, pcols])
     if(dim(tab)[1] > 0) {
       tabl("OP/TROP records with > 20 m difference between",
            " beginning and ending bottom depth.", TAB=tab)
@@ -311,7 +311,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
            " beginning and ending bottom depth.")
     }
 
-    mind <- with(optrop, pmin(Beg.Depth, End.Depth, na.rm=T))
+    mind <- with(optrop, pmin(Beg_Depth, End.Depth, na.rm=T))
     tab <- with(optrop, optrop[!is.na(mind) & !is.na(Fishing_Depth) &
                                  Fishing_Depth > mind, pcols])
     if(dim(tab)[1] > 0) {
@@ -344,7 +344,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
       figu(cap("Cruise"), FIG=function() fig("Cruise"), newpage="port")
     }
     figu(cap("Transect"), FIG=function() fig("Transect"), newpage="port")
-    maxd <- with(optrop, -pmax(Beg.Depth, End.Depth, na.rm=T))
+    maxd <- with(optrop, -pmax(Beg_Depth, End.Depth, na.rm=T))
     figu(cap("maxd"), FIG=function() fig("maxd"), newpage="port")
     if(!is.null(optrop$Tow_Time)) {
       figu(cap("Tow_Time"), FIG=function() fig("Tow_Time"), newpage="port")
@@ -365,21 +365,21 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tabl("Quick summary table of variables in TRCATCH file.", TAB=tab)
 
     sus <- sort(unique(trcatch$Species))
-    if("Beg.Depth" %in% names(trcatch)) {
-      tab <- with(trcatch, trcatch[is.na(Beg.Depth) | is.na(End.Depth),
-                                   c("Op.Id", "Year", "Vessel", "Serial", "Lake", "Species", "Port_Name",
-                                     "Beg.Depth", "End.Depth", "N")])
+    if("Beg_Depth" %in% names(trcatch)) {
+      tab <- with(trcatch, trcatch[is.na(Beg_Depth) | is.na(End.Depth),
+                                   c("Op_Id", "Year", "Vessel", "Serial", "Lake", "Species", "Port_Name",
+                                     "Beg_Depth", "End_Depth", "N")])
       if(dim(tab)[1] > 0) {
         tabl("TRCATCH records with missing beginning or ending depth.", TAB=tab)
       }
     }
 
-    missop <- setdiff(trcatch$Op.Id, optrop$Op.Id)
+    missop <- setdiff(trcatch$Op_Id, optrop$Op_Id)
     if(length(missop)>0) {
-      tab <- trcatch[trcatch$Op.Id==missop, ]
-      tabl("TRCATCH records Op.Ids not in OPTROP.", TAB=tab)
+      tab <- trcatch[trcatch$Op_Id==missop, ]
+      tabl("TRCATCH records Op_Ids not in OPTROP.", TAB=tab)
     } else {
-      para("All TRCATCH Op.Ids are in OPTROP.")
+      para("All TRCATCH Op_Ids are in OPTROP.")
     }
 
     fig <- function() {
@@ -403,17 +403,17 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
     tab <- dfSmry(trlf)
     tabl("Quick summary table of variables in TRLF file.", TAB=tab)
 
-    missop <- setdiff(trlf$Op.Id, optrop$Op.Id)
+    missop <- setdiff(trlf$Op_Id, optrop$Op_Id)
     showcols <- min(10, dim(trlf)[[2]])
     if(length(missop)>0) {
-      tab <- trlf[trlf$Op.Id==missop, 1:showcols]
-      tabl("TRLF records Op.Ids not in OPTROP.", TAB=tab)
+      tab <- trlf[trlf$Op_Id==missop, 1:showcols]
+      tabl("TRLF records Op_Ids not in OPTROP.", TAB=tab)
     } else {
-      para("All TRLF Op.Ids are in OPTROP.")
+      para("All TRLF Op_Ids are in OPTROP.")
     }
 
     trlfmiss <- with(trlf,
-                     is.na(Op.Id) | is.na(Species) | is.na(Length) | is.na(N))
+                     is.na(Op_Id) | is.na(Species) | is.na(Length) | is.na(N))
     if(sum(trlfmiss) > 0) {
       warning("TRLF is missing some data.  See output report for details.",
               call.=FALSE)

@@ -471,8 +471,8 @@ estimateLake <-
 
     #now use above data frame to create catch and lf data by merging on tran-interval
     sim.catch <- merge(opid.for.catch.lf, tran.sim, by=c("Transect", "Interval"))
-    place <- ifelse(keyval[1]==2, 'MI', "HU")
-    png(paste0(maindir, place, keyval[2], "/TSsimulated_bloater_weight.png"))
+    place <- ifelse(keyvals[1]==2, 'MI', "HU")
+    png(paste0(maindir, place, keyvals[2], "/TSsimulated_bloater_weight.png"))
     hist(sim.catch$fish.wt)
     dev.off()
 
@@ -490,7 +490,7 @@ estimateLake <-
     cols <- c("Op.Id", "Species", "Length", "N")
     sim.tr_lf <- sim.catch[,cols]
 
-    png(paste0(maindir, place, keyval[2], "/TSsimulated_bloater_length.png"))
+    png(paste0(maindir, place, keyvals[2], "/TSsimulated_bloater_length.png"))
     hist(sim.tr_lf$Length, breaks = seq(100,350,25))
     dev.off()
 
