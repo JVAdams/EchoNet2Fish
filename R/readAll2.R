@@ -150,10 +150,10 @@ readAll2 <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
 
     # needed names for optrop, trcatch, and trlf files
     neednames <- list(
-      c("Op.Id", "Year", "Lake", "Beg.Depth", "End.Depth", "Fishing_Depth",
+      c("Op_Id", "Year", "Lake", "Beg_Depth", "End_Depth", "Fishing_Depth",
         "Transect", "Latitude", "Longitude"),
-      c("Op.Id", "Species", "Weight", "N"),
-      c("Op.Id", "Species", "Length", "N"))
+      c("Op_Id", "Species", "Weight", "N"),
+      c("Op_Id", "Species", "Length", "N"))
 
     names(optrop) <- fixnames(optrop, neednames[[1]])
     names(trcatch) <- fixnames(trcatch, neednames[[2]])

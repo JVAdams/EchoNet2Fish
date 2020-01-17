@@ -212,7 +212,7 @@ pre, code {
 background-color: #f7f7f7;
 border-radius: 3px;
 color: #333;
-white-space: pre-wrap; 
+white-space: pre-wrap;
 }
 pre {
 border-radius: 3px;
@@ -280,17 +280,17 @@ text-decoration: underline; }
 a[href^="https:"] {
 text-decoration: underline; }
 
-code > span.kw { color: #555; font-weight: bold; } 
-code > span.dt { color: #902000; } 
-code > span.dv { color: #40a070; } 
-code > span.bn { color: #d14; } 
-code > span.fl { color: #d14; } 
-code > span.ch { color: #d14; } 
-code > span.st { color: #d14; } 
-code > span.co { color: #888888; font-style: italic; } 
-code > span.ot { color: #007020; } 
-code > span.al { color: #ff0000; font-weight: bold; } 
-code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+code > span.kw { color: #555; font-weight: bold; }
+code > span.dt { color: #902000; }
+code > span.dv { color: #40a070; }
+code > span.bn { color: #d14; }
+code > span.fl { color: #d14; }
+code > span.ch { color: #d14; }
+code > span.st { color: #d14; }
+code > span.co { color: #888888; font-style: italic; }
+code > span.ot { color: #007020; }
+code > span.al { color: #ff0000; font-weight: bold; }
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; }
 </style>
 
 
@@ -689,15 +689,15 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <h2>Midwater trawl files</h2>
 <p>The following 1 column must be included in the midwater trawl <strong>operation</strong>, <strong>catch</strong>, and <strong>length</strong> csv files:</p>
 <ul>
-<li>Op.Id = operation ID number</li>
+<li>Op_Id = operation ID number</li>
 </ul>
 <p>This column serves to uniquely identify each trawl haul in the files.</p>
 <p>The following 9 columns must be included in the midwater trawl <strong>operation</strong> csv files:</p>
 <ul>
 <li>Year = year</li>
 <li>Lake = lake ID code</li>
-<li>Beg.Depth = bottom depth at beginning of trawl haul in m</li>
-<li>End.Depth = bottom depth at end of trawl haul in m</li>
+<li>Beg_Depth = bottom depth at beginning of trawl haul in m</li>
+<li>End_Depth = bottom depth at end of trawl haul in m</li>
 <li>Fishing_Depth = fishing depth of trawl haul in m</li>
 <li>Transect = transect name, composed of region (the first two characters) and transect ID number (the following characters), the same as Region_name in the SV and TS files</li>
 <li>Latitude = latitude in decimal degrees</li>
@@ -706,11 +706,11 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <table>
 <thead>
 <tr class="header">
-<th align="right">Op.Id</th>
+<th align="right">Op_Id</th>
 <th align="right">Year</th>
 <th align="right">Lake</th>
-<th align="right">Beg.Depth</th>
-<th align="right">End.Depth</th>
+<th align="right">Beg_Depth</th>
+<th align="right">End_Depth</th>
 <th align="right">Fishing_Depth</th>
 <th align="left">Transect</th>
 <th align="right">Latitude</th>
@@ -784,7 +784,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <table>
 <thead>
 <tr class="header">
-<th align="right">Op.Id</th>
+<th align="right">Op_Id</th>
 <th align="right">Species</th>
 <th align="right">Weight</th>
 <th align="right">N</th>
@@ -832,7 +832,7 @@ code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61
 <table>
 <thead>
 <tr class="header">
-<th align="right">Op.Id</th>
+<th align="right">Op_Id</th>
 <th align="right">Species</th>
 <th align="right">Length</th>
 <th align="right">N</th>

@@ -448,25 +448,25 @@ estimateLake <-
       # Op, catch, and lf data.
       #
       #Op needs
-      #Op.Id Year Lake Beg.Depth End.Depth Fishing_Depth Transect Latitude Longitude
+      #Op_Id Year Lake Beg_Depth End_Depth Fishing_Depth Transect Latitude Longitude
       #We will get all of these from the Sv data (sv data.frame), merge it with our TS data,
-      #and generate Op.Id there.
+      #and generate Op_Id there.
       #
       sim.op <- data.frame(Year = YEAR, Lake = LAKE, Transect = sv$Region_name, Interval = sv$Interval,
-                           Layer = sv$Layer, Fishing_Depth = sv$Layer_depth_min, Beg.Depth = sv$Exclude_below_line_depth_min,
-                           End.Depth = sv$Exclude_below_line_depth_max, Latitude = sv$Lat_M, Longitude = sv$Lon_M)
+                           Layer = sv$Layer, Fishing_Depth = sv$Layer_depth_min, Beg_Depth = sv$Exclude_below_line_depth_min,
+                           End_Depth = sv$Exclude_below_line_depth_max, Latitude = sv$Lat_M, Longitude = sv$Lon_M)
       sim.op <- subset(sim.op, Fishing_Depth>=40)
       sim.op2 <- sim.op %>% group_by(Transect, Interval) %>%
         summarise_all(mean)
       sim.op3 <- merge(sim.op2, ts.op, by=c("Transect", "Interval"))
 
-      #need Op.Id, we have 90 unique tran-interval combos
-      sim.op3$Op.Id <- seq(1,length(sim.op3$Interval ),1)
+      #need Op_Id, we have 90 unique tran-interval combos
+      sim.op3$Op_Id <- seq(1,length(sim.op3$Interval ),1)
 
-      #now have to add Op.Id to tran.hoyi.sim to create catch data and tr_lf data
-      #will do this by merging sim.op3 Op.Id, Tran, and Interval
+      #now have to add Op_Id to tran.hoyi.sim to create catch data and tr_lf data
+      #will do this by merging sim.op3 Op_Id, Tran, and Interval
       names(sim.op3)
-      cols <- c("Transect","Interval","Op.Id")
+      cols <- c("Transect","Interval","Op_Id")
       opid.for.catch.lf <- sim.op3[,cols]
 
       #now use above data frame to create catch and lf data by merging on tran-interval
@@ -478,7 +478,7 @@ estimateLake <-
 
       sim.catch$Species <- 204
       names(sim.catch)
-      cols <- c("Op.Id","N","cat.wt","Species")
+      cols <- c("Op_Id","N","cat.wt","Species")
       sim.catch2 <- sim.catch[,cols]
       sim.catch2$Weight <- sim.catch2$cat.wt
       sim.catch2$cat.wt <- NULL
@@ -487,7 +487,7 @@ estimateLake <-
       #
       #now make tr_lf file from the catch data
       names(sim.catch)
-      cols <- c("Op.Id", "Species", "Length", "N")
+      cols <- c("Op_Id", "Species", "Length", "N")
       sim.tr_lf <- sim.catch[,cols]
 
       png(paste0(maindir, "TSsimulated_bloater_length.png"))
@@ -496,16 +496,16 @@ estimateLake <-
 
       ##################################Now we have to add the simulated op, catch,
       #and tr_lf to the actual data.
-      deepops <- subset(optrop$Op.Id, optrop$Fishing_Depth >= 40)
-      nonbloatdeepcatch <- unique(subset(trcatch$Op.Id, trcatch$Op.Id %in% deepops & trcatch$Species %in% c(106,109)))
+      deepops <- subset(optrop$Op_Id, optrop$Fishing_Depth >= 40)
+      nonbloatdeepcatch <- unique(subset(trcatch$Op_Id, trcatch$Op_Id %in% deepops & trcatch$Species %in% c(106,109)))
       #remove tows from op where tow was deep and catch was nonbloater
-      optrop.sub <- subset(optrop, !(Op.Id %in% nonbloatdeepcatch))
+      optrop.sub <- subset(optrop, !(Op_Id %in% nonbloatdeepcatch))
 
       # same with catch now
-      trcatch.sub <- subset(trcatch, !(Op.Id %in% nonbloatdeepcatch))
+      trcatch.sub <- subset(trcatch, !(Op_Id %in% nonbloatdeepcatch))
 
       #and finally trlf
-      trlf.sub <- subset(trlf, !(Op.Id %in% nonbloatdeepcatch))
+      trlf.sub <- subset(trlf, !(Op_Id %in% nonbloatdeepcatch))
 
       optrop.new <- plyr::rbind.fill(optrop.sub, sim.op3)
       optrop.new$Layer <- NULL
@@ -514,21 +514,21 @@ estimateLake <-
 
       trcatch.new <- plyr::rbind.fill(trcatch.sub, sim.catch2)
       names(trcatch.new)
-      cols <- c("Op.Id","N","Weight","Species")
+      cols <- c("Op_Id","N","Weight","Species")
       trcatch <- trcatch.new[,cols]
 
       trlf.new <- plyr::rbind.fill(trlf.sub, sim.tr_lf)
       names(trlf.new)
-      cols <- c("Op.Id","Species","Length","N")
+      cols <- c("Op_Id","Species","Length","N")
       trlf <- trlf.new[,cols]
     }
 
     # Trawl stuff
-    optrop$depth.botmin <- 10 * floor(pmin(optrop$Beg.Depth,
-                                           optrop$End.Depth) / 10)
-    optrop$depth.botmax <- 10 * ceiling(pmax(optrop$Beg.Depth,
-                                             optrop$End.Depth) / 10)
-    optrop$depth_botmid <- (optrop$Beg.Depth + optrop$End.Depth) / 2
+    optrop$depth.botmin <- 10 * floor(pmin(optrop$Beg_Depth,
+                                           optrop$End_Depth) / 10)
+    optrop$depth.botmax <- 10 * ceiling(pmax(optrop$Beg_Depth,
+                                             optrop$End_Depth) / 10)
+    optrop$depth_botmid <- (optrop$Beg_Depth + optrop$End_Depth) / 2
     overallmaxdep <-
       max(depth.bot$depth.botmax, optrop$depth.botmax,
           na.rm = TRUE) + 10
@@ -546,13 +546,13 @@ estimateLake <-
           reg = substring(optrop$Transect, 1, 2)
         )
       )
-    trcatch2 <- aggregate(cbind(N, Weight) ~ Op.Id + Species,
+    trcatch2 <- aggregate(cbind(N, Weight) ~ Op_Id + Species,
                           sum, data = trcatch)
-    trlf2 <- aggregate(N ~ Op.Id + Species, sum, data = trlf)
+    trlf2 <- aggregate(N ~ Op_Id + Species, sum, data = trlf)
     look <-
       trcatch2 %>% full_join(
         trlf2,
-        by = c("Op.Id", "Species"),
+        by = c("Op_Id", "Species"),
         suffix = c(".caught", ".measured")
       ) %>% mutate(scaleup = N.caught / N.measured)
     warnsub <- filter(look, scaleup < 1)
@@ -564,9 +564,9 @@ estimateLake <-
       print(select(warnsub,-scaleup))
       cat("\n\n")
     }
-    trlf3 <- trlf %>% left_join(select(look, Op.Id, Species,
+    trlf3 <- trlf %>% left_join(select(look, Op_Id, Species,
                                        scaleup),
-                                by = c("Op.Id", "Species")) %>% mutate(N.scaled = N *
+                                by = c("Op_Id", "Species")) %>% mutate(N.scaled = N *
                                                                          scaleup)
     indx <- match(trlf3$Species, spInfo$sp)
     trlf3$estwal <- estWeight(trlf3$Length, spInfo$lwa[indx],
@@ -574,7 +574,7 @@ estimateLake <-
     trlf3$estfw <- trlf3$estwal * trlf3$N.scaled
     if (!is.null(ageSp)) {
       allspsel <- c(ageSp, soi)
-      allops <- sort(unique(optrop$Op.Id))
+      allops <- sort(unique(optrop$Op_Id))
       sum.n <- vector("list", length(allspsel))
       names(sum.n) <- allspsel
       mean.w <- sum.n
@@ -589,7 +589,7 @@ estimateLake <-
         lfa <- trlf3[trlf3$Species %in% ageSp[i],]
         lfa$mmgroup <- 10 * round((lfa$Length + 5) / 10) -
           5
-        ga <- aggregate(cbind(N.scaled, estfw) ~ Op.Id +
+        ga <- aggregate(cbind(N.scaled, estfw) ~ Op_Id +
                           mmgroup, sum, data = lfa)
         gkeya <- merge(ga, agekey[[i]], all.x = TRUE)
         agecolz <- grep("Age", names(gkeya))
@@ -597,15 +597,15 @@ estimateLake <-
           paste0(ageSp[i], ".A", substring(names(gkeya)[agecolz],
                                            4, 10))
         tot.n <- apply(gkeya$N.scaled * gkeya[, agecolz],
-                       2, tapply, gkeya$Op.Id, sum)
+                       2, tapply, gkeya$Op_Id, sum)
         m.w <- apply(gkeya$estfw * gkeya[, agecolz], 2, tapply,
-                     gkeya$Op.Id, sum) / tot.n
+                     gkeya$Op_Id, sum) / tot.n
         sum.n[[i]] <- tidyup(tot.n, allops)
         mean.w[[i]] <- tidyup(m.w, allops)
       }
     } else {
       allspsel <- soi
-      allops <- sort(unique(optrop$Op.Id))
+      allops <- sort(unique(optrop$Op_Id))
       sum.n <- vector("list", length(soi))
       names(sum.n) <- soi
       mean.w <- sum.n
@@ -621,34 +621,34 @@ estimateLake <-
       }
       m
     }
-    allops <- sort(unique(optrop$Op.Id))
+    allops <- sort(unique(optrop$Op_Id))
     for (i in seq(soi)) {
       sp <- soi[i]
       lc <- spInfo$lcut[spInfo$sp == sp]
       lclong <- unique(c(0, lc))
       lf <- trlf3[trlf3$Species == sp,]
       lf$mmgroup <- lc * (lf$Length > lc)
-      tot.n <- tapply(lf$N.scaled, list(lf$Op.Id, lf$mmgroup),
+      tot.n <- tapply(lf$N.scaled, list(lf$Op_Id, lf$mmgroup),
                       sum)
       tot.n[is.na(tot.n)] <- 0
-      m.w <- tapply(lf$estfw, list(lf$Op.Id, lf$mmgroup), sum) / tot.n
+      m.w <- tapply(lf$estfw, list(lf$Op_Id, lf$mmgroup), sum) / tot.n
       m.w[is.na(m.w)] <- 0
       sum.n[[add.sp + i]] <- tidyup2(tot.n, allops, lclong)
       mean.w[[add.sp + i]] <- tidyup2(m.w, allops, lclong)
     }
     if (length(setdiff(unique(trcatch2$Species), soi)) > 0) {
       sumbyspec <- tapply(trcatch2$N,
-                          list(trcatch2$Op.Id,
+                          list(trcatch2$Op_Id,
                                trcatch2$Species %in% soi),
                           sum)
       sumbyspec[is.na(sumbyspec)] <- 0
       propother <- sumbyspec[, 1] / apply(sumbyspec, 1, sum)
       sel <- propother > 0.1 & !is.na(propother)
       if (sum(sel) > 0) {
-        look <- trcatch2[trcatch2$Op.Id %in% names(propother)[sel] &
+        look <- trcatch2[trcatch2$Op_Id %in% names(propother)[sel] &
                            !(trcatch2$Species %in% soi),]
-        tab <- look[order(look$Op.Id,-look$N, look$Species),
-                    c("Op.Id", "Species", "N", "Weight")]
+        tab <- look[order(look$Op_Id,-look$N, look$Species),
+                    c("Op_Id", "Species", "N", "Weight")]
         tabl(
           "Species other than those selected (",
           paste(soi,
@@ -661,17 +661,17 @@ estimateLake <-
         mtops <- names(propother)[sel]
       }
       sumbyspec <- tapply(trcatch2$Weight,
-                          list(trcatch2$Op.Id,
+                          list(trcatch2$Op_Id,
                                trcatch2$Species %in% soi),
                           sum)
       sumbyspec[is.na(sumbyspec)] <- 0
       propother <- sumbyspec[, 1] / apply(sumbyspec, 1, sum)
       sel <- propother > 0.1 & !is.na(propother)
       if (sum(sel) > 0) {
-        look <- trcatch2[trcatch2$Op.Id %in% names(propother)[sel] &
+        look <- trcatch2[trcatch2$Op_Id %in% names(propother)[sel] &
                            !(trcatch2$Species %in% soi),]
-        tab <- look[order(look$Op.Id,-look$Weight, look$Species),
-                    c("Op.Id", "Species", "N", "Weight")]
+        tab <- look[order(look$Op_Id,-look$Weight, look$Species),
+                    c("Op_Id", "Species", "N", "Weight")]
         tabl(
           "Species other than those selected (",
           paste(soi,
@@ -703,7 +703,7 @@ estimateLake <-
     }
     nprops <- sweep(counts, 1, sum.counts, "/")
     nprops[is.na(nprops)] <- 0
-    opsub <- optrop[match(allops, optrop$Op.Id),]
+    opsub <- optrop[match(allops, optrop$Op_Id),]
     MTutm <- with(opsub, latlon2utm(Longitude, Latitude))
     ACutm <- with(svts5, latlon2utm(Lon_M, Lat_M))
     sus <- names(sliceDef)
@@ -734,7 +734,7 @@ estimateLake <-
           bygroup = slice,
           sug = names(sliceDef),
           plottext = TRUE,
-          ID = Op.Id,
+          ID = Op_Id,
           short = short,
           lon = Longitude,
           lat = Latitude,
@@ -761,7 +761,7 @@ estimateLake <-
         MTgroup = opsub$slice,
         ACgroup = svts5$slice,
         sug = names(sliceDef),
-        MTID = opsub$Op.Id,
+        MTID = opsub$Op_Id,
         ACID = svts5$nearmt,
         short = short,
         MTlon = opsub$Longitude,

@@ -171,7 +171,7 @@ knitr::kable(look, row.names=FALSE)
 
 The following 1 column must be included in the midwater trawl **operation**, **catch**, and **length** csv files:
 
-* Op.Id = operation ID number
+* Op_Id = operation ID number
 
 This column serves to uniquely identify each trawl haul in the files.
 
@@ -179,15 +179,15 @@ The following 9 columns must be included in the midwater trawl **operation** csv
 
 * Year = year
 * Lake = lake ID code
-* Beg.Depth = bottom depth at beginning of trawl haul in m
-* End.Depth = bottom depth at end of trawl haul in m
+* Beg_Depth = bottom depth at beginning of trawl haul in m
+* End_Depth = bottom depth at end of trawl haul in m
 * Fishing_Depth = fishing depth of trawl haul in m
 * Transect = transect name, composed of region (the first two characters) and transect ID number (the following characters), the same as Region_name in the SV and TS files
 * Latitude = latitude in decimal degrees
 * Longitude = longitude in decimal degrees
 
 ```{r, echo=FALSE}
-op.vars <- c("Op.Id", "Year", "Lake", "Beg.Depth", "End.Depth", 
+op.vars <- c("Op_Id", "Year", "Lake", "Beg_Depth", "End_Depth", 
   "Fishing_Depth", "Transect", "Latitude", "Longitude")
 look <- optrop[sample(dim(optrop)[1], 5), op.vars]
 look$Latitude <- round(look$Latitude, 2)
@@ -202,7 +202,7 @@ The following 3 columns must be included in the midwater trawl **catch** csv fil
 * N = number of fish weighed
 
 ```{r, echo=FALSE}
-ct.vars <- c("Op.Id", "Species", "Weight", "N")
+ct.vars <- c("Op_Id", "Species", "Weight", "N")
 look <- trcatch[sample(dim(trcatch)[1], 5), ct.vars]
 knitr::kable(look, row.names=FALSE)
 ```
@@ -214,7 +214,7 @@ The following 3 columns must be included in the midwater trawl **length** csv fi
 * N = number of fish measured
 
 ```{r, echo=FALSE}
-lf.vars <- c("Op.Id", "Species", "Length", "N")
+lf.vars <- c("Op_Id", "Species", "Length", "N")
 look <- trlf[sample(dim(trlf)[1], 5), lf.vars]
 knitr::kable(look, row.names=FALSE)
 ```

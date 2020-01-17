@@ -259,11 +259,11 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
     allcols <- names(optrop)
     pcols <- allcols[allcols %in% c("Op_Id", "Vessel", "Cruise", "Serial",
-                                    "Lake", "Port", "Beg_Depth", "End.Depth", "Distance", "Fishing_Temp",
+                                    "Lake", "Port", "Beg_Depth", "End_Depth", "Distance", "Fishing_Temp",
                                     "Fishing_Depth", "Transect")]
 
     nacols <- allcols[allcols %in%
-                        c("Beg_Depth", "End.Depth", "Distance", "Fishing_Temp")]
+                        c("Beg_Depth", "End_Depth", "Distance", "Fishing_Temp")]
     narows <- apply(is.na(optrop[, nacols]), 1, any)
     tab <- optrop[narows, pcols]
 
@@ -301,8 +301,8 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
       }
     }
 
-    tab <- with(optrop, optrop[!is.na(Beg_Depth) & !is.na(End.Depth) &
-                                 abs(Beg_Depth - End.Depth) > 20, pcols])
+    tab <- with(optrop, optrop[!is.na(Beg_Depth) & !is.na(End_Depth) &
+                                 abs(Beg_Depth - End_Depth) > 20, pcols])
     if(dim(tab)[1] > 0) {
       tabl("OP/TROP records with > 20 m difference between",
            " beginning and ending bottom depth.", TAB=tab)
@@ -311,7 +311,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
            " beginning and ending bottom depth.")
     }
 
-    mind <- with(optrop, pmin(Beg_Depth, End.Depth, na.rm=T))
+    mind <- with(optrop, pmin(Beg_Depth, End_Depth, na.rm=T))
     tab <- with(optrop, optrop[!is.na(mind) & !is.na(Fishing_Depth) &
                                  Fishing_Depth > mind, pcols])
     if(dim(tab)[1] > 0) {
@@ -344,7 +344,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
       figu(cap("Cruise"), FIG=function() fig("Cruise"), newpage="port")
     }
     figu(cap("Transect"), FIG=function() fig("Transect"), newpage="port")
-    maxd <- with(optrop, -pmax(Beg_Depth, End.Depth, na.rm=T))
+    maxd <- with(optrop, -pmax(Beg_Depth, End_Depth, na.rm=T))
     figu(cap("maxd"), FIG=function() fig("maxd"), newpage="port")
     if(!is.null(optrop$Tow_Time)) {
       figu(cap("Tow_Time"), FIG=function() fig("Tow_Time"), newpage="port")
@@ -366,7 +366,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
 
     sus <- sort(unique(trcatch$Species))
     if("Beg_Depth" %in% names(trcatch)) {
-      tab <- with(trcatch, trcatch[is.na(Beg_Depth) | is.na(End.Depth),
+      tab <- with(trcatch, trcatch[is.na(Beg_Depth) | is.na(End_Depth),
                                    c("Op_Id", "Year", "Vessel", "Serial", "Lake", "Species", "Port_Name",
                                      "Beg_Depth", "End_Depth", "N")])
       if(dim(tab)[1] > 0) {
