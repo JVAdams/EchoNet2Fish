@@ -194,7 +194,8 @@ estimateLake <-
       x <- x+1
     }
     x <- NULL
-    write.csv(psi.df, paste0(maindir, substr(strsplit(maindir, "[/]")[[1]][4], 1,2), YEAR, "sources_EBA_psi.csv"), row.names = FALSE)
+    #write.csv(psi.df, paste0(maindir, substr(strsplit(maindir, "[/]")[[1]][4], 1,2), YEAR, "sources_EBA_psi.csv"), row.names = FALSE)
+    write.csv(psi.df, paste0(maindir, substr(strsplit(maindir, "[/]")[[1]][2], 1,2), YEAR, "sources_EBA_psi.csv"), row.names = FALSE)
     sv$psi <- NA
     sv$psi <- psi.df$psi[match(sv$dat.source, psi.df$dat.source)]
 
@@ -548,6 +549,7 @@ estimateLake <-
       )
     trcatch2 <- aggregate(cbind(N, Weight) ~ Op_Id + Species,
                           sum, data = trcatch)
+
     trlf2 <- aggregate(N ~ Op_Id + Species, sum, data = trlf)
     look <-
       trcatch2 %>% full_join(

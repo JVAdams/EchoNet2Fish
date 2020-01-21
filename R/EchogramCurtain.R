@@ -128,12 +128,11 @@ EchogramCurtain <-
     df.long <-
       gather(df, spgrp, density,-Region_name,-Layer_depth_min,-Interval, fish_ha) %>%
       filter(spgrp != 'fish_ha')
-
     # Create the list of spgrp to loop through
     spgrp.list <- unique(df.long$spgrp)
     leg.title <- ifelse(d.units == 'nph', "Fish per hectare", 'Grams per hectare')
     for (i in seq_along(spgrp.list)) {
-      inp <- filter(df.long, spgrp == spgrp[i])
+      inp <- filter(df.long, spgrp == spgrp.list[i])
       Distance <- inp$Interval *3
       Depth <- inp$Layer_depth_min
       if(QuantileFilter == TRUE) {
