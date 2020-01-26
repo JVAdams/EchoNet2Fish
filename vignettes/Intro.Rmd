@@ -1,6 +1,6 @@
 ---
 title: "Introduction to EchoNet2Fish"
-author: "Jean V. Adams"
+authors: "David M. Warner and Jean V. Adams"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
@@ -132,7 +132,7 @@ The following 4 columns must be included in the **SV** csv files:
 * PRC_ABC = area backscattering coefficient (unitless)
 
 ```{r svexample, echo=FALSE}
-mydir <- readAll(refdir="C:/JVA/Consult/Warner/Nearest Trawl", keyvals=c(2, 2014), 
+mydir <- readAll(refdir="C:/Users/dmwarner/Documents/Acoustics/EchoNet2Fish", keyvals=c(2, 2019), 
   keyvars=c("LAKE", "YEAR"), rdat="ACMT", refcsv="Reference")
 load(paste(mydir, "ACMT.RData", sep="/"))
 sv.vars <- c("Dummy_ID", "Region_name", "Interval", "Layer", "Date_M",
