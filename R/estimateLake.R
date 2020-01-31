@@ -195,7 +195,7 @@ estimateLake <-
     }
     x <- NULL
     #write.csv(psi.df, paste0(maindir, substr(strsplit(maindir, "[/]")[[1]][4], 1,2), YEAR, "sources_EBA_psi.csv"), row.names = FALSE)
-    write.csv(psi.df, paste0(maindir, substr(strsplit(maindir, "[/]")[[1]][2], 1,2), YEAR, "sources_EBA_psi.csv"), row.names = FALSE)
+    write.csv(psi.df, paste0(maindir, "sources_EBA_psi_", YEAR, ".csv"), row.names = FALSE)
     sv$psi <- NA
     sv$psi <- psi.df$psi[match(sv$dat.source, psi.df$dat.source)]
 

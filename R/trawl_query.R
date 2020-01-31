@@ -119,13 +119,22 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
     op <-
       filter(opdata, YEAR %in% year & LAKE %in% lake & SAMPLE_TYPE == 1) %>%
       left_join(targetdata, by = "OP_ID") %>% filter(TARGET %in% target)  %>%
+      filter(!(TRANSECT %in% c("gb1", "gb2", "gb3", "gb4", "gb5", "gb6",
+                               "gb7", "gb8"))) %>%
       rename(
         "Op_Id" = "OP_ID",
         "Year" = "YEAR",
         "Vessel" = "VESSEL",
         "Beg_Depth" = "BEG_DEPTH",
-        "End_Depth" = "END_DEPTH") %>%
-      dplyr::collect()
+        "End_Depth" = "END_DEPTH",
+        "Transect" = "TRANSECT") %>%
+         mutate(Latitude = (BEG_LATITUDE_DD + END_LATITUDE_DD)/2,
+             Longitude =  (BEG_LONGITUDE_DD + END_LONGITUDE_DD)/2) %>%
+
+    dplyr::collect()
+
+
+
   # Create list of OP_ID to use to subset the tr_op, tr_catch, and tr_lf
   opid <- op$Op_Id
 
@@ -134,6 +143,8 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
     rename("Op_Id" = "OP_ID",   "Fishing_Depth" = "FISHING_DEPTH", "Fishing_temp" = "FISHING_TEMP",
            "Tow_Time" = "TOW_TIME") %>%
     dplyr::collect()
+
+  optrop <- merge(op, tr_op, by = "Op_Id")
 
   tr_catch <- filter(trcatchdata, OP_ID %in% opid) %>%
     rename("Op_Id" = "OP_ID", "Species" = "SPECIES", "Weight" = "WEIGHT" ) %>%
@@ -166,6 +177,8 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
     tr_op <- filter(tropdata, OP_ID %in% opid & typeset %in% typeset) %>%
       dplyr::collect()
 
+    optrop <- merge(op, tr_op, by = "OP_ID")
+
     tr_catch <- filter(trcatchdata, OP_ID %in% opid) %>%
       dplyr::collect()
 
@@ -183,6 +196,7 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
     c(
       "op",
       "tr_op",
+      "optrop",
       "tr_catch",
       "tr_lf",
       "tr_l",
