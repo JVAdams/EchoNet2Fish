@@ -177,8 +177,11 @@ estimateLake <-
     # 1. new function/argument implementation
     # Prompts user for EBA from unique transducers
     ##################################################################
-    EV_filename_parts <- strsplit(sv$EV_filename, "[\\]")
-    sv$EVfolder <- sapply(strsplit(sapply(EV_filename_parts, tail, n = 1L), "[/]"), "[", 1)
+    #EV_filename_parts <- strsplit(sv$EV_filename, "[\\]")
+
+    sv$EVfolder <- str_extract(sv$EV_filename,
+   "EV_files_sturgeon|EV_files_steelhead|EV_files_baird|EV_files_LTBB|EVfiles_sturgeon|EVfiles_steelhead|EVfiles_baird|EVfiles_LTBB")
+
 
     sv$dat.source <-paste0(sv$EVfolder, " - ", sv$Frequency, " kHz")
     ev.source.freq <- unique(sv[c("EVfolder", "Frequency")])
