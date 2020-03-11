@@ -129,7 +129,7 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
               dplyr::collect()
       #op$TRANSECT <- tolower(op$TRANSECT)
 
-      if(op$LAKE == 3)
+      if(op$LAKE == 2)
       op <- subset(op, !(TRANSECT %in% c("gb1", "gb2", "gb3", "gb4",
             "gb5", "gb6", "gb7", "gb8", "gb9", "gt1", "gt2",
             "gt3", "gt3", "gtb1", "gtb2", "gtb3", "gtb4", "gtb5",
