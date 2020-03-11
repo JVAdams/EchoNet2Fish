@@ -127,7 +127,7 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
               BEG_LATITUDE_DD, END_LATITUDE_DD, BEG_LONGITUDE_DD,
               END_LONGITUDE_DD, TRANSECT, Latitude, Longitude) %>%
               dplyr::collect()
-      op$TRANSECT <- tolower(op$TRANSECT)
+      #op$TRANSECT <- tolower(op$TRANSECT)
 
       if(op$LAKE == 3)
       op <- subset(op, !(TRANSECT %in% c("gb1", "gb2", "gb3", "gb4",
