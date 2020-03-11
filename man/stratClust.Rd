@@ -4,8 +4,15 @@
 \alias{stratClust}
 \title{Estimation from a Stratified Survey Design}
 \usage{
-stratClust(elementdf, stratum, cluster, response, sizedf,
-  stratum2 = stratum, size)
+stratClust(
+  elementdf,
+  stratum,
+  cluster,
+  response,
+  sizedf,
+  stratum2 = stratum,
+  size
+)
 }
 \arguments{
 \item{elementdf}{A data frame with one row for each sample unit (element),

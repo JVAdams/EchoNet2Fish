@@ -1,4 +1,4 @@
-#' Estimate Fish Weight From Length
+#' Estimate Fish WEIGHT From LENGTH
 #'
 #' Estimate fish weight from fish length.
 #' @param Lmm
@@ -18,7 +18,7 @@
 #' @examples
 #' paDens(c(0.001, 0.01, 0.1), c(4e-5, 5e-6, 8e-9))
 #'
-estWeight <- function(Lmm, LWa, LWb) {
+estWEIGHT <- function(Lmm, LWa, LWb) {
   Wg <- LWa * Lmm ^ LWb
   return(Wg)
 }

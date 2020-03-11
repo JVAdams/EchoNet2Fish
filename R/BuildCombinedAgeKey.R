@@ -40,82 +40,61 @@ BuildCombinedAgeKey <- function(year = NULL,
                                 outdir = NULL,
                                 species = c(106)) {
   outdir <- choose.dir()
-  drv <- dbDriver('Oracle')
-  conn <- dbConnect(
-    drv = drv,
-    dbname = dbname,
-    user = username,
-    password = password
-  )
-  # Create local "information" about op table structure that can
-  # be used in a query later
-  #
-  # Now op is a database object. The command above connects to the database
-  # and downloads a bare minimum of information on fields, data types, etc.
-  # enough to allow manipulation of the object without physical download
-  # of the data
-  # (https://towardsdatascience.com/how-to-write-tidy-sql-queries-in-r-d6d6b2a3e17)
-  opdata <- dplyr::tbl(conn,
-                       dbplyr::in_schema("RVCAT", "OP"))
-
-  # Create local "information" about op_target table structure that can
-  # be used in a query later
-  targetdata <- dplyr::tbl(conn,
-                           dbplyr::in_schema("RVCAT", "OP_TARGET"))
-
-  # Create tr_fish data object
-  trfishdata <- dplyr::tbl(conn,
-                           dbplyr::in_schema("RVCAT", "TR_FISH"))
-  op <-
-    filter(opdata, YEAR %in% year &
-             LAKE %in% lake & SAMPLE_TYPE == 1) %>%
-    left_join(targetdata, by = "OP_ID") %>% filter(TARGET %in% target)  %>%
-    dplyr::collect()
-  # Create list of OP_ID to use to subset the tr_op, tr_catch, and tr_lf
+  drv <- dbDriver("Oracle")
+  conn <- dbConnect(drv = drv, dbname = dbname, user = username,
+                    password = password)
+  opdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                               "OP"))
+  targetdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                   "OP_TARGET"))
+  trfishdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                   "TR_FISH"))
+  op <- filter(opdata, YEAR %in% year & LAKE %in% lake & SAMPLE_TYPE ==
+                 1) %>% left_join(targetdata, by = "OP_ID") %>%
+    filter(TARGET %in% target) %>% dplyr::collect()
   opid <- op$OP_ID
-
   tr_fish <- filter(trfishdata, OP_ID %in% opid & !(is.na(AGE)) &
-                      SPECIES == species) %>%
-    dplyr::collect()
+                      SPECIES == species) %>% dplyr::collect()
 
-  mykey <-
-    alk(
-      age = tr_fish$AGE,
-      size = tr_fish$LENGTH,
-      binsize = 10,
-      type = 2
-    )
-
+  write.csv(tr_fish, paste0(outdir, "/combined tr_fish for species ",
+                                  species, " YR ", year, " age length key.csv"),
+            row.names = FALSE)
+  mykey <- fishmethods::alk(age = tr_fish$AGE, size = tr_fish$LENGTH, binsize = 10,
+                            type = 2)
   nam <- names(mykey)
   ages <- substr((tail(nam, -2)), 2, 2)
+  minage <- min(as.numeric(ages))
+  if(minage > 0)
+    ages <- c("0", ages)
+  if(minage > 0)
+    mykey$A0 <- 0
   agepref <- rep("Age", length.out = length(ages))
-  agelenkey <- mykey %>% select(-nl)
+  agelenkey <- mykey %>% select(len, nl, A0, everything()) %>% select(-nl)
+
   agenames <- paste0(agepref, ages)
   names(agelenkey) <- c("mmgroup", agenames)
 
-  #create and fill mmgroups < smallest and largest
-  stretch <- data.frame(mmgroup = seq(5, 225, 10))
-  stretched.key <-
-    merge(stretch, agelenkey, by = "mmgroup", all.x = TRUE)
-  stretched.key$Age0[is.na(stretched.key$Age0) &
-                       stretched.key$mmgroup < 100] <- 1
-  stretched.key$Age0[is.na(stretched.key$Age0) &
-                       stretched.key$mmgroup < 150] <- 0
-  sel <- grepl("Age", names(stretched.key))
-  stretched.key[sel] <-
-    lapply(stretched.key[sel], function(x)
-      replace(x, x %in% NA, 0))
-  write.csv(
-    stretched.key,
-    paste0(
-      outdir,
-      "/species_",
-      species,
-      "_",
-      year,
-      "_age_length_key.csv",
-      row.names = FALSE
-    )
-  )
 
+  stretch <- data.frame(mmgroup = seq(5, 225, 10))
+  stretched.key <- merge(stretch, agelenkey, by = "mmgroup",
+                         all.x = TRUE)
+  #stretched.key$Age0[is.na(stretched.key$Age0) & stretched.key$mmgroup <
+  #                     95] <- 1
+  #stretched.key$Age0[is.na(stretched.key$Age0) & stretched.key$mmgroup <
+  #                     150] <- 0
+  sel <- grepl("Age", names(stretched.key))
+  stretched.key[sel] <- lapply(stretched.key[sel], function(x) replace(x,
+                                                                       x %in% NA, 0))
+  write.csv(stretched.key, paste0(outdir, "/species_",
+                                  species, "_", year, "_age_length_key.csv"),
+            row.names = FALSE)
+  colnum <- ncol(stretched.key)
+  lengthsum <- (rowSums(stretched.key[2:colnum]))
+  if(min(lengthsum) <1 )
+    print("Age proportions sum < 1 for at least one length group. Check and edit by hand.")
+  age0 <- 0
+  age1 <- 1
+print(paste0('The smallest aged fish was ', min(tr_fish$LENGTH), " so check the age-0 key values if fish smaller than this length were common in the trawl catch"))
+print(paste0('The max. length of age-0 fish is ', max(tr_fish$LENGTH[tr_fish$AGE%in%age0])))
+print(paste0('The min. length of age-1 fish is ', min(tr_fish$LENGTH[tr_fish$AGE%in%age1])))
 }

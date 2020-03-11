@@ -171,24 +171,24 @@ knitr::kable(look, row.names=FALSE)
 
 The following 1 column must be included in the midwater trawl **operation**, **catch**, and **length** csv files:
 
-* Op_Id = operation ID number
+* OP_ID = operation ID number
 
 This column serves to uniquely identify each trawl haul in the files.
 
 The following 9 columns must be included in the midwater trawl **operation** csv files:
 
-* Year = year
+* YEAR = year
 * Lake = lake ID code
-* Beg_Depth = bottom depth at beginning of trawl haul in m
-* End_Depth = bottom depth at end of trawl haul in m
-* Fishing_Depth = fishing depth of trawl haul in m
+* BEG_DEPTH = bottom depth at beginning of trawl haul in m
+* END_DEPTH = bottom depth at end of trawl haul in m
+* FISHING_DEPTH = fishing depth of trawl haul in m
 * Transect = transect name, composed of region (the first two characters) and transect ID number (the following characters), the same as Region_name in the SV and TS files
 * Latitude = latitude in decimal degrees
 * Longitude = longitude in decimal degrees
 
 ```{r, echo=FALSE}
-op.vars <- c("Op_Id", "Year", "Lake", "Beg_Depth", "End_Depth", 
-  "Fishing_Depth", "Transect", "Latitude", "Longitude")
+op.vars <- c("OP_ID", "YEAR", "Lake", "BEG_DEPTH", "END_DEPTH", 
+  "FISHING_DEPTH", "Transect", "Latitude", "Longitude")
 look <- optrop[sample(dim(optrop)[1], 5), op.vars]
 look$Latitude <- round(look$Latitude, 2)
 look$Longitude <- round(look$Longitude, 2)
@@ -197,24 +197,24 @@ knitr::kable(look, row.names=FALSE)
 
 The following 3 columns must be included in the midwater trawl **catch** csv files:
 
-* Species = species code
-* Weight = aggregate weight in g
+* SPECIES = species code
+* WEIGHT = aggregate weight in g
 * N = number of fish weighed
 
 ```{r, echo=FALSE}
-ct.vars <- c("Op_Id", "Species", "Weight", "N")
+ct.vars <- c("OP_ID", "SPECIES", "WEIGHT", "N")
 look <- trcatch[sample(dim(trcatch)[1], 5), ct.vars]
 knitr::kable(look, row.names=FALSE)
 ```
 
 The following 3 columns must be included in the midwater trawl **length** csv files:
 
-* Species = species code
-* Length = length of individual fish in mm
+* SPECIES = species code
+* LENGTH = length of individual fish in mm
 * N = number of fish measured
 
 ```{r, echo=FALSE}
-lf.vars <- c("Op_Id", "Species", "Length", "N")
+lf.vars <- c("OP_ID", "SPECIES", "LENGTH", "N")
 look <- trlf[sample(dim(trlf)[1], 5), lf.vars]
 knitr::kable(look, row.names=FALSE)
 ```
@@ -355,7 +355,7 @@ data.frame(fishingD, latitude, region, s1, s2, s3)
 
 ## Estimates
 
-Now you're ready to use the `estimateLake()` function to generate lake-wide estimates in both number (millions) and biomass (t).  The `region` and `regArea` arguments are used to indicate the regional strata and their corresponding areas (in ha).  The `TSrange` is the target strength range of interest.  The `TSthresh` is the minimum threshold for the number of binned targets in a cell (layer by interval) for calculating target strength.  The `psi` is the transducer-specific two-way equivalent beam angle in steradians.  Species of interest are specified by `soi`, and each of these species should have size information in the data frame specified by `spInfo`.  The slice definitions by which the estimates should be summarized are specified by the `sliceDef` argument.  Finally, the `descr` argument is used to add a little descriptive text to the names of the output files.
+Now you're ready to use the `estimateLake()` function to generate lake-wide estimates in both number (millions) and biomass (t).  The `region` and `regArea` arguments are used to indicate the regional strata and their corresponding areas (in ha).  The `TSrange` is the target strength range of interest.  The `TSthresh` is the minimum threshold for the number of binned targets in a cell (layer by interval) for calculating target strength.  The `psi` is the transducer-specific two-way equivalent beam angle in steradians.  SPECIES of interest are specified by `soi`, and each of these species should have size information in the data frame specified by `spInfo`.  The slice definitions by which the estimates should be summarized are specified by the `sliceDef` argument.  Finally, the `descr` argument is used to add a little descriptive text to the names of the output files.
  
 ```{r, eval=FALSE}
 estimateLake(maindir=mydir, rdat="ACMT", ageSp=106, region=Mreg, regArea=MArea,

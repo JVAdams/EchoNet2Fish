@@ -4,10 +4,19 @@
 \alias{trawl_query}
 \title{Execute query of multiple Oracle trawl tables for use by EchoNet2Fish functions}
 \usage{
-trawl_query(year = c(2019), lake = c(2, 3), lakec = c("MI", "HU"),
-  target = c(209, 210, 252), rname = FALSE, user = username,
-  password = password, dbname = dbname, schma = "RVCAT",
-  descr = "LW acoustic survey", typeset = c(1, 2, 5), outdir = NULL)
+trawl_query(
+  year = c(2019),
+  lake = c(2, 3),
+  lakec = c("MI", "HU"),
+  target = c(209, 210, 252),
+  species = c(106, 109, 202, 203, 204, 504),
+  user = username,
+  password = password,
+  dbname = dbname,
+  schma = "RVCAT",
+  descr = "LW acoustic survey",
+  outdir = NULL
+)
 }
 \arguments{
 \item{year}{Numeric vector indicating the desired collection year(s).}
@@ -23,9 +32,8 @@ be written to the folder C:/Documents/Acoustics/EchoNet2Fish/MI2018.}
 
 \item{target}{Numeric vector indicating the desired collection target(s).}
 
-\item{rname}{Logical scalar indicating whether or not the user wishes to
-rename certain fields to match requirements for the R package EchoNet2Fish
-functions (see \code{\link{exploreACMT}} and \code{\link{estimateLake}}).}
+\item{species}{Numeric vector of RVCAT species codes for which you wish to
+query.}
 
 \item{user}{Character vector providing the username used to connect to
 the database.}
@@ -37,10 +45,8 @@ the database.}
 the database. Default is "RVCAT".}
 
 \item{descr}{Character vector to include in the output file names to help identify
-the data for later use. Default is "Acoustic".}
-
-\item{typeset}{Numeric vector dictating which type of trawl data are needed.
-Default value = 5 (Midwater).}
+the data for later use. Default is "Acoustic".
+in only a subset of fields being returned. The subset includes}
 
 \item{outdir}{Character vector representing the parent directory in which the
 output directory where data should be saved is located. The values for lakec and

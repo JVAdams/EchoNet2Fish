@@ -4,8 +4,14 @@
 \alias{startrtf}
 \title{Create an RTF Document}
 \usage{
-startrtf(file = NULL, dir = getwd(), width = 8.5, height = 11,
-  omi = c(1, 1, 1, 1), quiet = FALSE)
+startrtf(
+  file = NULL,
+  dir = getwd(),
+  width = 8.5,
+  height = 11,
+  omi = c(1, 1, 1, 1),
+  quiet = FALSE
+)
 }
 \arguments{
 \item{file}{Character scalar name of document, default "RGeneratedDocument" with

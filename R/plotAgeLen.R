@@ -1,4 +1,4 @@
-#' Plot Age-Length Key
+#' Plot Age-LENGTH Key
 #'
 #' Plot age-length key as a bubble plot.
 #' @param m
@@ -31,7 +31,7 @@
 #' mymat <- matrix(c(10, 1, 0, 0, 5, 0, 0, 3, 2, 0, 0, 1), nrow=3,
 #'  dimnames=list(age=1:3, len=seq(25, 55, 10)))
 #' plotAgeLen(mymat, inc=1)
-#' plotAgeLen(t(mymat), xlab="Length", ylab="Age")
+#' plotAgeLen(t(mymat), xlab="LENGTH", ylab="Age")
 #'
 plotAgeLen <- function(m, inc=0.3, zeroes=4, fg="red", bg=NA, ...) {
   # plots values of matrix as different sized circles
