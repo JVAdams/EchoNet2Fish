@@ -55,141 +55,81 @@ trawl_query <- function(year = c(2019), lake = c(2,3),
                         password = password, dbname = dbname, schma = "RVCAT",
                         descr = "LW acoustic survey",  outdir = NULL) {
 
-  drv <- dbDriver('Oracle')
-  conn <- dbConnect(drv = drv,
-    dbname = dbname,
-    user = username,
-    password = password
+  drv <- dbDriver("Oracle")
+  conn <- dbConnect(drv = drv, dbname = dbname, user = username,
+                    password = password)
+  opdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                               "OP"))
+  targetdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                   "OP_TARGET"))
+  trcatchdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                    "TR_CATCH"))
+  tropdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                 "TR_OP"))
+  trlfdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                 "TR_LF"))
+  trldata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                "TR_L"))
+  trfishdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                   "TR_FISH"))
+  op <- filter(opdata, YEAR %in% year & LAKE %in% lake & SAMPLE_TYPE ==
+                 1 & VESSEL != 41) %>% left_join(targetdata, by = "OP_ID") %>%
+    filter(TARGET %in% target) %>%
+    mutate(Latitude = (BEG_LATITUDE_DD +
+                         END_LATITUDE_DD)/2, Longitude = (BEG_LONGITUDE_DD + END_LONGITUDE_DD)/2) %>%
+    select(OP_ID, YEAR, VESSEL, SERIAL, SAMPLE_TYPE, LAKE,
+           PORT, CRUISE, OP_DATE, TIME, LATITUDE, LONGITUDE,
+           BEG_DEPTH, END_DEPTH, END_LATITUDE, END_LONGITUDE,
+           DISTANCE, STATION_DEPTH, BEG_LATITUDE_DD, END_LATITUDE_DD,
+           BEG_LONGITUDE_DD, END_LONGITUDE_DD, TRANSECT, Latitude,
+           Longitude) %>% dplyr::collect()
+  exclude <- c("gb1", "gb2",
+               "gb3", "gb4", "gb5", "gb6",
+               "gb7", "gb8", "gb9", "gb10", "gb11", "gb12", "gb13",
+               "gb99", "GTB",  "gt1",
+               "gt2", "gt3", "gt3", "gt4", "gt5", "gt6", "gt7",
+               "gt8", "gtb1",
+               "gtb2", "gtb3", "gtb4", "gtb5",
+               "gtb6",
+               "GB2",
+               "GB3",
+               "GB3",
+               "GB4",
+               "GB4",
+               "GB5",
+               "GB5",
+               "GB7",
+               "GB7",
+               "GB6"
   )
-  # Create local "information" about op table structure that can
-  # be used in a query later
-  #
-  # Now op is a database object. The command above connects to the database
-  # and downloads a bare minimum of information on fields, data types, etc.
-  # enough to allow manipulation of the object without physical download
-  # of the data
-  # (https://towardsdatascience.com/how-to-write-tidy-sql-queries-in-r-d6d6b2a3e17)
-  opdata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "OP")
-  )
+  if (lake == 2) {
 
-  # Create local "information" about op_target table structure that can
-  # be used in a query later
-  targetdata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "OP_TARGET")
-  )
-
-  # Create catch data object
-  trcatchdata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "TR_CATCH")
-  )
-
-  # Create local "information" about tr_op table structure that can
-  # be used in a query later
-  tropdata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "TR_OP")
-  )
-
-  # Create tr_lf data object
-  trlfdata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "TR_LF")
-  )
-
-  # Create tr_l data object
-  trldata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "TR_L")
-  )
-
-  # Create tr_fish data object
-  trfishdata <- dplyr::tbl(
-    conn,
-    dbplyr::in_schema("RVCAT", "TR_FISH")
-  )
-
-  # Filter op for correct year and lake, join with op_target, then filter
-  # for the target(s) of interest
-
-
-      op <-
-        filter(opdata, YEAR %in% year & LAKE %in% lake & SAMPLE_TYPE == 1) %>%
-        left_join(targetdata, by = "OP_ID") %>% filter(TARGET %in% target)  %>%
-        mutate(Latitude = (BEG_LATITUDE_DD + END_LATITUDE_DD)/2,
-               Longitude =  (BEG_LONGITUDE_DD + END_LONGITUDE_DD)/2) %>%
-        select(OP_ID, YEAR, VESSEL, SERIAL, SAMPLE_TYPE, LAKE, PORT, CRUISE,
-              OP_DATE, TIME, LATITUDE, LONGITUDE, BEG_DEPTH, END_DEPTH,
-              END_LATITUDE, END_LONGITUDE, DISTANCE, STATION_DEPTH,
-              BEG_LATITUDE_DD, END_LATITUDE_DD, BEG_LONGITUDE_DD,
-              END_LONGITUDE_DD, TRANSECT, Latitude, Longitude) %>%
-              dplyr::collect()
-      #op$TRANSECT <- tolower(op$TRANSECT)
-
-      if(op$LAKE == 2)
-      op <- subset(op, !(TRANSECT %in% c("gb1", "gb2", "gb3", "gb4",
-            "gb5", "gb6", "gb7", "gb8", "gb9", "gt1", "gt2",
-            "gt3", "gt3", "gtb1", "gtb2", "gtb3", "gtb4", "gtb5",
-            "gtb6")))
-
-    # Create list of OP_ID to use to subset the tr_op, tr_catch, and tr_lf
-    opid <- op$OP_ID
-
-    # Subset the tr_catch, tr_lf, tr_l, and tr_fish data to correspond to the desired OP_ID
-    tr_op <- filter(tropdata, OP_ID %in% opid) %>%
-      select(OP_ID,	SET_TIME,	TOW_TIME,	FISHING_TEMP,	FISHING_DEPTH) %>%
-      dplyr::collect()
-
-    optrop <- merge(op, tr_op, by = "OP_ID")
-
-    tr_catch <- filter(trcatchdata, OP_ID %in% opid) %>%
-      filter(SPECIES %in% species) %>%
-      dplyr::collect()
-
-    tr_lf <- filter(trlfdata, OP_ID %in% opid) %>%
-      filter(SPECIES %in% species) %>%
-      dplyr::collect()
-
-    tr_l <- filter(trldata, OP_ID %in% opid) %>%
-      filter(SPECIES %in% species) %>%
-      dplyr::collect()
-
-    tr_fish <- filter(trfishdata, OP_ID %in% opid) %>%
-      filter(SPECIES %in% species) %>%
-      dplyr::collect()
-  save2csv <-
-    c(
-      "op",
-      "tr_op",
-      "optrop",
-      "tr_catch",
-      "tr_lf",
-      "tr_l",
-      "tr_fish"
-    )
-
-  newrdat <- paste0("L", lake, " Y", year, " ", descr)
-  lakeyr <- ifelse(lake == 2, paste0("MI", year), paste0("HU", year))
-  #save(list = save2csv,
-  #     file = paste0(outdir, "/", lakeyr, "/", newrdat, ".RData"))
+    op <- op %>% filter(!(TRANSECT %in% exclude))
+  }
+  opid <- op$OP_ID
+  tr_op <- filter(tropdata, OP_ID %in% opid ) %>% select(OP_ID,
+                                                        SET_TIME, TOW_TIME, FISHING_TEMP, FISHING_DEPTH) %>%
+    dplyr::collect()
+  optrop <- merge(op, tr_op, by = "OP_ID")
+  tr_catch <- filter(trcatchdata, OP_ID %in% opid) %>% filter(SPECIES %in%
+                                                                species) %>% dplyr::collect()
+  tr_lf <- filter(trlfdata, OP_ID %in% opid) %>% filter(SPECIES %in%
+                                                          species) %>% dplyr::collect()
+  tr_l <- filter(trldata, OP_ID %in% opid) %>% filter(SPECIES %in%
+                                                        species) %>% dplyr::collect()
+  tr_fish <- filter(trfishdata, OP_ID %in% opid) %>% filter(SPECIES %in%
+                                                              species) %>% dplyr::collect()
+  save2csv <- c("op", "tr_op", "optrop",
+                "tr_catch", "tr_lf", "tr_l", "tr_fish")
+  newrdat <- paste0("L", lake, " Y", year, " ",
+                    descr)
+  lakeyr <- ifelse(lake == 2, paste0("MI", year), paste0("HU",
+                                                         year))
   outfiles <- paste0(outdir, "/", lakeyr, "/",
-                     "L_",
-                     lake,
-                     "_Y_",
-                     year,
-                     "_",
-                     descr,
-                     "_",
-                     save2csv,
-                     ".csv")
-  invisible(lapply(seq(save2csv), function(i)
-    write.csv(eval(
-      parse(text = save2csv[i]),
-    ),
-    outfiles[i], row.names = F)))
+                     "L_", lake, "_Y_", year, "_", descr,
+                     "_", save2csv, ".csv")
+  invisible(lapply(seq(save2csv), function(i) write.csv(eval(parse(text = save2csv[i]),
+  ), outfiles[i], row.names = F)))
 
 }
 

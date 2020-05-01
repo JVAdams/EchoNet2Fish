@@ -35,47 +35,34 @@ WtLenCoef <- function(lake = 2,
   # enough to allow manipulation of the object without physical download
   # of the data
   # (https://towardsdatascience.com/how-to-write-tidy-sql-queries-in-r-d6d6b2a3e17)
-  opdata <- dplyr::tbl(conn,
-                       dbplyr::in_schema("RVCAT", "OP"))
-
-  # Create local "information" about op_target table structure that can
-  # be used in a query later
-  targetdata <- dplyr::tbl(conn,
-                           dbplyr::in_schema("RVCAT", "OP_TARGET"))
-
-  # Create tr_fish data object
-  trfishdata <- dplyr::tbl(conn,
-                           dbplyr::in_schema("RVCAT", "TR_FISH"))
-  op <-
-    filter(opdata, YEAR %in% year &
-             LAKE %in% lake & SAMPLE_TYPE == 1) %>%
-    left_join(targetdata, by = "OP_ID") %>% filter(TARGET %in% target)  %>%
-    dplyr::collect()
-  # Create list of OP_ID to use to subset the tr_op, tr_catch, and tr_lf
+  options(stringsAsFactors = FALSE)
+  drv <- dbDriver("Oracle")
+  conn <- dbConnect(drv = drv, dbname = dbname, user = username,
+                    password = password)
+  opdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                               "OP"))
+  targetdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                   "OP_TARGET"))
+  trfishdata <- dplyr::tbl(conn, dbplyr::in_schema("RVCAT",
+                                                   "TR_FISH"))
+  op <- filter(opdata, YEAR %in% year & LAKE %in% lake & SAMPLE_TYPE ==
+                 1) %>% left_join(targetdata, by = "OP_ID") %>%
+    filter(TARGET %in% target) %>% dplyr::collect()
   opid <- op$OP_ID
+  tr_fish <- filter(trfishdata, OP_ID %in% opid & SPECIES ==
+                      106) %>% dplyr::collect()
 
-  tr_fish <-
-    filter(trfishdata, OP_ID %in% opid &
-             !(is.na(LENGTH) & !(is.na(WEIGHT))) &
-             SPECIES == species) %>%
-    dplyr::collect()
 
-  #plot the fit to see if it sucks
+    tr_fish <- tr_fish %>% filter(!(is.na(LENGTH)) & !(is.na(WEIGHT))  )
 
-  tr_fish <- subset(tr_fish, !(LENGTH < 20 & WEIGHT >1 ))
+  unique(tr_fish$WEIGHT)
+  #tr_fish$rat <- tr_fish$WEIGHT/tr_fish$LENGTH
+  #tr_fish <- subset(tr_fish, rat <6)
+  #tr_fish$WEIGHT[tr_fish$LENGTH < 20 & tr_fish$WEIGHT>1] <- NA
   plot(WEIGHT ~ LENGTH, data = tr_fish)
-
   cont <- nls.control(maxiter = 5000)
-  # Now get coefficients by fitting
-  wtlen.fit <-
-    nls(
-      WEIGHT ~ lwa * LENGTH ^ lwb,
-      data = tr_fish,
-      start = list(lwa = 1.413254e-05, lwb = 2.867839),
-      control = cont
-    )
-
-
+  wtlen.fit <- nls(WEIGHT ~ lwa * LENGTH^lwb, data = tr_fish,
+                   start = list(lwa = 1.413254e-05, lwb = 2.867839), control = cont)
   lwa <- coef(wtlen.fit)[1]
   lwb <- coef(wtlen.fit)[2]
   mycoefs <- c(lwa, lwb)
