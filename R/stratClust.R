@@ -106,7 +106,6 @@ stratClust <- function(elementdf, stratum, cluster, response, sizedf,
       ybar_h = y_h / m_h,
       s_ybar_h = 1 / mean(m_hi) *
         sqrt( sum((y_hi - ybar_h*m_hi)^2) / (n_h * (n_h-1)) )
-        #sqrt( sum((y_hi - ybar_h*m_hi)^2) / ((n_h-1)) )
     ) %>%
     ungroup() %>%
     left_join(dath, by="h") %>%
@@ -119,7 +118,7 @@ stratClust <- function(elementdf, stratum, cluster, response, sizedf,
     summarise(
       A = sum(A_h),
       ybar_str = sum(W_h * ybar_h),
-      s_ybar_str = sum(W_h * s_ybar_h / sqrt(n_h))
+      s_ybar_str = sum(W_h * s_ybar_h)
       #s_ybar_str = sum(W_h * s_ybar_h )
     ) %>%
     mutate(
