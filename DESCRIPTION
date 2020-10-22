@@ -34,5 +34,5 @@ Suggests:
 License: GPL
 LazyData: TRUE
 URL: https://github.com/dmwarn/EchoNet2Fish
-RoxygenNote: 7.0.2
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr
