@@ -4,8 +4,14 @@
 \alias{replaceBiasedSigma}
 \title{Replace Biased Backscattering Cross Sections}
 \usage{
-replaceBiasedSigma(df, varNv, varsigmabs, varTranLay,
-  varLay = varTranLay[-1], Nvcut = 0.1)
+replaceBiasedSigma(
+  df,
+  varNv,
+  varsigmabs,
+  varTranLay,
+  varLay = varTranLay[-1],
+  Nvcut = 0.1
+)
 }
 \arguments{
 \item{df}{A data frame containing the variables specified by name below.}

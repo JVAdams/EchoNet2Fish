@@ -4,8 +4,13 @@
 \alias{readAll}
 \title{Read in All the Data Corresponding to a Specified Reference Row}
 \usage{
-readAll(refdir, keyvals, keyvars = c("LAKE", "YEAR"), rdat = "ACMT",
-  refcsv = "Reference")
+readAll(
+  refdir,
+  keyvals,
+  keyvars = c("LAKE", "YEAR"),
+  rdat = "ACMT",
+  refcsv = "Reference"
+)
 }
 \arguments{
 \item{refdir}{A character scalar giving the directory in which the reference csv file,

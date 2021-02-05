@@ -4,10 +4,21 @@
 \alias{mapByGroup}
 \title{Draw a Map using Different Colored Symbols for Groups}
 \usage{
-mapByGroup(bygroup, sug = sort(unique(bygroup)), addMean = TRUE, lon,
-  lat, rlon = range(lon, na.rm = TRUE), rlat = range(lat, na.rm =
-  TRUE), cushion = 0.1, colorz = NULL, pch = 1, cex = 1.5,
-  mapcol = "gray", mar = c(0, 0, 2, 0))
+mapByGroup(
+  bygroup,
+  sug = sort(unique(bygroup)),
+  addMean = TRUE,
+  lon,
+  lat,
+  rlon = range(lon, na.rm = TRUE),
+  rlat = range(lat, na.rm = TRUE),
+  cushion = 0.1,
+  colorz = NULL,
+  pch = 1,
+  cex = 1.5,
+  mapcol = "gray",
+  mar = c(0, 0, 2, 0)
+)
 }
 \arguments{
 \item{bygroup}{Vector, identifying the group membership of the locations to be mapped.}

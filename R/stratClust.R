@@ -59,7 +59,7 @@
 #' @references
 #' Cochran, W.G. 1977. \href{https://archive.org/details/Cochran1977SamplingTechniques_201703}{[Sampling Techniques]}. Wiley, New York.
 #' @importFrom magrittr "%>%"
-#' @import dplyr 
+#' @import dplyr
 #' @export
 #' @examples
 #' # Example data from a stratified survey design in which
@@ -118,7 +118,8 @@ stratClust <- function(elementdf, stratum, cluster, response, sizedf,
     summarise(
       A = sum(A_h),
       ybar_str = sum(W_h * ybar_h),
-      s_ybar_str = sum(W_h * s_ybar_h / sqrt(n_h))
+      s_ybar_str = sum(W_h * s_ybar_h)
+      #s_ybar_str = sum(W_h * s_ybar_h )
     ) %>%
     mutate(
       ytot_str = A * ybar_str,

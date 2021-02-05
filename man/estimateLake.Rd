@@ -4,10 +4,28 @@
 \alias{estimateLake}
 \title{Lake-Wide Fish Estimates from Acoustic and Midwater Trawl Data}
 \usage{
-estimateLake(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-  TSrange = c(-60, -30), TSthresh = 1, psi = 0.007997566,
-  soi = c(106, 109, 203, 204), spInfo, sliceDef, short = TRUE,
-  descr = "ACMT Estimates")
+estimateLake(
+  maindir,
+  rdat = "ACMT",
+  ageSp = NULL,
+  region,
+  regArea,
+  TSrange = c(-60, -30),
+  TSthresh = 1,
+  psi = 0.01,
+  chngBinCntToZero = FALSE,
+  BinCntZeroParams = c(depth = 40, TS = -45),
+  SpeciesFromDepthTS = FALSE,
+  DepthTSParams = c(SpDepth = 40, SpTS = -45, SPECIES = 204),
+  rmBycatch = FALSE,
+  ByCatchParams = c(bcdepth = 40, bcSPECIES = c(106, 109)),
+  soi = c(106, 109, 203, 204),
+  spInfo,
+  sliceDef,
+  short = TRUE,
+  IntMeansPlots = FALSE,
+  descr = "ACMT Estimates"
+)
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where \code{rdat} is located
@@ -31,7 +49,31 @@ minimum and maximum in dB, default c(-60, -30).}
 incorporate the TS information from a given (interval by layer) cell.}
 
 \item{psi}{A numeric scalar, the transducer-specific two-way equivalent beam angle
-in steradians, default 0.007997566.}
+in steradians, default 0.01.}
+
+\item{chngBinCntToZero}{Logical scalar, indicating if the user wishes to convert the number
+of targets in specific TS bins to zero so they don't influence sigma.}
+
+\item{BinCntZeroParams}{A numeric vector, depth and TS ranges below which the number of targets
+in the specified TS bins will be converted to zero}
+
+\item{SpeciesFromDepthTS}{Logical scalar indicating if the user wishes to use depth and TS to
+identify species.}
+
+\item{DepthTSParams}{A numeric vector of depth (meters) and TS (dB) as in (DepthTSParams = c(40, -45)).
+Currently this function can only be used to assign density in cells >= the values
+provided here. Future modifications may provide more flexibility.}
+
+\item{rmBycatch}{Logical scalar indicating whether or not the user wishes to remove particular
+species from midwater trawl data because they are believed to be bycatch. One
+common example of a need for this was reported by Warner et al. (2012), who
+found that catch observed over the course of three decades varied with fishing
+depth. At depths > 40 m below the surface, the vast majority (> 70 percent) of fish
+were bloater > 120 mm.}
+
+\item{ByCatchParams}{A vector with the first entry being depth, below which the user believes
+the species (the remaining portion of the vector) are bycatch and
+should be removed from the fishing data.}
 
 \item{soi}{A numeric vector, codes of fish species for which estimates will be
 generated, default c(106, 109, 203, 204).}

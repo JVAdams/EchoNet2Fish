@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotAgeLen.R
 \name{plotAgeLen}
 \alias{plotAgeLen}
-\title{Plot Age-Length Key}
+\title{Plot Age-LENGTH Key}
 \usage{
 plotAgeLen(m, inc = 0.3, zeroes = 4, fg = "red", bg = NA, ...)
 }
@@ -39,6 +39,6 @@ The matrix \code{m} can have ages in rows and lengths in
 mymat <- matrix(c(10, 1, 0, 0, 5, 0, 0, 3, 2, 0, 0, 1), nrow=3,
  dimnames=list(age=1:3, len=seq(25, 55, 10)))
 plotAgeLen(mymat, inc=1)
-plotAgeLen(t(mymat), xlab="Length", ylab="Age")
+plotAgeLen(t(mymat), xlab="LENGTH", ylab="Age")
 
 }
