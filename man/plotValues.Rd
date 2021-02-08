@@ -4,8 +4,15 @@
 \alias{plotValues}
 \title{Test for and Plot Errors in Acoustic Survey Values}
 \usage{
-plotValues(low, high, between, lowhighKnown = FALSE,
-  varname = "Varname", test = FALSE, ...)
+plotValues(
+  low,
+  high,
+  between,
+  lowhighKnown = FALSE,
+  varname = "Varname",
+  test = FALSE,
+  ...
+)
 }
 \arguments{
 \item{low}{A numeric vector of low values.}

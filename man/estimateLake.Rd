@@ -4,10 +4,21 @@
 \alias{estimateLake}
 \title{Lake-Wide Fish Estimates from Acoustic and Midwater Trawl Data}
 \usage{
-estimateLake(maindir, rdat = "ACMT", ageSp = NULL, region, regArea,
-  TSrange = c(-60, -30), TSthresh = 1, psi = 0.007997566,
-  soi = c(106, 109, 203, 204), spInfo, sliceDef, short = TRUE,
-  descr = "ACMT Estimates")
+estimateLake(
+  maindir,
+  rdat = "ACMT",
+  ageSp = NULL,
+  region,
+  regArea,
+  TSrange = c(-60, -30),
+  TSthresh = 1,
+  psi = 0.007997566,
+  soi = c(106, 109, 203, 204),
+  spInfo,
+  sliceDef,
+  short = TRUE,
+  descr = "ACMT Estimates"
+)
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where \code{rdat} is located

@@ -4,9 +4,20 @@
 \alias{figu}
 \title{Add a Figure to an RTF Document}
 \usage{
-figu(..., FIG = fig, rtf = doc, figid = "Figure ",
-  fign = EchoEnv$figcount, boldt = TRUE, capunder = TRUE, w = NULL,
-  h = NULL, rf = 300, newpage = "none", omi = c(1, 1, 1, 1))
+figu(
+  ...,
+  FIG = fig,
+  rtf = doc,
+  figid = "Figure ",
+  fign = EchoEnv$figcount,
+  boldt = TRUE,
+  capunder = TRUE,
+  w = NULL,
+  h = NULL,
+  rf = 300,
+  newpage = "none",
+  omi = c(1, 1, 1, 1)
+)
 }
 \arguments{
 \item{...}{One or more character scalars (separated by commas) of text to use for

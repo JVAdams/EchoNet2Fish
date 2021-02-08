@@ -58,8 +58,9 @@
 #'
 #' @references
 #' Cochran, W.G. 1977. \href{https://archive.org/details/Cochran1977SamplingTechniques_201703}{[Sampling Techniques]}. Wiley, New York.
+#' Scheaffer, R.L., Mendenhall III, W., Ott, R.L., Gerow, K., 2011. Elementary Survey Sampling, 7th ed. Brooks/Cole, Boston, MA.
 #' @importFrom magrittr "%>%"
-#' @import dplyr 
+#' @import dplyr
 #' @export
 #' @examples
 #' # Example data from a stratified survey design in which
@@ -82,48 +83,53 @@
 stratClust <- function(elementdf, stratum, cluster, response, sizedf,
   stratum2=stratum, size) {
 
-  datj <- elementdf[, c(stratum, cluster, response)]
-  names(datj) <- c("h", "i", "y_hij")
+  mydf <- elementdf[, c(stratum, cluster, response)]
+  names(mydf) <- c("h", "i", "yhij")
   dath <- sizedf[, c(stratum2, size)]
   names(dath) <- c("h", "A_h")
+  dath <- dath %>%
+    mutate(
+      W_h = A_h/sum(A_h)
+    )
 
-  # cluster means
-  cluster <- datj %>%
+  # summarize by cluster
+  smry_hc <- mydf %>%
     group_by(h, i) %>%
     summarise(
-      m_hi = n(),
-      y_hi = sum(y_hij)
+      m_hi=n(),
+      y_hi=sum(yhij)
     ) %>%
-    ungroup()
+    select(h, i, m_hi, y_hi)
 
-  # stratum means
-  stratum <- cluster %>%
+  # summarize by stratum
+  smry_h <- smry_hc %>%
     group_by(h) %>%
     summarise(
       m_h = sum(m_hi),
+      mbar_h = mean(m_hi),
       y_h = sum(y_hi),
       n_h = n(),
-      ybar_h = y_h / m_h,
-      s_ybar_h = 1 / mean(m_hi) *
-        sqrt( sum((y_hi - ybar_h*m_hi)^2) / (n_h * (n_h-1)) )
+      ybar_h = y_h/sum(m_hi),
+      s2_ybar_h = sum((y_hi - ybar_h*m_hi)^2)/(n_h * mbar_h^2 * (n_h-1)),
+      s_ybar_h = sqrt(s2_ybar_h),
+      s2_h = n_h * s2_ybar_h,
+      s_h = sqrt(s2_h)
     ) %>%
-    ungroup() %>%
-    left_join(dath, by="h") %>%
-    mutate(
-      W_h = A_h / sum(A_h)
-    )
+    full_join(dath, by="h") %>%
+    select(h, m_h, y_h, n_h, ybar_h, s_ybar_h, A_h, W_h)
 
-  # now expand up to strata
-  population <- stratum %>%
+  # overall summary
+  smry <- smry_h %>%
     summarise(
       A = sum(A_h),
-      ybar_str = sum(W_h * ybar_h),
-      s_ybar_str = sum(W_h * s_ybar_h / sqrt(n_h))
-    ) %>%
-    mutate(
+      ybar_str = sum(W_h*ybar_h),
+      # note that s_h^2 = n_h * s_ybar_h^2
+      s2_ybar_str = sum((W_h^2*n_h*s_ybar_h^2)/n_h),
+      s_ybar_str = sqrt(s2_ybar_str),
       ytot_str = A * ybar_str,
       s_ytot_str = A * s_ybar_str
-    )
+    ) %>%
+    select(A, ybar_str, s_ybar_str, ytot_str, s_ytot_str)
 
-  list(Cluster=cluster, Stratum=stratum, Population=population)
+  list(Cluster=smry_hc, Stratum=smry_h, Population=smry)
 }

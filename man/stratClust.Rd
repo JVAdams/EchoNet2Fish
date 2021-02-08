@@ -4,8 +4,15 @@
 \alias{stratClust}
 \title{Estimation from a Stratified Survey Design}
 \usage{
-stratClust(elementdf, stratum, cluster, response, sizedf,
-  stratum2 = stratum, size)
+stratClust(
+  elementdf,
+  stratum,
+  cluster,
+  response,
+  sizedf,
+  stratum2 = stratum,
+  size
+)
 }
 \arguments{
 \item{elementdf}{A data frame with one row for each sample unit (element),
@@ -87,4 +94,5 @@ stratClust(elementdf=counts, stratum="Stratum", cluster="Cluster",
 }
 \references{
 Cochran, W.G. 1977. \href{https://archive.org/details/Cochran1977SamplingTechniques_201703}{[Sampling Techniques]}. Wiley, New York.
+Scheaffer, R.L., Mendenhall III, W., Ott, R.L., Gerow, K., 2011. Elementary Survey Sampling, 7th ed. Brooks/Cole, Boston, MA.
 }

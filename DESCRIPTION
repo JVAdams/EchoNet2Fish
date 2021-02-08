@@ -1,6 +1,6 @@
 Package: EchoNet2Fish
-Version: 0.3.3.9000
-Date: 2019-04-22
+Version: 0.3.4.9000
+Date: 2021-02-08
 Title: Estimate Fish Abundance from Acoustic Echoes and Net Catch
 Authors@R: person(given="Jean V.", family="Adams", email="jvadams@usgs.gov", 
   role=c("aut", "cre"))
@@ -8,7 +8,7 @@ Description: EchoNet2Fish estimates fish abundance from acoustic echoes and net
     catch.
 Encoding: UTF-8
 Depends: 
-    R (>= 3.5.0),
+    R (>= 4.0.1),
     maps (>= 3.3.0)
 Imports: 
     class,
@@ -33,5 +33,5 @@ Suggests:
 License: GPL
 LazyData: TRUE
 URL: https://github.com/JVAdams/EchoNet2Fish
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.1
 VignetteBuilder: knitr

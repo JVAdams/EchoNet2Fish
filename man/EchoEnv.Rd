@@ -3,7 +3,9 @@
 \name{EchoEnv}
 \alias{EchoEnv}
 \title{EchoNet2Fish Package Local Environment}
-\format{An environment.}
+\format{
+An environment.
+}
 \source{
 Post from Hadley Wickham to r-help on 2 Dec 2014
  \href{https://stat.ethz.ch/pipermail/r-help/2014-December/423847.html}{[link]}.
