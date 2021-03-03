@@ -94,4 +94,5 @@ stratClust(elementdf=counts, stratum="Stratum", cluster="Cluster",
 }
 \references{
 Cochran, W.G. 1977. \href{https://archive.org/details/Cochran1977SamplingTechniques_201703}{[Sampling Techniques]}. Wiley, New York.
+Scheaffer, R.L., Mendenhall III, W., Ott, R.L., Gerow, K., 2011. Elementary Survey Sampling, 7th ed. Brooks/Cole, Boston, MA.
 }
