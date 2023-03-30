@@ -3,6 +3,7 @@
 \docType{package}
 \name{EchoNet2Fish}
 \alias{EchoNet2Fish}
+\alias{EchoNet2Fish-package}
 \title{Estimate Fish Abundance from Acoustic Echoes and Net Catch}
 \description{
 \pkg{EchoNet2Fish} estimates fish abundance from acoustic echoes and 

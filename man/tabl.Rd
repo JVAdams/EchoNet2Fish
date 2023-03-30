@@ -4,17 +4,9 @@
 \alias{tabl}
 \title{Add a Table to an RTF Document}
 \usage{
-tabl(
-  ...,
-  TAB = tab,
-  rtf = doc,
-  fontt = 8,
-  row.names = TRUE,
-  tabc = EchoEnv$tabcount,
-  boldt = TRUE,
-  newpage = "none",
-  omi = c(1, 1, 1, 1)
-)
+tabl(..., TAB = tab, rtf = doc, fontt = 8, row.names = TRUE,
+  tabc = EchoEnv$tabcount, boldt = TRUE, newpage = "none",
+  omi = c(1, 1, 1, 1))
 }
 \arguments{
 \item{...}{One or more character scalars (separated by commas) of text to use for

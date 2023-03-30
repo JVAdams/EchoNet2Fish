@@ -4,13 +4,9 @@
 \alias{EchogramCurtain}
 \title{Create echogram curtain plot from interval-layer data.}
 \usage{
-EchogramCurtain(
-  the.dir,
-  d.units,
-  spgrp = c("X106.L0", "X106.L100", "X109.L0", "X109.L90", "X204.L0", "X204.L120"),
-  QuantileFilter = FALSE,
-  Quantile = 0.99
-)
+EchogramCurtain(the.dir, d.units, spgrp = c("X106.L0", "X106.L100",
+  "X109.L0", "X109.L90", "X204.L0", "X204.L120"), QuantileFilter = FALSE,
+  Quantile = 0.99)
 }
 \arguments{
 \item{the.dir}{Character, the directory containing the data that will be used to make the

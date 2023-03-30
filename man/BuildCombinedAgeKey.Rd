@@ -4,17 +4,9 @@
 \alias{BuildCombinedAgeKey}
 \title{Create age-length key from combined acoustic survey and bottom trawl data.}
 \usage{
-BuildCombinedAgeKey(
-  year = NULL,
-  lake = NULL,
-  target = c(1, 209, 210, 223),
-  user = username,
-  password = password,
-  dbname = dbname,
-  schma = "RVCAT",
-  outdir = NULL,
-  species = c(106)
-)
+BuildCombinedAgeKey(year = NULL, lake = NULL, target = c(1, 209, 210,
+  223), user = username, password = password, dbname = dbname,
+  schma = "RVCAT", outdir = NULL, species = c(106))
 }
 \arguments{
 \item{year}{Numeric vector representing the year of data collection.}

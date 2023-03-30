@@ -5,7 +5,8 @@
 \title{Categorize Observations as Slices for Matching Acoustic Densities and Trawl
 Catches}
 \usage{
-sliceCat(sliceDef, fdp = NULL, bdp = NULL, lon = NULL, lat = NULL, reg = NULL)
+sliceCat(sliceDef, fdp = NULL, bdp = NULL, lon = NULL, lat = NULL,
+  reg = NULL)
 }
 \arguments{
 \item{sliceDef}{A list of at least two named sub-lists defining the slices into which

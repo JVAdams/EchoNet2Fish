@@ -4,19 +4,10 @@
 \alias{trawl_query}
 \title{Execute query of multiple Oracle trawl tables for use by EchoNet2Fish functions}
 \usage{
-trawl_query(
-  year = c(2019),
-  lake = c(2, 3),
-  lakec = c("MI", "HU"),
-  target = c(209, 210, 252),
-  species = c(106, 109, 202, 203, 204, 504),
-  user = username,
-  password = password,
-  dbname = dbname,
-  schma = "RVCAT",
-  descr = "LW acoustic survey",
-  outdir = NULL
-)
+trawl_query(year = c(2019), lake = c(2, 3), lakec = c("MI", "HU"),
+  target = c(209, 210, 252), species = c(106, 109, 202, 203, 204, 504),
+  user = username, password = password, dbname = dbname,
+  schma = "RVCAT", descr = "LW acoustic survey", outdir = NULL)
 }
 \arguments{
 \item{year}{Numeric vector indicating the desired collection year(s).}

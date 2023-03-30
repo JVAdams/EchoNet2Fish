@@ -4,15 +4,9 @@
 \alias{readSVTS}
 \title{Read in Sv or TS Data from Echoview}
 \usage{
-readSVTS(
-  svtsdir,
-  oldname = NULL,
-  newname = NULL,
-  elimMiss = NULL,
-  datevars = c("Date_S", "Date_E", "Date_M"),
-  addyear = TRUE,
-  tidy = TRUE
-)
+readSVTS(svtsdir, oldname = NULL, newname = NULL, elimMiss = NULL,
+  datevars = c("Date_S", "Date_E", "Date_M"), addyear = TRUE,
+  tidy = TRUE)
 }
 \arguments{
 \item{svtsdir}{A character scalar giving the directory in which the csv files are located.}

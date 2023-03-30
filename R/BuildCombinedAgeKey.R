@@ -55,11 +55,11 @@ BuildCombinedAgeKey <- function(year = NULL,
   opid <- op$OP_ID
   tr_fish <- filter(trfishdata, OP_ID %in% opid & !(is.na(AGE)) &
                       SPECIES == species) %>% dplyr::collect()
-
+  tr_fish$Lencat <- FSA::lencat(tr_fish$LENGTH, w=10, startcat=5)
   write.csv(tr_fish, paste0(outdir, "/combined tr_fish for species ",
                                   species, " YR ", year, " age length key.csv"),
             row.names = FALSE)
-  mykey <- fishmethods::alk(age = tr_fish$AGE, size = tr_fish$LENGTH, binsize = 10,
+  mykey <- fishmethods::alk(age = tr_fish$AGE, size = tr_fish$Lencat, binsize = 10,
                             type = 2)
   nam <- names(mykey)
   ages <- substr((tail(nam, -2)), 2, 2)

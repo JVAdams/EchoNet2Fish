@@ -4,14 +4,8 @@
 \alias{exploreACMT2}
 \title{Explore Acoustic and Midwater Trawl Data}
 \usage{
-exploreACMT2(
-  maindir,
-  rdat = "ACMT",
-  AC = TRUE,
-  MT = TRUE,
-  ageSp = NULL,
-  short = TRUE
-)
+exploreACMT2(maindir, rdat = "ACMT", AC = TRUE, MT = TRUE,
+  ageSp = NULL, short = TRUE)
 }
 \arguments{
 \item{maindir}{A character scalar giving the directory where output will be placed.

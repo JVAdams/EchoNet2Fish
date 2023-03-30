@@ -93,7 +93,7 @@ readAll <- function(refdir, keyvals, keyvars=c("LAKE", "YEAR"), rdat="ACMT",
 
   # read in AC data
   sv <- readSVTS(svdir, oldname="Good_samples", newname="Samples",
-    elimMiss=c("Lat_M", "Sv_mean", "PRC_ABC"))
+    elimMiss=NULL)
   ts <- readSVTS(tsdir, datevars=NULL)
 
   # read in MT data

@@ -3,9 +3,7 @@
 \name{Lakenames}
 \alias{Lakenames}
 \title{Great Lakes Names}
-\format{
-A character vector, length 5.
-}
+\format{A character vector, length 5.}
 \description{
 A vector with the names of the five Great Lakes.
 }

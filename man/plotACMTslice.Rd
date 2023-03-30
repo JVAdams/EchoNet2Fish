@@ -4,21 +4,10 @@
 \alias{plotACMTslice}
 \title{Multipanel Plot of AC and MT Samples by Slice}
 \usage{
-plotACMTslice(
-  MTgroup,
-  ACgroup,
-  sug = sort(unique(c(MTgroup, ACgroup))),
-  MTbd,
-  ACbd,
-  MTwd,
-  ACwd,
-  Gcol = NULL,
-  boxcol = "gray",
-  axlabelcol = "gray",
-  axtitlecol = "darkgray",
-  mar = c(0, 0, 3, 3),
-  oma = c(1.5, 2, 2.5, 2)
-)
+plotACMTslice(MTgroup, ACgroup, sug = sort(unique(c(MTgroup, ACgroup))),
+  MTbd, ACbd, MTwd, ACwd, Gcol = NULL, boxcol = "gray",
+  axlabelcol = "gray", axtitlecol = "darkgray", mar = c(0, 0, 3, 3),
+  oma = c(1.5, 2, 2.5, 2))
 }
 \arguments{
 \item{MTgroup}{Vector, identifying the group membership (typically, the slice)

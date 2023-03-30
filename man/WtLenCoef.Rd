@@ -4,16 +4,9 @@
 \alias{WtLenCoef}
 \title{Calculate Nonlinear Estimates of WEIGHT-LENGTH Coefficients}
 \usage{
-WtLenCoef(
-  lake = 2,
-  year = 2019,
-  species = 106,
-  target = c(1, 209, 210, 223, 252),
-  user = username,
-  password = password,
-  dbname = dbname,
-  schma = "RVCAT"
-)
+WtLenCoef(lake = 2, year = 2019, species = 106, target = c(1, 209,
+  210, 223, 252), user = username, password = password,
+  dbname = dbname, schma = "RVCAT")
 }
 \arguments{
 \item{lake}{Numeric vector to select lake from RVCAT lake codes.}

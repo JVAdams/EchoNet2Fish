@@ -53,7 +53,7 @@ WtLenCoef <- function(lake = 2,
                       106) %>% dplyr::collect()
 
 
-    tr_fish <- tr_fish %>% filter(!(is.na(LENGTH)) & !(is.na(WEIGHT))  )
+    tr_fish <- tr_fish %>% filter(!(is.na(LENGTH)) & !(is.na(WEIGHT)) & LENGTH<230 )
 
   unique(tr_fish$WEIGHT)
   #tr_fish$rat <- tr_fish$WEIGHT/tr_fish$LENGTH

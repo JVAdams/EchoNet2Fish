@@ -4,16 +4,9 @@
 \alias{mapBy2Groups}
 \title{Multipanel Map of Locations, with Gaps}
 \usage{
-mapBy2Groups(
-  df,
-  lon,
-  lat,
-  rlon = range(lon, na.rm = TRUE),
-  rlat = range(lat, na.rm = TRUE),
-  nrows,
-  nsymbols = 7,
-  mar = c(0, 0, 3, 0)
-)
+mapBy2Groups(df, lon, lat, rlon = range(lon, na.rm = TRUE),
+  rlat = range(lat, na.rm = TRUE), nrows, nsymbols = 7, mar = c(0, 0,
+  3, 0))
 }
 \arguments{
 \item{df}{Data frame of values to plot, column names should identify membership

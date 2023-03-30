@@ -319,7 +319,14 @@ estimateLake <-
       "Layer",
       "Layer_depth_min",
       "Layer_depth_max",
+      "Time_S",
+      "Time_E",
+      "Time_M",
+      "Lat_S",
+      "Lat_E",
       "Lat_M",
+      "Lon_S",
+      "Lon_E",
       "Lon_M",
       "year",
       "Date_M",
@@ -327,6 +334,7 @@ estimateLake <-
       "Depth_mean",
       "PRC_ABC",
       "source.sv",
+      "Exclude_below_line_depth_mean",
       "psi"
     )], ts[, c("UID", "source.ts", "sigma")],
     by = "UID", all = TRUE)
@@ -495,7 +503,7 @@ estimateLake <-
       sim.tr_lf <- sim.catch[,cols]
 
       png(paste0(maindir, "TSsimulated_bloater_length.png"))
-      hist(sim.tr_lf$LENGTH, breaks = seq(100,350,25))
+      hist(sim.tr_lf$LENGTH, breaks = seq(20,350,25))
       dev.off()
 
       ##################################Now we have to add the simulated op, catch,
