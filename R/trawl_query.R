@@ -12,6 +12,7 @@
 #' query.
 #' @param user Character vector providing the username used to connect to
 #' the database.
+#' @param dbname Character vector providing the name of the database
 #' @param password Character vector providing the password used to connect to
 #' the database.
 #' @param schma Character vector providing the schema used to connect to

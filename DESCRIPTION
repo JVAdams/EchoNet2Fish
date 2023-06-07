@@ -1,9 +1,11 @@
 Package: EchoNet2Fish
-Version: 0.3.3.9000
+Version: 0.4.0.0000
 Date: 2019-05-10
 Title: Estimate Fish Abundance from Acoustic Echoes and Net Catch
-Authors@R: person(given="Jean V.", family="Adams", email="jvadams@usgs.gov", 
-  role=c("aut", "cre"))
+Authors@R:c(person(given="David M.", family="Warner", email="dmwarner@usgs.gov", 
+  role=c("aut", "cre")),  
+  person(given="Jean V.", family="Adams", email="jvadams@usgs.gov", 
+  role=c("aut")))
 Description: EchoNet2Fish estimates fish abundance from acoustic echoes and net
     catch.
 Encoding: UTF-8
@@ -13,6 +15,8 @@ Depends:
 Imports: 
     class,
 	dplyr,
+	dbplyr,
+	FSA,
     graphics,
     grDevices,
     lubridate,
@@ -26,7 +30,11 @@ Imports:
 	sp,
 	tidyr,
 	utils,
-	ggplot2
+	ggplot2,
+	ROracle,
+	fishmethods,
+	stringr,
+	svDialogs
 Suggests: 
     testthat,
     knitr,
@@ -34,5 +42,5 @@ Suggests:
 License: GPL
 LazyData: TRUE
 URL: https://github.com/dmwarn/EchoNet2Fish
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.1
 VignetteBuilder: knitr

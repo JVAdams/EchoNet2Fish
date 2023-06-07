@@ -151,7 +151,6 @@ estimateLake <-
             spInfo,
             sliceDef,
             short = TRUE,
-            IntMeansPlots = FALSE,
             descr = "ACMT Estimates")
   {
     load(paste0(maindir, rdat, ".RData"), envir = environment())
@@ -223,7 +222,7 @@ estimateLake <-
       )
     )
     para(
-      "Created using the R package EchoNet2Fish (https://github.com/JVAdams/EchoNet2Fish), written by Jean V. Adams for Dave Warner."
+      "Created using the R package EchoNet2Fish (https://github.com/dmwarn/EchoNet2Fish), written by David M. Warner and Jean V. Adams."
     )
     para(paste0(docname, " = this document."))
     heading("INPUTS", 2)

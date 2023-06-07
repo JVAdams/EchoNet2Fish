@@ -8,4 +8,6 @@ Lakenames <- c("Superior", "Michigan", "Huron", "Erie", "Ontario")
 EchoEnv <- new.env(parent = emptyenv())
 
 
-save(list=ls(all=FALSE), file="C:/JVA/GitHub/EchoNet2Fish/data/misc.RData")
+save(list=ls(all=FALSE), file="C:/Users/dmwarner/Documents/projects/EchoNet2Fish/data/misc.RData")
+
+

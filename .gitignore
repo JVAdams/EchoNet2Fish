@@ -16,3 +16,5 @@
 .Rbuildignore
 EchoNet2Fish.Rproj
 inst/doc
+/doc/
+/Meta/

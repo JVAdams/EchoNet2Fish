@@ -50,7 +50,7 @@ exploreACMT <- function(maindir, rdat="ACMT", AC=TRUE, MT=TRUE, ageSp=NULL,
   heading(paste0(YEAR, " Lake ", Lakenames[LAKE], " Exploration of ", descr,
                  " Data   ", lubridate::today()))
 
-  para("Created using the R package EchoNet2Fish (https://github.com/JVAdams/EchoNet2Fish), written by Jean V. Adams for Dave Warner.")
+  para("Created using the R package EchoNet2Fish (https://github.com/dmwarn/EchoNet2Fish), written by Jean V. Adams and David M. Warner.")
   para(paste0(docname, " = this document."))
 
   heading("INPUTS", 2)

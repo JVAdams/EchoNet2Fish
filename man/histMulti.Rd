@@ -4,10 +4,20 @@
 \alias{histMulti}
 \title{Multipanel Histogram of Values}
 \usage{
-histMulti(x, freq = rep(1, length(x)), bygroup,
-  sug = sort(unique(bygroup)), xlab = "Values", ylab = "Frequency",
-  barw = 5, samescale = TRUE, fillcol = "gray", rangecol = "red",
-  mar = c(3, 3, 2, 1), oma = c(2, 2, 1, 1))
+histMulti(
+  x,
+  freq = rep(1, length(x)),
+  bygroup,
+  sug = sort(unique(bygroup)),
+  xlab = "Values",
+  ylab = "Frequency",
+  barw = 5,
+  samescale = TRUE,
+  fillcol = "gray",
+  rangecol = "red",
+  mar = c(3, 3, 2, 1),
+  oma = c(2, 2, 1, 1)
+)
 }
 \arguments{
 \item{x}{Numeric vector of values to be plotted.}
